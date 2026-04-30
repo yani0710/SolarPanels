@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color: #e7f8ff;
+  background: #06111f;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(53, 229, 139, 0.16), transparent 28rem),
+    radial-gradient(circle at 86% 8%, rgba(56, 189, 248, 0.18), transparent 30rem),
+    linear-gradient(135deg, #06111f 0%, #071a2f 52%, #09233a 100%);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+input,
+select,
+textarea {
+  min-height: 44px;
+}
+
+canvas,
+svg {
+  max-width: 100%;
+}
+
+@layer components {
+  .mobile-card {
+    border-radius: 24px;
+  }
+
+  .glass {
+    border: 1px solid rgba(164, 231, 255, 0.16);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.055));
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.24);
+    backdrop-filter: blur(22px);
+  }
+
+  .glass-strong {
+    border: 1px solid rgba(164, 231, 255, 0.22);
+    background: linear-gradient(145deg, rgba(8, 30, 52, 0.82), rgba(8, 22, 38, 0.66));
+    box-shadow: 0 28px 90px rgba(0, 0, 0, 0.32);
+    backdrop-filter: blur(24px);
+  }
+
+  .premium-input {
+    width: 100%;
+    border-radius: 18px;
+    border: 1px solid rgba(164, 231, 255, 0.14);
+    background: rgba(5, 18, 32, 0.72);
+    color: #e7f8ff;
+    outline: none;
+    transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+  }
+
+  .premium-input:focus {
+    border-color: rgba(53, 229, 139, 0.72);
+    box-shadow: 0 0 0 4px rgba(53, 229, 139, 0.12);
+    background: rgba(6, 22, 38, 0.88);
+  }
+
+  .premium-input::placeholder {
+    color: rgba(188, 210, 224, 0.55);
+  }
+
+  .premium-button {
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 999px;
+    padding: 0.75rem 1.25rem;
+    font-weight: 800;
+    transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+  }
+
+  .premium-button:active {
+    transform: scale(0.985);
+  }
+
+  .focus-ring {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+
+  .focus-ring:focus-visible {
+    outline-color: #35e58b;
+  }
+}
+
+@media (max-width: 640px) {
+  .mobile-card {
+    border-radius: 20px;
+  }
+
+  .recharts-wrapper,
+  .recharts-surface {
+    max-width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}

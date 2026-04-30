@@ -1,0 +1,1 @@
+export { recommendBatteryCapacity } from './calculations';
