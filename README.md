@@ -1,49 +1,150 @@
 # SolarWise BG
 
-Професионално Single Page Application MVP за бърза и честна ориентация при избор на соларна система.
+SolarWise BG is a full-stack web app for estimating solar panel system needs, battery size, consumption patterns, and saved user scenarios.
 
-## Stack
+## Tech Stack
 
-- Frontend: Vite, React, TypeScript, Tailwind CSS, Framer Motion, Lucide React, Recharts
+- Frontend: React, Vite, TypeScript, Tailwind CSS
 - Backend: Node.js, Express, TypeScript
-- Database: SQLite чрез `node:sqlite`
-- Auth: JWT + bcrypt
+- Database: SQLite using the built-in `node:sqlite` module
+- Authentication: JWT and bcrypt
 
-## Стартиране локално
+## What You Need To Install
+
+Install these before running the project:
+
+1. **Node.js 22 or newer**
+
+   Download it from:
+
+   ```text
+   https://nodejs.org/
+   ```
+
+   Check that it installed correctly:
+
+   ```bash
+   node -v
+   npm -v
+   ```
+
+2. **Git**
+
+   Download it from:
+
+   ```text
+   https://git-scm.com/downloads
+   ```
+
+   Check that it installed correctly:
+
+   ```bash
+   git --version
+   ```
+
+## How To Start The Program
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/yani0710/SolarPanels.git
+   ```
+
+2. Go into the project folder:
+
+   ```bash
+   cd SolarPanels
+   ```
+
+3. Install all dependencies:
+
+   ```bash
+   npm install
+   ```
+
+4. Create your environment file:
+
+   ```bash
+   copy .env.example .env
+   ```
+
+   On macOS/Linux, use:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+5. Start the frontend and backend:
+
+   ```bash
+   npm run dev
+   ```
+
+6. Open the app in your browser:
+
+   ```text
+   http://localhost:5173
+   ```
+
+The backend API runs at:
+
+```text
+http://localhost:4000/api
+```
+
+## Useful Commands
+
+Run the full app in development mode:
 
 ```bash
-npm install
 npm run dev
 ```
 
-Frontend: `http://localhost:5173`
+Run only the frontend:
 
-Backend: `http://localhost:4000/api`
+```bash
+npm run dev:frontend
+```
 
-## Полезни команди
+Run only the backend:
+
+```bash
+npm run dev:backend
+```
+
+Check TypeScript:
+
+```bash
+npm run typecheck
+```
+
+Build the project:
 
 ```bash
 npm run build
-npm run typecheck
-npm --workspace backend run dev
-npm --workspace frontend run dev
 ```
 
-## Environment
+Start the built backend:
 
-Копирай `.env.example` към `.env` в root или в `backend/.env` и промени стойностите при нужда.
+```bash
+npm --workspace backend run start
+```
 
-## MVP функционалности
+## Environment Variables
 
-- Бърза оценка с малко въпроси и fallback стойности при "Не знам"
-- Детайлна оценка с профили, уреди, backup нужди и условия на имота
-- Препоръка за kWp, батерия, тип система и честни предупреждения
-- Визуализации с Recharts
-- Register/login/logout с JWT
-- Запазени сценарии и custom уреди за логнати потребители
-- LocalStorage за временен резултат при гости
-- FAQ/education секция
+The `.env.example` file contains the default local setup:
 
-## AI-ready архитектура
+```env
+VITE_API_URL=http://localhost:4000/api
+PORT=4000
+JWT_SECRET=change-me-in-production
+DATABASE_PATH=./data/solarwise.sqlite
+```
 
-Rule-based логиката е отделена във `frontend/src/logic`. Backend моделите пазят `input_snapshot` и `result_snapshot`, така че по-късно може да се добави AI анализатор, който приема същия snapshot и връща подобрена препоръка.
+For local development, copying `.env.example` to `.env` is enough.
+
+## Notes
+
+- The SQLite database is created automatically when the backend starts.
+- Local database files are ignored by Git.
+- `node_modules` and build folders are ignored by Git.
