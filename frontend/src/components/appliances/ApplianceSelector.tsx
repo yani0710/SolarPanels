@@ -49,25 +49,25 @@ export function ApplianceSelector({ selected, customAppliances, onChange, onCust
         </button>
       </div>
 
-      <label className="mb-3 flex min-h-12 items-center gap-2 rounded-[1.2rem] border border-white/12 bg-white/[0.055] px-4 shadow-sm">
+      <label className="mb-3 flex min-h-12 items-center gap-2 rounded-lg border border-white/12 bg-white/[0.055] px-4 shadow-sm">
         <Search size={18} className="text-cyan" />
         <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Потърси уред..." className="min-h-0 flex-1 border-0 bg-transparent p-0 text-white outline-none placeholder:text-muted/70" />
       </label>
 
       <div className="mb-4 flex gap-2 overflow-x-auto pb-1">
         {(Object.keys(categoryMeta) as Array<ApplianceCategory | 'all'>).map((id) => (
-          <button key={id} type="button" onClick={() => setCategory(id)} className={`flex shrink-0 items-center gap-2 rounded-full border px-3 py-2 text-sm font-bold ${category === id ? 'border-mint bg-mint/15 text-white shadow-glow' : 'border-white/12 bg-white/[0.055] text-slate-300 hover:border-cyan/40'}`}>
+          <button key={id} type="button" onClick={() => setCategory(id)} className={`flex shrink-0 items-center gap-2 rounded-md border px-3 py-2 text-sm font-bold ${category === id ? 'border-mint bg-mint/15 text-white shadow-glow' : 'border-white/12 bg-white/[0.055] text-slate-300 hover:border-cyan/40 hover:bg-white/[0.075]'}`}>
             {categoryMeta[id].icon}{categoryMeta[id].label}
           </button>
         ))}
       </div>
 
       <div className="mb-4 flex flex-wrap gap-2">
-        {quickChips.map((chip) => <button key={chip} type="button" onClick={() => setQuery(chip)} className="rounded-full bg-white/8 px-3 py-1.5 text-xs font-bold text-slate-300 hover:bg-white/12 hover:text-white">{chip}</button>)}
+        {quickChips.map((chip) => <button key={chip} type="button" onClick={() => setQuery(chip)} className="rounded-md bg-white/8 px-3 py-1.5 text-xs font-bold text-slate-300 hover:bg-white/12 hover:text-white">{chip}</button>)}
       </div>
 
       {customAppliances.length > 0 && (
-        <div className="mb-5 rounded-[1.4rem] border border-mint/25 bg-mint/8 p-3">
+        <div className="mb-5 rounded-lg border border-mint/25 bg-mint/8 p-3">
           <h4 className="mb-3 px-1 text-sm font-black text-white">Моите уреди</h4>
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {customAppliances.filter((item) => `${item.name} ${item.label}`.toLowerCase().includes(query.toLowerCase())).map((preset) => <AppliancePresetCard key={preset.id} preset={preset} selected={selected.some((item) => item.id === preset.id)} onToggle={toggle} />)}

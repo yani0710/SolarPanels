@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id                Int                 @id @default(autoincrement())
+  name              String
+  email             String              @unique
+  passwordHash      String              @map("password_hash")
+  createdAt         DateTime            @default(now()) @map("created_at")
+  updatedAt         DateTime            @updatedAt @map("updated_at")
+  customAppliances  CustomAppliance[]
+  savedSystems      SavedSystem[]
+  assistantUsage    AssistantUsage[]
+  assistantMessages AssistantMessage[]
+
+  @@map("users")
+}
+
+model CustomAppliance {
+  id            Int      @id @default(autoincrement())
+  userId        Int      @map("user_id")
+  name          String
+  category      String
+  count         Float    @default(1)
+  wattage       Float
+  hoursPerDay   Float    @map("hours_per_day")
+  daysPerMonth  Float    @map("days_per_month")
+  usageTime     String   @map("usage_time")
+  isCritical    Boolean  @default(false) @map("is_critical")
+  seasonality   String   @default("year-round")
+  highStartLoad Boolean  @default(false) @map("high_start_load")
+  certainty     String   @default("approximate")
+  workPattern   String   @default("daily") @map("work_pattern")
+  note          String   @default("")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("custom_appliances")
+}
+
+model SavedSystem {
+  id                    Int      @id @default(autoincrement())
+  userId                Int      @map("user_id")
+  title                 String
+  inputSnapshot         String   @map("input_snapshot")
+  resultSnapshot        String   @map("result_snapshot")
+  recommendedPowerKwp   Float    @map("recommended_power_kwp")
+  recommendedBatteryKwh Float    @map("recommended_battery_kwh")
+  systemType            String   @map("system_type")
+  advice                String
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("saved_systems")
+}
+
+model AssistantUsage {
+  id            Int      @id @default(autoincrement())
+  userId        Int?     @map("user_id")
+  guestId       String?  @map("guest_id")
+  dayKey        String   @map("day_key")
+  questionCount Int      @default(0) @map("question_count")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  user          User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, dayKey])
+  @@unique([guestId, dayKey])
+  @@map("assistant_usage")
+}
+
+model AssistantMessage {
+  id        Int      @id @default(autoincrement())
+  userId    Int?     @map("user_id")
+  guestId   String?  @map("guest_id")
+  role      String
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("assistant_messages")
+}

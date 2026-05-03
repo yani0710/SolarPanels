@@ -11,9 +11,9 @@ export function BatteryRecommendation({ result }: { result: RecommendationResult
       <div className="mt-3 text-3xl font-black text-white">
         {result.batteryNeeded ? `${result.recommendedBatteryRange} kWh` : 'Не е задължителна'}
       </div>
-      <div className="mt-4 rounded-2xl border border-white/12 bg-navy/60 p-3">
-        <div className="h-10 overflow-hidden rounded-xl border border-white/12 bg-white/8 p-1">
-          <motion.div initial={{ width: 0 }} whileInView={{ width: `${fill}%` }} viewport={{ once: true }} transition={{ duration: 0.9 }} className={`h-full rounded-lg ${result.batteryNeeded ? 'bg-gradient-to-r from-mint to-cyan shadow-glow' : 'bg-white/20'}`} />
+      <div className="mt-4 rounded-lg border border-white/12 bg-navy/60 p-3">
+        <div className="h-10 overflow-hidden rounded-md border border-white/12 bg-white/8 p-1">
+          <motion.div initial={{ width: 0 }} whileInView={{ width: `${fill}%` }} viewport={{ once: true }} transition={{ duration: 0.9 }} className={`h-full rounded ${result.batteryNeeded ? 'bg-gradient-to-r from-mint to-cyan shadow-glow' : 'bg-white/20'}`} />
         </div>
       </div>
       <p className="mt-3 text-sm leading-6 text-muted">

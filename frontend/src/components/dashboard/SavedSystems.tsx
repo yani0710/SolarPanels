@@ -28,14 +28,14 @@ export function SavedSystems({ refreshKey = 0 }: { refreshKey?: number }) {
               <h3 className="truncate font-black text-white">{system.title}</h3>
               <p className="text-sm text-muted">{new Date(system.createdAt).toLocaleDateString('bg-BG')}</p>
             </div>
-            <button className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/12 bg-white/8 text-slate-300" onClick={async () => { await deleteSystem(system.id); setSystems((items) => items.filter((item) => item.id !== system.id)); }} aria-label="Изтрий">
+            <button className="grid h-10 w-10 shrink-0 place-items-center rounded-md border border-white/12 bg-white/8 text-slate-300" onClick={async () => { await deleteSystem(system.id); setSystems((items) => items.filter((item) => item.id !== system.id)); }} aria-label="Изтрий">
               <Trash2 size={18} />
             </button>
           </div>
           <div className="mt-4 grid grid-cols-3 gap-2 text-sm">
-            <b className="rounded-xl bg-white/8 p-2 text-center text-white">{system.resultSnapshot.recommendedPowerRange ?? system.recommendedPowerKwp} kWp</b>
-            <b className="rounded-xl bg-white/8 p-2 text-center text-white">{system.resultSnapshot.recommendedBatteryRange ?? system.recommendedBatteryKwh} kWh</b>
-            <b className="rounded-xl bg-mint/12 p-2 text-center text-mint">{system.systemType}</b>
+            <b className="rounded-md bg-white/8 p-2 text-center text-white">{system.resultSnapshot.recommendedPowerRange ?? system.recommendedPowerKwp} kWp</b>
+            <b className="rounded-md bg-white/8 p-2 text-center text-white">{system.resultSnapshot.recommendedBatteryRange ?? system.recommendedBatteryKwh} kWh</b>
+            <b className="rounded-md bg-mint/12 p-2 text-center text-mint">{system.systemType}</b>
           </div>
           <p className="mt-3 text-sm leading-6 text-muted">{system.advice}</p>
         </div>

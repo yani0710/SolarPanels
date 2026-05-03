@@ -6,7 +6,7 @@ SolarWise BG is a full-stack web app for estimating solar panel system needs, ba
 
 - Frontend: React, Vite, TypeScript, Tailwind CSS
 - Backend: Node.js, Express, TypeScript
-- Database: SQLite using the built-in `node:sqlite` module
+- Database: SQLite through Prisma Client
 - Authentication: JWT and bcrypt
 
 ## What You Need To Install
@@ -139,6 +139,9 @@ VITE_API_URL=http://localhost:4000/api
 PORT=4000
 JWT_SECRET=change-me-in-production
 DATABASE_PATH=./data/solarwise.sqlite
+DATABASE_URL=file:./backend/data/solarwise.sqlite
+OPENAI_API_KEY=
+OPENAI_MODEL=
 ```
 
 For local development, copying `.env.example` to `.env` is enough.

@@ -2,20 +2,16 @@ import { motion } from 'framer-motion';
 
 export function EnergyBackground() {
   return (
-    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-navy" aria-hidden="true">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_8%,rgba(53,229,139,.18),transparent_28rem),radial-gradient(circle_at_82%_18%,rgba(56,189,248,.16),transparent_30rem),linear-gradient(135deg,#06111f_0%,#071a2f_52%,#09233a_100%)]" />
-      <div className="absolute inset-0 opacity-[0.18] [background-image:linear-gradient(rgba(164,231,255,.18)_1px,transparent_1px),linear-gradient(90deg,rgba(164,231,255,.18)_1px,transparent_1px)] [background-size:72px_72px]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(6,17,31,.30)_70%,rgba(6,17,31,.78)_100%)]" />
-      {[0, 1, 2, 3, 4, 5].map((dot) => (
-        <motion.span
-          key={dot}
-          className="absolute h-1.5 w-1.5 rounded-full bg-cyan/50 blur-[1px]"
-          style={{ left: `${12 + dot * 16}%`, top: `${20 + (dot % 3) * 22}%` }}
-          animate={{ y: [0, -18, 0], opacity: [0.25, 0.8, 0.25] }}
-          transition={{ duration: 5 + dot, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      ))}
-      <div className="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-navy to-transparent" />
+    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-[#02050a]" aria-hidden="true">
+      <div className="absolute inset-0 bg-[linear-gradient(115deg,rgba(53,229,139,.095),transparent_34%),linear-gradient(245deg,rgba(56,189,248,.08),transparent_31%),linear-gradient(135deg,#02050a_0%,#07111d_52%,#0b1724_100%)]" />
+      <div className="absolute inset-0 opacity-[0.14] [background-image:linear-gradient(rgba(164,231,255,.18)_1px,transparent_1px),linear-gradient(90deg,rgba(164,231,255,.18)_1px,transparent_1px)] [background-size:64px_64px]" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(2,5,10,.12),transparent_35%,rgba(2,5,10,.78)_100%)]" />
+      <motion.div
+        className="absolute left-[-18%] top-0 h-full w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-cyan/10 to-transparent blur-xl"
+        animate={{ x: ['0%', '410%'] }}
+        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[#02050a] via-[#02050a]/72 to-transparent" />
     </div>
   );
 }

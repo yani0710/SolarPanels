@@ -19,7 +19,7 @@ export function SystemTypeRecommendation({ result }: { result: RecommendationRes
       <div className="mt-3 text-4xl font-black text-white">{item.title}</div>
       <div className="mt-5 grid grid-cols-3 gap-2">
         {[SunMedium, BatteryCharging, Network].map((SmallIcon, index) => (
-          <div key={index} className={`grid h-14 place-items-center rounded-2xl border ${index === 1 && result.systemType === 'on-grid' ? 'border-white/8 bg-white/5 text-muted/40' : 'border-white/12 bg-white/8 text-mint'}`}>
+          <div key={index} className={`grid h-14 place-items-center rounded-md border ${index === 1 && result.systemType === 'on-grid' ? 'border-white/8 bg-white/5 text-muted/40' : 'border-white/12 bg-white/8 text-mint'}`}>
             <SmallIcon size={20} />
           </div>
         ))}

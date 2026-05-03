@@ -83,7 +83,7 @@ export function DetailedAssessment({ onResult, onRequireRegister }: { onResult: 
               {step === 1 && (
                 <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                   {HOUSEHOLD_PROFILES.map((p) => (
-                    <button type="button" key={p.id} onClick={() => { setProfileId(p.id); setAppliances(p.appliances); }} className={`min-h-32 rounded-[1.3rem] border p-4 text-left transition active:scale-[.99] ${profileId === p.id ? 'border-mint bg-mint/15 shadow-glow' : 'border-white/12 bg-white/[0.055] hover:border-cyan/40'}`}>
+                    <button type="button" key={p.id} onClick={() => { setProfileId(p.id); setAppliances(p.appliances); }} className={`min-h-32 rounded-lg border p-4 text-left transition active:scale-[.99] ${profileId === p.id ? 'border-mint bg-mint/15 shadow-glow' : 'border-white/12 bg-white/[0.055] hover:border-cyan/40 hover:bg-white/[0.075]'}`}>
                       <div className="font-black text-white">{p.label}</div>
                       <p className="mt-2 text-sm leading-5 text-muted">{p.description}</p>
                     </button>
@@ -144,9 +144,9 @@ export function DetailedAssessment({ onResult, onRequireRegister }: { onResult: 
 
 function CheckBlock({ title, name, options }: { title: string; name: string; options: Array<[string, string]> }) {
   return (
-    <div className="rounded-[1.3rem] border border-white/12 bg-white/[0.055] p-4 md:col-span-2">
+    <div className="rounded-lg border border-white/12 bg-white/[0.055] p-4 md:col-span-2">
       <div className="mb-3 text-sm font-black text-white">{title}</div>
-      <div className="flex flex-wrap gap-2">{options.map(([value, text]) => <label key={value} className="flex min-h-10 items-center gap-2 rounded-full border border-white/12 bg-white/8 px-3 text-sm font-semibold text-slate-200"><input type="checkbox" name={name} value={value} /> {text}</label>)}</div>
+      <div className="flex flex-wrap gap-2">{options.map(([value, text]) => <label key={value} className="flex min-h-10 items-center gap-2 rounded-md border border-white/12 bg-white/8 px-3 text-sm font-semibold text-slate-200"><input type="checkbox" name={name} value={value} /> {text}</label>)}</div>
     </div>
   );
 }
@@ -161,7 +161,7 @@ function LiveSummary({ appliances }: { appliances: ApplianceInput[] }) {
   const confidence = unknownCount > 3 ? 'средна/ниска' : appliances.length > 3 ? 'добра' : 'средна';
 
   return (
-    <div className="rounded-[1.6rem] border border-white/12 bg-[#06111f]/76 p-4 text-white shadow-card backdrop-blur-2xl">
+    <div className="rounded-lg border border-white/12 bg-[#02050a]/76 p-4 text-white shadow-card backdrop-blur-2xl">
       <div className="flex items-center justify-between gap-3">
         <div>
           <div className="text-sm font-bold text-cyan">Live summary</div>
@@ -175,13 +175,13 @@ function LiveSummary({ appliances }: { appliances: ApplianceInput[] }) {
         <Metric icon={<ShieldCheck size={15} />} label="Критични" value={`${criticalCount}`} />
         <Metric icon={<BatteryCharging size={15} />} label="Батерия" value={battery} />
       </div>
-      <div className="mt-3 rounded-2xl border border-white/10 bg-white/8 px-3 py-2 text-sm font-semibold">Увереност: {confidence}</div>
+      <div className="mt-3 rounded-md border border-white/10 bg-white/8 px-3 py-2 text-sm font-semibold">Увереност: {confidence}</div>
     </div>
   );
 }
 
 function Metric({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) {
-  return <div className="rounded-2xl bg-white/8 p-3"><div className="mb-2 flex items-center gap-2 text-xs text-muted">{icon}{label}</div><div className="font-black text-white">{value}</div></div>;
+  return <div className="rounded-md bg-white/8 p-3"><div className="mb-2 flex items-center gap-2 text-xs text-muted">{icon}{label}</div><div className="font-black text-white">{value}</div></div>;
 }
 
 function Input({ label, as, options, ...props }: { label: string; name: string; defaultValue?: string; placeholder?: string; as?: 'select'; options?: string[][] }) {

@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { db } from '../db/database.js';
+import { prisma } from '../db/prisma.js';
 import { requireAuth } from '../middleware/auth.js';
-import type { SavedSystemRecord } from '../db/models.js';
+import type { SavedSystem } from '@prisma/client';
 
 export const systemsRouter = Router();
 systemsRouter.use(requireAuth);
@@ -18,51 +18,73 @@ const systemSchema = z.object({
   }).passthrough()
 });
 
-const map = (row: SavedSystemRecord) => ({
+const map = (row: SavedSystem) => ({
   id: row.id,
   title: row.title,
-  inputSnapshot: JSON.parse(row.input_snapshot),
-  resultSnapshot: JSON.parse(row.result_snapshot),
-  recommendedPowerKwp: row.recommended_power_kwp,
-  recommendedBatteryKwh: row.recommended_battery_kwh,
-  systemType: row.system_type,
+  inputSnapshot: JSON.parse(row.inputSnapshot),
+  resultSnapshot: JSON.parse(row.resultSnapshot),
+  recommendedPowerKwp: row.recommendedPowerKwp,
+  recommendedBatteryKwh: row.recommendedBatteryKwh,
+  systemType: row.systemType,
   advice: row.advice,
-  createdAt: row.created_at,
-  updatedAt: row.updated_at
+  createdAt: row.createdAt.toISOString(),
+  updatedAt: row.updatedAt.toISOString()
 });
 
-systemsRouter.get('/', (req, res) => {
-  const rows = db.prepare('SELECT * FROM saved_systems WHERE user_id = ? ORDER BY created_at DESC').all(req.user!.id) as unknown as SavedSystemRecord[];
+systemsRouter.get('/', async (req, res) => {
+  const rows = await prisma.savedSystem.findMany({ where: { userId: req.user!.id }, orderBy: { createdAt: 'desc' } });
   res.json({ systems: rows.map(map) });
 });
 
-systemsRouter.get('/:id', (req, res) => {
-  const row = db.prepare('SELECT * FROM saved_systems WHERE id = ? AND user_id = ?').get(req.params.id, req.user!.id) as SavedSystemRecord | undefined;
+systemsRouter.get('/:id', async (req, res) => {
+  const row = await prisma.savedSystem.findFirst({ where: { id: Number(req.params.id), userId: req.user!.id } });
   if (!row) return res.status(404).json({ message: 'Сценарият не е намерен.' });
   res.json({ system: map(row) });
 });
 
-systemsRouter.post('/', (req, res, next) => {
+systemsRouter.post('/', async (req, res, next) => {
   try {
     const input = systemSchema.parse(req.body);
     const r = input.resultSnapshot;
-    const result = db.prepare('INSERT INTO saved_systems (user_id, title, input_snapshot, result_snapshot, recommended_power_kwp, recommended_battery_kwh, system_type, advice) VALUES (?, ?, ?, ?, ?, ?, ?, ?)').run(req.user!.id, input.title, JSON.stringify(input.inputSnapshot), JSON.stringify(input.resultSnapshot), r.recommendedPowerKwp, r.recommendedBatteryKwh, r.systemType, r.advice);
-    const row = db.prepare('SELECT * FROM saved_systems WHERE id = ? AND user_id = ?').get(Number(result.lastInsertRowid), req.user!.id) as unknown as SavedSystemRecord;
+    const row = await prisma.savedSystem.create({
+      data: {
+        userId: req.user!.id,
+        title: input.title,
+        inputSnapshot: JSON.stringify(input.inputSnapshot),
+        resultSnapshot: JSON.stringify(input.resultSnapshot),
+        recommendedPowerKwp: r.recommendedPowerKwp,
+        recommendedBatteryKwh: r.recommendedBatteryKwh,
+        systemType: r.systemType,
+        advice: r.advice
+      }
+    });
     res.status(201).json({ system: map(row) });
   } catch (err) { next(err); }
 });
 
-systemsRouter.put('/:id', (req, res, next) => {
+systemsRouter.put('/:id', async (req, res, next) => {
   try {
     const input = systemSchema.parse(req.body);
     const r = input.resultSnapshot;
-    db.prepare('UPDATE saved_systems SET title=?, input_snapshot=?, result_snapshot=?, recommended_power_kwp=?, recommended_battery_kwh=?, system_type=?, advice=?, updated_at=CURRENT_TIMESTAMP WHERE id=? AND user_id=?').run(input.title, JSON.stringify(input.inputSnapshot), JSON.stringify(input.resultSnapshot), r.recommendedPowerKwp, r.recommendedBatteryKwh, r.systemType, r.advice, req.params.id, req.user!.id);
-    const row = db.prepare('SELECT * FROM saved_systems WHERE id = ? AND user_id = ?').get(req.params.id, req.user!.id) as unknown as SavedSystemRecord;
+    const existing = await prisma.savedSystem.findFirst({ where: { id: Number(req.params.id), userId: req.user!.id } });
+    if (!existing) return res.status(404).json({ message: 'Сценарият не е намерен.' });
+    const row = await prisma.savedSystem.update({
+      where: { id: existing.id },
+      data: {
+        title: input.title,
+        inputSnapshot: JSON.stringify(input.inputSnapshot),
+        resultSnapshot: JSON.stringify(input.resultSnapshot),
+        recommendedPowerKwp: r.recommendedPowerKwp,
+        recommendedBatteryKwh: r.recommendedBatteryKwh,
+        systemType: r.systemType,
+        advice: r.advice
+      }
+    });
     res.json({ system: map(row) });
   } catch (err) { next(err); }
 });
 
-systemsRouter.delete('/:id', (req, res) => {
-  db.prepare('DELETE FROM saved_systems WHERE id = ? AND user_id = ?').run(req.params.id, req.user!.id);
+systemsRouter.delete('/:id', async (req, res) => {
+  await prisma.savedSystem.deleteMany({ where: { id: Number(req.params.id), userId: req.user!.id } });
   res.json({ ok: true });
 });

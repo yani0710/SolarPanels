@@ -15,7 +15,7 @@ export function FAQ() {
   return (
     <div className="grid gap-3">
       {items.map(([q, a], index) => (
-        <div key={q} className="rounded-[1.3rem] border border-white/12 bg-white/[0.055] shadow-card backdrop-blur-xl">
+        <div key={q} className="rounded-lg border border-white/12 bg-white/[0.055] shadow-card backdrop-blur-xl">
           <button onClick={() => setOpen(open === index ? -1 : index)} className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left font-black text-white">
             {q}
             <ChevronDown className={`shrink-0 text-cyan transition ${open === index ? 'rotate-180' : ''}`} />

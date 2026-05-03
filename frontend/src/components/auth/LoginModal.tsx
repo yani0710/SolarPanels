@@ -7,13 +7,13 @@ export function LoginModal({ open, onClose, onSwitch }: { open: boolean; onClose
   const { login } = useAuth();
   const [error, setError] = useState('');
   if (!open) return null;
-  return <AuthShell title="Вход" onClose={onClose}>{error && <p className="rounded-xl border border-danger/30 bg-danger/12 p-3 text-sm text-red-100">{error}</p>}<form className="mt-4 grid gap-3" onSubmit={async (e) => { e.preventDefault(); const fd = new FormData(e.currentTarget); try { await login(String(fd.get('email')), String(fd.get('password'))); onClose(); } catch (err) { setError(err instanceof Error ? err.message : 'Опитай отново.'); } }}><input name="email" type="email" placeholder="Email" className="premium-input px-3 py-3" /><input name="password" type="password" placeholder="Парола" className="premium-input px-3 py-3" /><button className="premium-button bg-gradient-to-r from-mint to-cyan text-navy">Вход</button></form><button onClick={onSwitch} className="mt-3 text-sm font-bold text-mint">Нямаш профил? Регистрация</button></AuthShell>;
+  return <AuthShell title="Вход" onClose={onClose}>{error && <p className="rounded-lg border border-danger/30 bg-danger/12 p-3 text-sm text-red-100">{error}</p>}<form className="mt-4 grid gap-3" onSubmit={async (e) => { e.preventDefault(); const fd = new FormData(e.currentTarget); try { await login(String(fd.get('email')), String(fd.get('password'))); onClose(); } catch (err) { setError(err instanceof Error ? err.message : 'Опитай отново.'); } }}><input name="email" type="email" placeholder="Email" className="premium-input px-3 py-3" /><input name="password" type="password" placeholder="Парола" className="premium-input px-3 py-3" /><button className="premium-button bg-gradient-to-r from-mint to-cyan text-navy">Вход</button></form><button onClick={onSwitch} className="mt-3 text-sm font-bold text-mint">Нямаш профил? Регистрация</button></AuthShell>;
 }
 
 export function AuthShell({ title, children, onClose }: { title: string; children: React.ReactNode; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-[90] grid place-items-center bg-navy/75 p-4 backdrop-blur-xl">
-      <div className="grid w-full max-w-3xl overflow-hidden rounded-[1.75rem] border border-white/12 bg-[#071a2f] shadow-2xl md:grid-cols-[0.9fr_1.1fr]">
+      <div className="grid w-full max-w-3xl overflow-hidden rounded-lg border border-white/12 bg-[#07111d] shadow-2xl md:grid-cols-[0.9fr_1.1fr]">
         <div className="hidden border-r border-white/10 bg-mint/10 p-6 md:block">
           <div className="text-sm font-black uppercase tracking-[0.18em] text-mint">SolarWise profile</div>
           <h2 className="mt-4 text-3xl font-black text-white">Запазвай системи и сравнявай сценарии.</h2>
@@ -22,7 +22,7 @@ export function AuthShell({ title, children, onClose }: { title: string; childre
           </div>
         </div>
         <div className="p-6">
-          <button className="float-right text-white" onClick={onClose} aria-label="Затвори"><X /></button>
+          <button className="float-right grid h-9 w-9 place-items-center rounded-md border border-white/10 bg-white/8 text-white" onClick={onClose} aria-label="Затвори"><X size={18} /></button>
           <h2 className="text-2xl font-black text-white">{title}</h2>
           {children}
         </div>

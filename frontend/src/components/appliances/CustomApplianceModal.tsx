@@ -17,7 +17,7 @@ export function CustomApplianceModal({ open, onClose, onCreate, onRequireRegiste
     return (
       <Modal onClose={onClose}>
         <div className="grid gap-5 md:grid-cols-[0.8fr_1.2fr]">
-          <div className="rounded-[1.4rem] border border-mint/20 bg-mint/10 p-5">
+          <div className="rounded-lg border border-mint/20 bg-mint/10 p-5">
             <BatteryCharging className="text-mint" />
             <h3 className="mt-4 text-2xl font-black text-white">Запази собствени уреди</h3>
             <p className="mt-2 leading-7 text-muted">Създай безплатен профил, за да пазиш свои уреди и да ги използваш в различни соларни сценарии.</p>
@@ -36,7 +36,7 @@ export function CustomApplianceModal({ open, onClose, onCreate, onRequireRegiste
     <Modal onClose={onClose}>
       <h3 className="text-2xl font-black text-white">Нов собствен уред</h3>
       <p className="mt-2 text-sm leading-6 text-muted">Попълни това, което знаеш. Ако не си сигурен за мощността, въведи приблизителна стойност и избери “приблизително”.</p>
-      {error && <p className="mt-3 rounded-2xl border border-danger/30 bg-danger/12 p-3 text-sm text-red-100">{error}</p>}
+      {error && <p className="mt-3 rounded-lg border border-danger/30 bg-danger/12 p-3 text-sm text-red-100">{error}</p>}
       <form
         className="mt-4 grid max-h-[72vh] gap-3 overflow-auto pr-1"
         onSubmit={async (event) => {
@@ -102,10 +102,10 @@ export function CustomApplianceModal({ open, onClose, onCreate, onRequireRegiste
             ['daily', 'Всеки ден'], ['weekdays', 'Делнични дни'], ['weekends', 'Уикенд'], ['seasonal', 'Сезонно'], ['varies', 'Различно'], ['unknown', 'Не знам']
           ]} />
         </div>
-        <label className="flex min-h-11 items-center gap-2 rounded-2xl border border-white/12 bg-white/8 px-3 text-sm font-semibold text-slate-200">
+        <label className="flex min-h-11 items-center gap-2 rounded-md border border-white/12 bg-white/8 px-3 text-sm font-semibold text-slate-200">
           <input type="checkbox" name="isCritical" /> Критичен при спиране на тока
         </label>
-        <label className="flex min-h-11 items-center gap-2 rounded-2xl border border-white/12 bg-white/8 px-3 text-sm font-semibold text-slate-200">
+        <label className="flex min-h-11 items-center gap-2 rounded-md border border-white/12 bg-white/8 px-3 text-sm font-semibold text-slate-200">
           <input type="checkbox" name="highStartLoad" /> Висок стартов ток
         </label>
         <label>
@@ -121,8 +121,8 @@ export function CustomApplianceModal({ open, onClose, onCreate, onRequireRegiste
 function Modal({ children, onClose }: { children: React.ReactNode; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-[80] grid place-items-center bg-navy/70 p-4 backdrop-blur-xl">
-      <motion.div initial={{ opacity: 0, y: 18, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="mobile-card w-full max-w-3xl border border-white/12 bg-[#071a2f] p-5 shadow-2xl sm:p-6">
-        <button className="float-right grid h-10 w-10 place-items-center rounded-full border border-white/12 bg-white/8 text-white" onClick={onClose} aria-label="Затвори"><X /></button>
+      <motion.div initial={{ opacity: 0, y: 18, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="mobile-card w-full max-w-3xl border border-white/12 bg-[#07111d] p-5 shadow-2xl sm:p-6">
+        <button className="float-right grid h-10 w-10 place-items-center rounded-md border border-white/12 bg-white/8 text-white" onClick={onClose} aria-label="Затвори"><X /></button>
         {children}
       </motion.div>
     </div>

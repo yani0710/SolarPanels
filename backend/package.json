@@ -5,16 +5,21 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc",
+    "build": "prisma generate --schema prisma/schema.prisma && tsc",
     "typecheck": "tsc --noEmit",
+    "prisma:generate": "prisma generate --schema prisma/schema.prisma",
     "start": "node dist/server.js"
   },
   "dependencies": {
+    "@prisma/adapter-better-sqlite3": "^7.8.0",
+    "@prisma/client": "^7.8.0",
     "bcryptjs": "^3.0.2",
+    "better-sqlite3": "^12.9.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
+    "prisma": "^7.8.0",
     "zod": "^4.1.12"
   },
   "devDependencies": {

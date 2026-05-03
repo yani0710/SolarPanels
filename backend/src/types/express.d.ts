@@ -1,9 +1,9 @@
-import type { UserRecord } from '../db/models.js';
+import type { User } from '@prisma/client';
 
 declare global {
   namespace Express {
     interface Request {
-      user?: UserRecord;
+      user?: User;
     }
   }
 }

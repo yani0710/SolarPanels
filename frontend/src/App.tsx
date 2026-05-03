@@ -17,6 +17,8 @@ import { DayNightChart } from './components/charts/DayNightChart';
 import { ScenarioChart } from './components/charts/ScenarioChart';
 import { LoginModal } from './components/auth/LoginModal';
 import { RegisterModal } from './components/auth/RegisterModal';
+import { SolarAssistant } from './components/assistant/SolarAssistant';
+import { UserProfile } from './components/dashboard/UserProfile';
 import { SavedSystems } from './components/dashboard/SavedSystems';
 import { SavedAppliances } from './components/dashboard/SavedAppliances';
 import { FAQ } from './components/education/FAQ';
@@ -27,6 +29,7 @@ import type { DetailedAssessmentInput, QuickAssessmentInput, RecommendationResul
 function AppInner() {
   const { user } = useAuth();
   const [authMode, setAuthMode] = useState<'login' | 'register' | null>(null);
+  const [profileOpen, setProfileOpen] = useState(false);
   const [savedRefreshKey, setSavedRefreshKey] = useState(0);
   const [pendingSaveAfterAuth, setPendingSaveAfterAuth] = useState(false);
   const [mode, setMode] = useState<'quick' | 'detailed'>('quick');
@@ -72,7 +75,7 @@ function AppInner() {
   return (
     <div className="min-h-screen text-white">
       <EnergyBackground />
-      <Navbar onAuth={setAuthMode} />
+      <Navbar onAuth={setAuthMode} onProfile={() => setProfileOpen(true)} />
       <Hero />
 
       <Section id="value">
@@ -141,6 +144,8 @@ function AppInner() {
       </Section>
 
       <Footer />
+      <UserProfile isOpen={profileOpen} onClose={() => setProfileOpen(false)} onNewAppliance={() => setSavedRefreshKey(k => k + 1)} />
+      <SolarAssistant onAuth={setAuthMode} onNewAppliance={() => setSavedRefreshKey(k => k + 1)} />
       <LoginModal open={authMode === 'login'} onClose={() => setAuthMode(null)} onSwitch={() => setAuthMode('register')} />
       <RegisterModal open={authMode === 'register'} onClose={() => setAuthMode(null)} onSwitch={() => setAuthMode('login')} />
     </div>

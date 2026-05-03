@@ -31,14 +31,14 @@ export function ModeSelector({ mode, onChange }: { mode: 'quick' | 'detailed'; o
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: index * 0.08 }}
-            whileHover={{ y: -4, rotateX: 1.5, rotateY: selected ? 0 : -1.5 }}
+            whileHover={{ y: -3 }}
             type="button"
             onClick={() => onChange(item.id)}
-            className={`relative overflow-hidden rounded-[1.6rem] border p-5 text-left transition sm:p-6 ${selected ? 'border-mint/70 bg-mint/10 shadow-glow' : 'border-white/12 bg-white/[0.055] hover:border-cyan/40'}`}
+            className={`relative overflow-hidden rounded-lg border p-5 text-left transition sm:p-6 ${selected ? 'border-mint/70 bg-mint/10 shadow-glow' : 'border-white/12 bg-white/[0.055] hover:border-cyan/40 hover:bg-white/[0.075]'}`}
           >
-            <div className="absolute right-0 top-0 h-32 w-32 rounded-full bg-cyan/10 blur-3xl" />
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan/40 to-transparent" />
             <div className="relative flex items-start gap-4">
-              <span className={`grid h-14 w-14 shrink-0 place-items-center rounded-2xl ${selected ? 'bg-mint text-navy' : 'bg-white/8 text-cyan'}`}>
+              <span className={`grid h-14 w-14 shrink-0 place-items-center rounded-md ${selected ? 'bg-mint text-navy' : 'bg-white/8 text-cyan'}`}>
                 <Icon size={24} />
               </span>
               <div>

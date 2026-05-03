@@ -80,14 +80,14 @@ export function QuickAssessment({ onResult }: { onResult: (input: QuickAssessmen
 
           {step === 1 && (
             <Panel title="Колко е средната месечна сметка?" hint="Ако не знаеш, ще използваме разумна средна стойност според типа обект.">
-              <div className="rounded-[1.4rem] border border-white/12 bg-white/[0.055] p-4">
+              <div className="rounded-lg border border-white/12 bg-white/[0.055] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,.06)]">
                 <input type="range" min="50" max="700" value={monthlyBillBgn} onChange={(e) => { setMonthlyBillBgn(Number(e.target.value)); setBillKnown(true); }} className="w-full accent-emerald-400" />
                 <div className="mt-4 flex items-end justify-between gap-3">
                   <div className="text-4xl font-black text-white">{billKnown ? monthlyBillBgn : defaultBills[objectType]} лв</div>
                   <div className="text-sm font-semibold text-muted">ориентир</div>
                 </div>
               </div>
-              <button type="button" onClick={() => setBillKnown(false)} className={`mt-3 rounded-full border px-4 py-2 text-sm font-bold transition ${!billKnown ? 'border-mint bg-mint/15 text-mint' : 'border-white/12 bg-white/6 text-muted'}`}>Не знам, използвай средна стойност</button>
+              <button type="button" onClick={() => setBillKnown(false)} className={`mt-3 rounded-md border px-4 py-2 text-sm font-bold transition ${!billKnown ? 'border-mint bg-mint/15 text-mint' : 'border-white/12 bg-white/6 text-muted hover:text-white'}`}>Не знам, използвай средна стойност</button>
             </Panel>
           )}
 
@@ -134,7 +134,7 @@ function ChipGrid({ value, options, onChange }: { value: string; options: Array<
       {options.map(([id, label]) => {
         const active = value === id;
         return (
-          <button type="button" key={id} onClick={() => onChange(id)} className={`flex min-h-14 items-center justify-between gap-3 rounded-2xl border px-4 py-3 text-left text-sm font-bold transition ${active ? 'border-mint bg-mint/14 text-white shadow-glow' : 'border-white/12 bg-white/[0.055] text-slate-300 hover:border-cyan/50 hover:text-white'}`}>
+          <button type="button" key={id} onClick={() => onChange(id)} className={`flex min-h-14 items-center justify-between gap-3 rounded-md border px-4 py-3 text-left text-sm font-bold transition ${active ? 'border-mint bg-mint/14 text-white shadow-glow' : 'border-white/12 bg-white/[0.055] text-slate-300 hover:border-cyan/50 hover:bg-white/[0.075] hover:text-white'}`}>
             {label}
             {active && <Check size={17} className="text-mint" />}
           </button>
