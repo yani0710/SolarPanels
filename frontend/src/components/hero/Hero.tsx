@@ -1,5 +1,6 @@
 import { ArrowRight, BatteryCharging, CheckCircle2, Gauge, MapPin, SlidersHorizontal, Sparkles, SunMedium } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { HeroVisual } from './HeroVisual';
 
 const badges = ['Без технически знания', 'С резултат за минути', 'Честна препоръка', 'Пресети за уреди'];
@@ -29,12 +30,12 @@ export function Hero() {
 
           {/* CTA buttons */}
           <div className="mt-8 grid gap-3 sm:flex sm:flex-row">
-            <a href="#assessment" className="btn-primary">
-              <Gauge size={18} /> Направи бърза оценка <ArrowRight size={18} />
-            </a>
-            <a href="#assessment" className="btn-secondary">
+            <Link to="/byrza-otsenka" className="btn-primary">
+              <Gauge size={18} /> Бърза оценка <ArrowRight size={18} />
+            </Link>
+            <Link to="/detaylna-otsenka" className="btn-secondary">
               <SlidersHorizontal size={18} /> Детайлна оценка
-            </a>
+            </Link>
           </div>
 
           {/* Stats row */}

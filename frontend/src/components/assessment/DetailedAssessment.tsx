@@ -68,7 +68,7 @@ export function DetailedAssessment({ onResult, onRequireRegister }: { onResult: 
 
   return (
     <form onSubmit={(e) => { e.preventDefault(); submit(new FormData(e.currentTarget)); }} className="card overflow-hidden p-4 sm:p-5 md:p-7">
-      <Stepper steps={steps} current={step} />
+      <Stepper steps={steps} current={step} onNavigate={setStep} />
       <div className="grid gap-7 xl:grid-cols-[1fr_360px]">
         <div className="min-w-0">
           <AnimatePresence mode="wait">

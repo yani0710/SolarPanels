@@ -5,7 +5,7 @@ import { BatteryRecommendation } from './BatteryRecommendation';
 import { SystemTypeRecommendation } from './SystemTypeRecommendation';
 import { ConfidenceScore } from './ConfidenceScore';
 
-export function ResultCards({ result, onSave }: { result: RecommendationResult; onSave: () => void }) {
+export function ResultCards({ result, onSave }: { result: RecommendationResult; onSave?: () => void }) {
   return (
     <div className="grid min-w-0 gap-4 lg:grid-cols-5">
       {/* Main kWp card — spans 3 of 5 columns on desktop */}
@@ -22,9 +22,11 @@ export function ResultCards({ result, onSave }: { result: RecommendationResult; 
         </div>
         <p className="mt-3 text-sm leading-6 text-muted">Ориентировъчна мощност за твоето потребление и локални слънчеви условия.</p>
         <div className="mt-5"><ConfidenceScore result={result} /></div>
-        <button onClick={onSave} className="btn-primary mt-5 w-full sm:w-auto">
-          <Save size={16} /> Запази резултата
-        </button>
+        {onSave && (
+          <button onClick={onSave} className="btn-primary mt-5 w-full sm:w-auto">
+            <Save size={16} /> Запази резултата
+          </button>
+        )}
       </motion.div>
 
       {/* Battery card — 2 of 5 columns */}
