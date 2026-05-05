@@ -2,16 +2,18 @@ import { DEFAULT_ASSUMPTIONS } from '../data/defaultAssumptions';
 import type { ApplianceInput, UsageTime } from '../types';
 
 export function estimateConsumptionFromBill(monthlyBillBgn: number, pricePerKwh = DEFAULT_ASSUMPTIONS.pricePerKwhBgn) {
-  return Math.max(0, monthlyBillBgn / pricePerKwh);
+  const effectivePrice = Number.isFinite(pricePerKwh) && pricePerKwh > 0 ? pricePerKwh : DEFAULT_ASSUMPTIONS.pricePerKwhBgn;
+  return Math.max(0, monthlyBillBgn / effectivePrice);
 }
 
 export function calculateApplianceConsumption(appliance: ApplianceInput) {
   const count = appliance.count ?? 1;
-  if (appliance.estimatedKwhPerDay !== undefined) return appliance.estimatedKwhPerDay * count;
-  const wattage = appliance.wattage ?? 120;
-  const hours = appliance.hoursPerDay ?? 2;
-  const days = appliance.daysPerMonth ?? 22;
-  return (wattage * count * hours * days) / 1000 / 30;
+  const safeCount = Number.isFinite(count) ? Math.max(0, count) : 1;
+  if (appliance.estimatedKwhPerDay !== undefined) return Math.max(0, appliance.estimatedKwhPerDay * safeCount);
+  const wattage = Number.isFinite(appliance.wattage) && appliance.wattage > 0 ? appliance.wattage : 120;
+  const hours = Number.isFinite(appliance.hoursPerDay) && appliance.hoursPerDay > 0 ? appliance.hoursPerDay : 2;
+  const days = Number.isFinite(appliance.daysPerMonth) && appliance.daysPerMonth > 0 ? appliance.daysPerMonth : 22;
+  return Math.max(0, (wattage * safeCount * hours * days) / 1000 / 30);
 }
 
 export function calculateTotalConsumption(appliances: ApplianceInput[]) {
