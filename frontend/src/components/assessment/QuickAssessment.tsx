@@ -64,16 +64,16 @@ export function QuickAssessment({ onResult }: { onResult: (input: QuickAssessmen
   };
 
   return (
-    <div className="glass-strong mobile-card p-4 sm:p-5 md:p-7">
-      <Stepper steps={steps} current={step} />
+    <div className="card p-4 sm:p-5 md:p-7">
+      <Stepper steps={steps} current={step} onNavigate={setStep} />
       <AnimatePresence mode="wait">
         <motion.div key={step} initial={{ opacity: 0, x: 18 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -18 }} transition={{ duration: 0.22 }}>
           {step === 0 && (
             <Panel title="Какъв е обектът?" hint="Избери най-близкия вариант. Ако не си сигурен, къща е добра начална база.">
               <ChipGrid value={objectType} onChange={(value) => setObjectType(value as QuickAssessmentInput['objectType'])} options={Object.entries(objectLabels)} />
               <label className="mt-5 block">
-                <span className="mb-2 block text-sm font-bold text-white">Регион</span>
-                <select value={region} onChange={(e) => setRegion(e.target.value)} className="premium-input px-4 py-3">
+                <span className="mb-2 block text-sm font-bold text-heading">Регион</span>
+                <select value={region} onChange={(e) => setRegion(e.target.value)} className="input-field px-4 py-3">
                   {Object.entries(REGION_SOLAR_DATA).map(([id, item]) => <option key={id} value={id}>{item.label}</option>)}
                 </select>
               </label>
@@ -82,14 +82,31 @@ export function QuickAssessment({ onResult }: { onResult: (input: QuickAssessmen
 
           {step === 1 && (
             <Panel title="Колко е средната месечна сметка?" hint="Ако не знаеш, ще използваме разумна средна стойност според типа обект.">
-              <div className="rounded-lg border border-white/12 bg-white/[0.055] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,.06)]">
-                <input type="range" min="50" max="700" value={monthlyBillBgn} onChange={(e) => { setMonthlyBillBgn(Number(e.target.value)); setBillKnown(true); }} className="w-full accent-emerald-400" />
+              <div className="rounded-xl border border-border bg-slate-50 p-4">
+                <input
+                  type="range"
+                  min="50"
+                  max="700"
+                  value={monthlyBillBgn}
+                  onChange={(e) => { setMonthlyBillBgn(Number(e.target.value)); setBillKnown(true); }}
+                  className="w-full accent-green-600"
+                />
                 <div className="mt-4 flex items-end justify-between gap-3">
-                  <div className="text-4xl font-black text-white">{billKnown ? monthlyBillBgn : defaultBills[objectType]} лв</div>
-                  <div className="text-sm font-semibold text-muted">ориентир</div>
+                  <div className="text-4xl font-black text-heading">{billKnown ? monthlyBillBgn : defaultBills[objectType]} <span className="text-xl text-muted">лв</span></div>
+                  <div className="text-sm font-semibold text-muted">на месец</div>
                 </div>
               </div>
-              <button type="button" onClick={() => setBillKnown(false)} className={`mt-3 rounded-md border px-4 py-2 text-sm font-bold transition ${!billKnown ? 'border-mint bg-mint/15 text-mint' : 'border-white/12 bg-white/6 text-muted hover:text-white'}`}>Не знам, използвай средна стойност</button>
+              <button
+                type="button"
+                onClick={() => setBillKnown(false)}
+                className={`mt-3 rounded-xl border px-4 py-2.5 text-sm font-bold transition cursor-pointer ${
+                  !billKnown
+                    ? 'border-energy bg-green-50 text-energy'
+                    : 'border-border bg-white text-muted hover:border-energy hover:text-energy'
+                }`}
+              >
+                Не знам, използвай средна стойност
+              </button>
             </Panel>
           )}
 
@@ -114,11 +131,22 @@ export function QuickAssessment({ onResult }: { onResult: (input: QuickAssessmen
       </AnimatePresence>
 
       <div className="mt-7 grid grid-cols-2 gap-3 sm:flex sm:justify-between">
-        <button type="button" onClick={() => setStep((s) => Math.max(0, s - 1))} className="premium-button border border-white/12 bg-white/6 text-white disabled:opacity-40" disabled={step === 0}><ArrowLeft size={18} /> Назад</button>
+        <button
+          type="button"
+          onClick={() => setStep((s) => Math.max(0, s - 1))}
+          className="btn-secondary disabled:opacity-40"
+          disabled={step === 0}
+        >
+          <ArrowLeft size={18} /> Назад
+        </button>
         {step < steps.length - 1 ? (
-          <button type="button" onClick={() => setStep((s) => s + 1)} className="premium-button bg-white text-navy hover:-translate-y-0.5">Напред <ArrowRight size={18} /></button>
+          <button type="button" onClick={() => setStep((s) => s + 1)} className="btn-secondary">
+            Напред <ArrowRight size={18} />
+          </button>
         ) : (
-          <button type="button" onClick={submit} className="premium-button col-span-2 bg-gradient-to-r from-mint to-cyan text-navy shadow-glow sm:col-span-1"><Sparkles size={18} /> Покажи препоръка</button>
+          <button type="button" onClick={submit} className="btn-primary col-span-2 sm:col-span-1">
+            <Sparkles size={18} /> Покажи препоръка
+          </button>
         )}
       </div>
     </div>
@@ -129,8 +157,11 @@ function Panel({ title, hint, children }: { title: string; hint: string; childre
   return (
     <div>
       <div className="mb-5">
-        <h3 className="text-2xl font-black text-white">{title}</h3>
-        <p className="mt-2 flex gap-2 text-sm leading-6 text-muted"><HelpCircle size={17} className="mt-0.5 shrink-0 text-cyan" />{hint}</p>
+        <h3 className="text-2xl font-black text-heading">{title}</h3>
+        <p className="mt-2 flex gap-2 text-sm leading-6 text-muted">
+          <HelpCircle size={17} className="mt-0.5 shrink-0 text-sky" />
+          {hint}
+        </p>
       </div>
       {children}
     </div>
@@ -143,9 +174,18 @@ function ChipGrid({ value, options, onChange }: { value: string; options: Array<
       {options.map(([id, label]) => {
         const active = value === id;
         return (
-          <button type="button" key={id} onClick={() => onChange(id)} className={`flex min-h-14 items-center justify-between gap-3 rounded-md border px-4 py-3 text-left text-sm font-bold transition ${active ? 'border-mint bg-mint/14 text-white shadow-glow' : 'border-white/12 bg-white/[0.055] text-slate-300 hover:border-cyan/50 hover:bg-white/[0.075] hover:text-white'}`}>
+          <button
+            type="button"
+            key={id}
+            onClick={() => onChange(id)}
+            className={`flex min-h-14 items-center justify-between gap-3 rounded-xl border px-4 py-3 text-left text-sm font-bold transition-all cursor-pointer ${
+              active
+                ? 'border-energy bg-green-50 text-energy shadow-green'
+                : 'border-border bg-white text-slate-700 hover:border-energy hover:bg-green-50 hover:text-energy'
+            }`}
+          >
             {label}
-            {active && <Check size={17} className="text-mint" />}
+            {active && <Check size={17} className="shrink-0 text-energy" />}
           </button>
         );
       })}

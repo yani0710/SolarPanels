@@ -73,24 +73,24 @@ function AppInner() {
   };
 
   return (
-    <div className="min-h-screen text-white">
+    <div className="min-h-screen text-heading">
       <EnergyBackground />
       <Navbar onAuth={setAuthMode} onProfile={() => setProfileOpen(true)} />
       <Hero />
 
       <Section id="value">
         <div className="mb-8 max-w-3xl">
-          <p className="text-sm font-black uppercase tracking-[0.18em] text-mint">Как работи</p>
-          <h2 className="mt-3 text-3xl font-black leading-tight text-white sm:text-4xl">Соларна препоръка без сложни термини.</h2>
+          <p className="text-sm font-black uppercase tracking-[0.18em] text-solar">Как работи</p>
+          <h2 className="mt-3 text-3xl font-black leading-tight text-heading sm:text-4xl">Соларна препоръка без сложни термини.</h2>
           <p className="mt-4 text-base leading-7 text-muted">Бърза оценка, ориентировъчна мощност, батерия, тип система, предупреждения и честен съвет. Профилът отключва сценарии, история и собствени уреди.</p>
         </div>
         <EnergyBasics />
       </Section>
 
-      <Section id="assessment">
+      <Section id="assessment" className="bg-slate-50/60">
         <div className="mb-8">
-          <p className="text-sm font-black uppercase tracking-[0.18em] text-cyan">Assessment</p>
-          <h2 className="mt-3 text-3xl font-black leading-tight text-white sm:text-4xl">Избери режим</h2>
+          <p className="text-sm font-black uppercase tracking-[0.18em] text-energy">Assessment</p>
+          <h2 className="mt-3 text-3xl font-black leading-tight text-heading sm:text-4xl">Избери режим</h2>
           <p className="mt-3 max-w-2xl text-base leading-7 text-muted">Отговори на няколко лесни въпроса. Ако не знаеш нещо, ще използваме разумна средна стойност.</p>
         </div>
         <ModeSelector mode={mode} onChange={setMode} />
@@ -101,8 +101,8 @@ function AppInner() {
         {result ? (
           <div className="space-y-5">
             <div>
-              <p className="text-sm font-black uppercase tracking-[0.18em] text-mint">Energy dashboard</p>
-              <h2 className="mt-3 text-3xl font-black leading-tight text-white sm:text-4xl">Твоята ориентировъчна препоръка</h2>
+              <p className="text-sm font-black uppercase tracking-[0.18em] text-energy">Energy dashboard</p>
+              <h2 className="mt-3 text-3xl font-black leading-tight text-heading sm:text-4xl">Твоята ориентировъчна препоръка</h2>
               <p className="mt-3 text-sm leading-6 text-muted">Това е ориентировъчна препоръка, не окончателна оферта.</p>
             </div>
             <ResultCards result={result} onSave={onSave} />
@@ -116,17 +116,17 @@ function AppInner() {
             <WarningsList warnings={result.warnings} />
           </div>
         ) : (
-          <div className="mobile-card border border-white/12 bg-white/[0.055] p-6 text-center shadow-card backdrop-blur-xl sm:p-8">
-            <h2 className="text-2xl font-black text-white">Резултатът ще се появи тук</h2>
+          <div className="card p-6 text-center sm:p-8">
+            <h2 className="text-2xl font-black text-heading">Резултатът ще се появи тук</h2>
             <p className="mt-2 text-base leading-7 text-muted">Направи бърза или детайлна оценка. Няма нужда да знаеш всичко предварително.</p>
           </div>
         )}
       </Section>
 
-      <Section id="dashboard">
+      <Section id="dashboard" className="bg-slate-50/60">
         <div className="mb-8">
-          <p className="text-sm font-black uppercase tracking-[0.18em] text-cyan">Profile dashboard</p>
-          <h2 className="mt-3 text-3xl font-black leading-tight text-white sm:text-4xl">Запазени системи</h2>
+          <p className="text-sm font-black uppercase tracking-[0.18em] text-sky">Profile dashboard</p>
+          <h2 className="mt-3 text-3xl font-black leading-tight text-heading sm:text-4xl">Запазени системи</h2>
           <p className="mt-3 max-w-2xl text-base leading-7 text-muted">Регистрацията не е бариера. Тя пази сценарии, история и собствени уреди.</p>
         </div>
         <div className="grid min-w-0 gap-5 lg:grid-cols-[1fr_360px]">
@@ -137,8 +137,8 @@ function AppInner() {
 
       <Section id="faq">
         <div className="mb-8">
-          <p className="text-sm font-black uppercase tracking-[0.18em] text-mint">FAQ</p>
-          <h2 className="mt-3 text-3xl font-black leading-tight text-white sm:text-4xl">Кратко и ясно за соларите</h2>
+          <p className="text-sm font-black uppercase tracking-[0.18em] text-solar">FAQ</p>
+          <h2 className="mt-3 text-3xl font-black leading-tight text-heading sm:text-4xl">Кратко и ясно за соларите</h2>
         </div>
         <FAQ />
       </Section>

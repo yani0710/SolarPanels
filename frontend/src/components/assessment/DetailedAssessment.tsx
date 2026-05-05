@@ -28,10 +28,7 @@ export function DetailedAssessment({ onResult, onRequireRegister }: { onResult: 
   const steps = ['Основи', 'Профил', 'Уреди', 'Backup', 'Условия'];
 
   useEffect(() => {
-    if (!user) {
-      setCustomAppliances([]);
-      return;
-    }
+    if (!user) { setCustomAppliances([]); return; }
     listCustomAppliances().then((data) => setCustomAppliances(data.appliances)).catch(() => setCustomAppliances([]));
   }, [user]);
 
@@ -70,7 +67,7 @@ export function DetailedAssessment({ onResult, onRequireRegister }: { onResult: 
   };
 
   return (
-    <form onSubmit={(event) => { event.preventDefault(); submit(new FormData(event.currentTarget)); }} className="glass-strong mobile-card overflow-hidden p-4 sm:p-5 md:p-7">
+    <form onSubmit={(e) => { e.preventDefault(); submit(new FormData(e.currentTarget)); }} className="card overflow-hidden p-4 sm:p-5 md:p-7">
       <Stepper steps={steps} current={step} />
       <div className="grid gap-7 xl:grid-cols-[1fr_360px]">
         <div className="min-w-0">
@@ -93,8 +90,13 @@ export function DetailedAssessment({ onResult, onRequireRegister }: { onResult: 
               {step === 1 && (
                 <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                   {HOUSEHOLD_PROFILES.map((p) => (
-                    <button type="button" key={p.id} onClick={() => { setProfileId(p.id); setAppliances(p.appliances); }} className={`min-h-32 rounded-lg border p-4 text-left transition active:scale-[.99] ${profileId === p.id ? 'border-mint bg-mint/15 shadow-glow' : 'border-white/12 bg-white/[0.055] hover:border-cyan/40 hover:bg-white/[0.075]'}`}>
-                      <div className="font-black text-white">{p.label}</div>
+                    <button
+                      type="button"
+                      key={p.id}
+                      onClick={() => { setProfileId(p.id); setAppliances(p.appliances); }}
+                      className={`min-h-32 rounded-2xl border p-4 text-left transition active:scale-[.99] cursor-pointer ${profileId === p.id ? 'border-energy bg-green-50 shadow-green' : 'card hover:border-energy/50'}`}
+                    >
+                      <div className="font-black text-heading">{p.label}</div>
                       <p className="mt-2 text-sm leading-5 text-muted">{p.description}</p>
                     </button>
                   ))}
@@ -103,13 +105,13 @@ export function DetailedAssessment({ onResult, onRequireRegister }: { onResult: 
 
               {step === 2 && (
                 <div className="grid gap-6">
-                  <div className="rounded-lg border border-white/12 bg-white/[0.055] p-4">
+                  <div className="card p-4">
                     <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
                       <div>
-                        <h3 className="text-lg font-black text-white">Бърз избор по категории</h3>
-                        <p className="mt-1 text-sm leading-6 text-muted">Същата секция като в бързия план — удобна за бързо добавяне. После можеш да добавиш още от подробните presets.</p>
+                        <h3 className="text-lg font-black text-heading">Бърз избор по категории</h3>
+                        <p className="mt-1 text-sm leading-6 text-muted">Същата секция като в бързия план — удобна за бързо добавяне.</p>
                       </div>
-                      <button type="button" onClick={addQuickAppliancesToDetailed} className="premium-button bg-white text-navy hover:-translate-y-0.5">
+                      <button type="button" onClick={addQuickAppliancesToDetailed} className="btn-secondary">
                         Добави към списъка
                       </button>
                     </div>
@@ -122,7 +124,6 @@ export function DetailedAssessment({ onResult, onRequireRegister }: { onResult: 
                       onCustomChange={setSelectedQuickCustom}
                     />
                   </div>
-
                 </div>
               )}
 
@@ -147,31 +148,38 @@ export function DetailedAssessment({ onResult, onRequireRegister }: { onResult: 
             </motion.div>
           </AnimatePresence>
         </div>
-    <div className="min-w-0 xl:sticky xl:top-28 xl:self-start">
-      {summaryVisible ? (
-        <LiveSummary appliances={appliances} onHide={() => setSummaryVisible(false)} />
-      ) : (
-        <div className="hidden xl:block" />
-      )}
-    </div>
+
+        <div className="min-w-0 xl:sticky xl:top-28 xl:self-start">
+          {summaryVisible ? (
+            <LiveSummary appliances={appliances} onHide={() => setSummaryVisible(false)} />
+          ) : (
+            <div className="hidden xl:block" />
+          )}
+        </div>
       </div>
 
-  {!summaryVisible && (
-    <button
-      type="button"
-      onClick={() => setSummaryVisible(true)}
-      className="fixed bottom-5 right-5 z-50 rounded-full border border-white/15 bg-[#0b1320]/95 px-4 py-2 text-sm font-black text-white shadow-card backdrop-blur-2xl transition hover:bg-[#111b2b]"
-    >
-      Покажи Live summary
-    </button>
-  )}
+      {!summaryVisible && (
+        <button
+          type="button"
+          onClick={() => setSummaryVisible(true)}
+          className="fixed bottom-5 right-5 z-50 card rounded-full px-4 py-2 text-sm font-black text-heading shadow-card-md transition hover:shadow-card"
+        >
+          Покажи Live summary
+        </button>
+      )}
 
       <div className="mt-7 grid grid-cols-2 gap-3 sm:flex sm:justify-between">
-        <button type="button" onClick={() => setStep((s) => Math.max(0, s - 1))} className="premium-button border border-white/12 bg-white/6 text-white disabled:opacity-40" disabled={step === 0}><ArrowLeft size={18} /> Назад</button>
+        <button type="button" onClick={() => setStep((s) => Math.max(0, s - 1))} className="btn-secondary disabled:opacity-40" disabled={step === 0}>
+          <ArrowLeft size={18} /> Назад
+        </button>
         {step < steps.length - 1 ? (
-          <button type="button" onClick={() => setStep((s) => s + 1)} className="premium-button bg-white text-navy hover:-translate-y-0.5">Напред <ArrowRight size={18} /></button>
+          <button type="button" onClick={() => setStep((s) => s + 1)} className="btn-secondary">
+            Напред <ArrowRight size={18} />
+          </button>
         ) : (
-          <button className="premium-button col-span-2 bg-gradient-to-r from-mint to-cyan text-navy shadow-glow sm:col-span-1"><Sparkles size={18} /> Покажи детайлен резултат</button>
+          <button className="btn-primary col-span-2 sm:col-span-1">
+            <Sparkles size={18} /> Покажи детайлен резултат
+          </button>
         )}
       </div>
 
@@ -183,9 +191,16 @@ export function DetailedAssessment({ onResult, onRequireRegister }: { onResult: 
 
 function CheckBlock({ title, name, options }: { title: string; name: string; options: Array<[string, string]> }) {
   return (
-    <div className="rounded-lg border border-white/12 bg-white/[0.055] p-4 md:col-span-2">
-      <div className="mb-3 text-sm font-black text-white">{title}</div>
-      <div className="flex flex-wrap gap-2">{options.map(([value, text]) => <label key={value} className="flex min-h-10 items-center gap-2 rounded-md border border-white/12 bg-white/8 px-3 text-sm font-semibold text-slate-200"><input type="checkbox" name={name} value={value} /> {text}</label>)}</div>
+    <div className="rounded-2xl border border-border bg-slate-50 p-4 md:col-span-2">
+      <div className="mb-3 text-sm font-black text-heading">{title}</div>
+      <div className="flex flex-wrap gap-2">
+        {options.map(([value, text]) => (
+          <label key={value} className="flex min-h-10 cursor-pointer items-center gap-2 rounded-xl border border-border bg-white px-3 text-sm font-semibold text-slate-700 hover:border-energy hover:bg-green-50 transition">
+            <input type="checkbox" name={name} value={value} className="accent-green-600" />
+            {text}
+          </label>
+        ))}
+      </div>
     </div>
   );
 }
@@ -201,30 +216,18 @@ function LiveSummary({ appliances, onHide }: { appliances: ApplianceInput[]; onH
   const confidence = unknownCount > 3 ? 'средна/ниска' : appliances.length > 3 ? 'добра' : 'средна';
 
   return (
-    <div className="rounded-lg border border-white/12 bg-[#02050a]/76 p-4 text-white shadow-card backdrop-blur-2xl">
+    <div className="card p-4">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <div className="text-sm font-bold text-cyan">Live summary</div>
+          <div className="text-sm font-bold text-sky">Live summary</div>
           <div className="mt-1 text-xs text-muted">Обновява се според уредите</div>
         </div>
         <div className="flex items-center gap-2">
-          <Gauge className="text-mint" />
-          <button
-            type="button"
-            onClick={onHide}
-            className="grid h-9 w-9 place-items-center rounded-md border border-white/12 bg-white/8 text-slate-300 transition hover:text-white"
-            aria-label="Скрий summary"
-            title="Скрий"
-          >
+          <Gauge className="text-energy" />
+          <button type="button" onClick={onHide} className="grid h-9 w-9 place-items-center rounded-xl border border-border bg-slate-100 text-muted transition hover:text-heading cursor-pointer" aria-label="Скрий summary">
             <X size={16} />
           </button>
-          <button
-            type="button"
-            onClick={() => setCollapsed((value) => !value)}
-            className="grid h-9 w-9 place-items-center rounded-md border border-white/12 bg-white/8 text-slate-300 transition hover:text-white"
-            aria-label={collapsed ? 'Разгъни summary' : 'Минимизирай summary'}
-            title={collapsed ? 'Разгъни' : 'Минимизирай'}
-          >
+          <button type="button" onClick={() => setCollapsed((v) => !v)} className="grid h-9 w-9 place-items-center rounded-xl border border-border bg-slate-100 text-muted transition hover:text-heading cursor-pointer" aria-label={collapsed ? 'Разгъни' : 'Минимизирай'}>
             {collapsed ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
           </button>
         </div>
@@ -242,7 +245,7 @@ function LiveSummary({ appliances, onHide }: { appliances: ApplianceInput[]; onH
             <Metric icon={<ShieldCheck size={15} />} label="Критични" value={`${criticalCount}`} />
             <Metric icon={<BatteryCharging size={15} />} label="Батерия" value={battery} />
           </div>
-          <div className="mt-3 rounded-md border border-white/10 bg-white/8 px-3 py-2 text-sm font-semibold">Увереност: {confidence}</div>
+          <div className="mt-3 rounded-xl border border-border bg-slate-50 px-3 py-2 text-sm font-semibold text-heading">Увереност: {confidence}</div>
         </>
       )}
     </div>
@@ -250,16 +253,21 @@ function LiveSummary({ appliances, onHide }: { appliances: ApplianceInput[]; onH
 }
 
 function Metric({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) {
-  return <div className="rounded-md bg-white/8 p-3"><div className="mb-2 flex items-center gap-2 text-xs text-muted">{icon}{label}</div><div className="font-black text-white">{value}</div></div>;
+  return (
+    <div className="rounded-xl bg-slate-50 border border-border p-3">
+      <div className="mb-2 flex items-center gap-2 text-xs text-muted">{icon}{label}</div>
+      <div className="font-black text-heading">{value}</div>
+    </div>
+  );
 }
 
 function Input({ label, as, options, ...props }: { label: string; name: string; defaultValue?: string; placeholder?: string; as?: 'select'; options?: string[][] }) {
   return (
     <label className="block min-w-0">
-      <span className="mb-2 block text-sm font-bold text-white sm:text-base">{label}</span>
+      <span className="mb-2 block text-sm font-bold text-heading sm:text-base">{label}</span>
       {as === 'select'
-        ? <select {...props} className="premium-input px-4 py-3 text-base">{options?.map(([value, text]) => <option key={value} value={value}>{text}</option>)}</select>
-        : <input {...props} className="premium-input px-4 py-3 text-base" />}
+        ? <select {...props} className="input-field px-4 py-3 text-base">{options?.map(([value, text]) => <option key={value} value={value}>{text}</option>)}</select>
+        : <input {...props} className="input-field px-4 py-3 text-base" />}
     </label>
   );
 }

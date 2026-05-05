@@ -31,25 +31,28 @@ export function ModeSelector({ mode, onChange }: { mode: 'quick' | 'detailed'; o
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: index * 0.08 }}
-            whileHover={{ y: -3 }}
+            whileHover={{ y: -2 }}
             type="button"
             onClick={() => onChange(item.id)}
-            className={`relative overflow-hidden rounded-lg border p-5 text-left transition sm:p-6 ${selected ? 'border-mint/70 bg-mint/10 shadow-glow' : 'border-white/12 bg-white/[0.055] hover:border-cyan/40 hover:bg-white/[0.075]'}`}
+            className={`relative overflow-hidden rounded-2xl border p-5 text-left transition-all sm:p-6 cursor-pointer ${
+              selected
+                ? 'border-energy bg-green-50 shadow-green ring-1 ring-energy/30'
+                : 'card hover:border-energy/40 hover:shadow-card-md'
+            }`}
           >
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan/40 to-transparent" />
-            <div className="relative flex items-start gap-4">
-              <span className={`grid h-14 w-14 shrink-0 place-items-center rounded-md ${selected ? 'bg-mint text-navy' : 'bg-white/8 text-cyan'}`}>
+            <div className="flex items-start gap-4">
+              <span className={`grid h-14 w-14 shrink-0 place-items-center rounded-xl ${selected ? 'bg-energy text-white' : 'bg-slate-100 text-energy'}`}>
                 <Icon size={24} />
               </span>
               <div>
-                <div className="text-xl font-black text-white">{item.title}</div>
+                <div className="text-xl font-black text-heading">{item.title}</div>
                 <p className="mt-2 text-sm leading-6 text-muted">{item.text}</p>
               </div>
             </div>
-            <div className="relative mt-5 grid gap-2 sm:grid-cols-2">
+            <div className="mt-5 grid gap-2 sm:grid-cols-2">
               {item.features.map((feature) => (
-                <span key={feature} className="flex items-center gap-2 text-sm font-semibold text-slate-200">
-                  <CheckCircle2 size={16} className={selected ? 'text-mint' : 'text-cyan'} />
+                <span key={feature} className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                  <CheckCircle2 size={16} className="text-energy" />
                   {feature}
                 </span>
               ))}

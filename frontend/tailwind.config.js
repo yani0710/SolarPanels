@@ -7,23 +7,35 @@ export default {
         xs: '390px'
       },
       colors: {
-        navy: '#06111f',
-        ink: '#e7f8ff',
-        mint: '#35e58b',
-        cyan: '#38bdf8',
-        solar: '#facc15',
-        surface: '#0b253d',
-        muted: '#9fb7c9',
-        warning: '#f59e0b',
-        danger: '#ef4444'
+        // New semantic tokens (light system)
+        solar:   '#F59E0B',  // amber-400 — brand accent, solar
+        energy:  '#16A34A',  // green-600 — CTA, success
+        sky:     '#0EA5E9',  // sky-500   — info blue
+        surface: '#F8FAFC',  // slate-50  — page background
+        heading: '#0F172A',  // slate-900 — primary text
+        muted:   '#64748B',  // slate-500 — secondary text
+        border:  '#E2E8F0',  // slate-200 — borders
+        warning: '#F59E0B',  // amber-400
+        danger:  '#EF4444',  // red-500
+        // Legacy aliases — kept for HeroVisual Three.js labels (do NOT use in new code)
+        mint:    '#16A34A',  // remapped → energy green
+        cyan:    '#0EA5E9',  // remapped → sky blue
+        navy:    '#0F172A',  // remapped → heading dark
+        ink:     '#0F172A',  // remapped → heading dark
       },
       boxShadow: {
-        glow: '0 24px 80px rgba(53, 229, 139, 0.20)',
-        cyan: '0 24px 80px rgba(56, 189, 248, 0.18)',
-        card: '0 24px 70px rgba(0, 0, 0, 0.28)'
+        card:     '0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.05)',
+        'card-md':'0 4px 24px rgba(0,0,0,0.10)',
+        glow:     '0 0 24px rgba(245,158,11,0.25)',  // amber glow
+        green:    '0 4px 20px rgba(22,163,74,0.20)',
+        cyan:     '0 4px 20px rgba(14,165,233,0.18)',
       },
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'Segoe UI', 'sans-serif']
+        sans: ['Plus Jakarta Sans', 'ui-sans-serif', 'system-ui', 'sans-serif']
+      },
+      borderRadius: {
+        '2xl': '1rem',
+        '3xl': '1.5rem',
       }
     }
   },
