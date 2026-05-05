@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Check, HelpCircle, Sparkles } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { ApplianceInput, QuickAssessmentInput, RecommendationResult } from '../../types';
 import { analyzeQuick } from '../../logic/recommendationEngine';
 import { REGION_SOLAR_DATA } from '../../data/regionSolarData';
@@ -22,6 +22,7 @@ const goalLabels = {
 
 export function QuickAssessment({ onResult }: { onResult: (input: QuickAssessmentInput, result: RecommendationResult) => void }) {
   const { user } = useAuth();
+  const pickerRef = useRef<{ getAppliances: () => ApplianceInput[] }>(null);
   const [step, setStep] = useState(0);
   const [objectType, setObjectType] = useState<QuickAssessmentInput['objectType']>('house');
   const [region, setRegion] = useState('unknown');
@@ -46,13 +47,14 @@ export function QuickAssessment({ onResult }: { onResult: (input: QuickAssessmen
 
   const submit = () => {
     const custom = customAppliances.filter((item) => selectedCustom.includes(item.id));
+    const configuredAppliances = pickerRef.current?.getAppliances?.() ?? quickSelectionsToAppliances(applianceSelections);
     const input: QuickAssessmentInput = {
       mode: 'quick',
       objectType,
       region,
       monthlyBillBgn: billKnown ? monthlyBillBgn : defaultBills[objectType],
       billKnown,
-      appliances: [...quickSelectionsToAppliances(applianceSelections), ...custom],
+      appliances: [...configuredAppliances, ...custom],
       usageTime,
       wantsBackup,
       sunCondition,
@@ -93,7 +95,14 @@ export function QuickAssessment({ onResult }: { onResult: (input: QuickAssessmen
 
           {step === 2 && (
             <Panel title="Кои основни уреди използваш?" hint="Изборът помага да преценим вечерния товар и дали батерията има смисъл.">
-              <QuickAppliancePicker selections={applianceSelections} onChange={setApplianceSelections} customAppliances={customAppliances} selectedCustom={selectedCustom} onCustomChange={setSelectedCustom} />
+              <QuickAppliancePicker
+                ref={pickerRef}
+                selections={applianceSelections}
+                onChange={setApplianceSelections}
+                customAppliances={customAppliances}
+                selectedCustom={selectedCustom}
+                onCustomChange={setSelectedCustom}
+              />
             </Panel>
           )}
 

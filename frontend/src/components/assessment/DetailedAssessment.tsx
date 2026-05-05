@@ -1,26 +1,29 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, BatteryCharging, Gauge, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BatteryCharging, ChevronDown, ChevronUp, Gauge, ShieldCheck, Sparkles, X } from 'lucide-react';
 import type React from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { HOUSEHOLD_PROFILES } from '../../data/householdProfiles';
 import { REGION_SOLAR_DATA } from '../../data/regionSolarData';
 import type { ApplianceInput, DetailedAssessmentInput, RecommendationResult } from '../../types';
 import { analyzeDetailed } from '../../logic/recommendationEngine';
 import { listCustomAppliances } from '../../api/appliances';
 import { useAuth } from '../../context/AuthContext';
-import { ApplianceSelector } from '../appliances/ApplianceSelector';
-import { ApplianceList } from '../appliances/ApplianceList';
+import { QuickAppliancePicker } from './QuickAppliancePicker';
 import { CustomApplianceModal } from '../appliances/CustomApplianceModal';
 import { Stepper } from './Stepper';
 import { calculateDayNightSplit, calculateTotalConsumption } from '../../logic/calculations';
 
 export function DetailedAssessment({ onResult, onRequireRegister }: { onResult: (input: DetailedAssessmentInput, result: RecommendationResult) => void; onRequireRegister: () => void }) {
   const { user } = useAuth();
+  const quickPickerRef = useRef<{ getAppliances: () => ApplianceInput[] }>(null);
   const [step, setStep] = useState(0);
   const [profileId, setProfileId] = useState('medium-home');
   const [appliances, setAppliances] = useState<ApplianceInput[]>(HOUSEHOLD_PROFILES.find((p) => p.id === 'medium-home')!.appliances);
   const [customAppliances, setCustomAppliances] = useState<ApplianceInput[]>([]);
+  const [quickSelections, setQuickSelections] = useState<Record<string, string[]>>({});
+  const [selectedQuickCustom, setSelectedQuickCustom] = useState<string[]>([]);
   const [customOpen, setCustomOpen] = useState(false);
+  const [summaryVisible, setSummaryVisible] = useState(true);
   const profile = useMemo(() => HOUSEHOLD_PROFILES.find((p) => p.id === profileId)!, [profileId]);
   const steps = ['Основи', 'Профил', 'Уреди', 'Backup', 'Условия'];
 
@@ -59,6 +62,13 @@ export function DetailedAssessment({ onResult, onRequireRegister }: { onResult: 
     onResult(input, analyzeDetailed(input));
   };
 
+  const addQuickAppliancesToDetailed = () => {
+    const configured = quickPickerRef.current?.getAppliances?.() ?? [];
+    const selectedCustom = customAppliances.filter((item) => selectedQuickCustom.includes(item.id));
+    if (!configured.length && !selectedCustom.length) return;
+    setAppliances((prev) => [...prev, ...configured, ...selectedCustom]);
+  };
+
   return (
     <form onSubmit={(event) => { event.preventDefault(); submit(new FormData(event.currentTarget)); }} className="glass-strong mobile-card overflow-hidden p-4 sm:p-5 md:p-7">
       <Stepper steps={steps} current={step} />
@@ -93,11 +103,26 @@ export function DetailedAssessment({ onResult, onRequireRegister }: { onResult: 
 
               {step === 2 && (
                 <div className="grid gap-6">
-                  <ApplianceSelector selected={appliances} customAppliances={customAppliances} onChange={setAppliances} onCustom={() => setCustomOpen(true)} />
-                  <div>
-                    <h3 className="mb-3 text-lg font-black text-white">Избрани уреди</h3>
-                    <ApplianceList appliances={appliances} onRemove={(id) => setAppliances((items) => items.filter((item) => item.id !== id))} onToggleCritical={(id) => setAppliances((items) => items.map((item) => item.id === id ? { ...item, isCritical: !item.isCritical } : item))} />
+                  <div className="rounded-lg border border-white/12 bg-white/[0.055] p-4">
+                    <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+                      <div>
+                        <h3 className="text-lg font-black text-white">Бърз избор по категории</h3>
+                        <p className="mt-1 text-sm leading-6 text-muted">Същата секция като в бързия план — удобна за бързо добавяне. После можеш да добавиш още от подробните presets.</p>
+                      </div>
+                      <button type="button" onClick={addQuickAppliancesToDetailed} className="premium-button bg-white text-navy hover:-translate-y-0.5">
+                        Добави към списъка
+                      </button>
+                    </div>
+                    <QuickAppliancePicker
+                      ref={quickPickerRef}
+                      selections={quickSelections}
+                      onChange={setQuickSelections}
+                      customAppliances={customAppliances}
+                      selectedCustom={selectedQuickCustom}
+                      onCustomChange={setSelectedQuickCustom}
+                    />
                   </div>
+
                 </div>
               )}
 
@@ -122,10 +147,24 @@ export function DetailedAssessment({ onResult, onRequireRegister }: { onResult: 
             </motion.div>
           </AnimatePresence>
         </div>
-        <div className="min-w-0 xl:sticky xl:top-28 xl:self-start">
-          <LiveSummary appliances={appliances} />
-        </div>
+    <div className="min-w-0 xl:sticky xl:top-28 xl:self-start">
+      {summaryVisible ? (
+        <LiveSummary appliances={appliances} onHide={() => setSummaryVisible(false)} />
+      ) : (
+        <div className="hidden xl:block" />
+      )}
+    </div>
       </div>
+
+  {!summaryVisible && (
+    <button
+      type="button"
+      onClick={() => setSummaryVisible(true)}
+      className="fixed bottom-5 right-5 z-50 rounded-full border border-white/15 bg-[#0b1320]/95 px-4 py-2 text-sm font-black text-white shadow-card backdrop-blur-2xl transition hover:bg-[#111b2b]"
+    >
+      Покажи Live summary
+    </button>
+  )}
 
       <div className="mt-7 grid grid-cols-2 gap-3 sm:flex sm:justify-between">
         <button type="button" onClick={() => setStep((s) => Math.max(0, s - 1))} className="premium-button border border-white/12 bg-white/6 text-white disabled:opacity-40" disabled={step === 0}><ArrowLeft size={18} /> Назад</button>
@@ -151,7 +190,8 @@ function CheckBlock({ title, name, options }: { title: string; name: string; opt
   );
 }
 
-function LiveSummary({ appliances }: { appliances: ApplianceInput[] }) {
+function LiveSummary({ appliances, onHide }: { appliances: ApplianceInput[]; onHide: () => void }) {
+  const [collapsed, setCollapsed] = useState(false);
   const total = calculateTotalConsumption(appliances);
   const split = calculateDayNightSplit(appliances);
   const eveningShare = total.daily > 0 ? Math.round((split.evening / total.daily) * 100) : 0;
@@ -167,15 +207,44 @@ function LiveSummary({ appliances }: { appliances: ApplianceInput[] }) {
           <div className="text-sm font-bold text-cyan">Live summary</div>
           <div className="mt-1 text-xs text-muted">Обновява се според уредите</div>
         </div>
-        <Gauge className="text-mint" />
+        <div className="flex items-center gap-2">
+          <Gauge className="text-mint" />
+          <button
+            type="button"
+            onClick={onHide}
+            className="grid h-9 w-9 place-items-center rounded-md border border-white/12 bg-white/8 text-slate-300 transition hover:text-white"
+            aria-label="Скрий summary"
+            title="Скрий"
+          >
+            <X size={16} />
+          </button>
+          <button
+            type="button"
+            onClick={() => setCollapsed((value) => !value)}
+            className="grid h-9 w-9 place-items-center rounded-md border border-white/12 bg-white/8 text-slate-300 transition hover:text-white"
+            aria-label={collapsed ? 'Разгъни summary' : 'Минимизирай summary'}
+            title={collapsed ? 'Разгъни' : 'Минимизирай'}
+          >
+            {collapsed ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
+          </button>
+        </div>
       </div>
-      <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
-        <Metric icon={<Sparkles size={15} />} label="Общо" value={`${Math.round(total.monthly)} kWh/мес.`} />
-        <Metric icon={<BatteryCharging size={15} />} label="Вечер" value={`${eveningShare}%`} />
-        <Metric icon={<ShieldCheck size={15} />} label="Критични" value={`${criticalCount}`} />
-        <Metric icon={<BatteryCharging size={15} />} label="Батерия" value={battery} />
-      </div>
-      <div className="mt-3 rounded-md border border-white/10 bg-white/8 px-3 py-2 text-sm font-semibold">Увереност: {confidence}</div>
+      {collapsed ? (
+        <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
+          <Metric icon={<Sparkles size={15} />} label="Общо" value={`${Math.round(total.monthly)} kWh/мес.`} />
+          <Metric icon={<BatteryCharging size={15} />} label="Вечер" value={`${eveningShare}%`} />
+        </div>
+      ) : (
+        <>
+          <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
+            <Metric icon={<Sparkles size={15} />} label="Общо" value={`${Math.round(total.monthly)} kWh/мес.`} />
+            <Metric icon={<BatteryCharging size={15} />} label="Вечер" value={`${eveningShare}%`} />
+            <Metric icon={<ShieldCheck size={15} />} label="Критични" value={`${criticalCount}`} />
+            <Metric icon={<BatteryCharging size={15} />} label="Батерия" value={battery} />
+          </div>
+          <div className="mt-3 rounded-md border border-white/10 bg-white/8 px-3 py-2 text-sm font-semibold">Увереност: {confidence}</div>
+        </>
+      )}
     </div>
   );
 }
