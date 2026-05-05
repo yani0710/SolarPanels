@@ -1,4 +1,5 @@
 import { ChevronDown } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 
 const items = [
@@ -15,12 +16,29 @@ export function FAQ() {
   return (
     <div className="grid gap-3">
       {items.map(([q, a], index) => (
-        <div key={q} className="rounded-lg border border-white/12 bg-white/[0.055] shadow-card backdrop-blur-xl">
-          <button onClick={() => setOpen(open === index ? -1 : index)} className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left font-black text-white">
+        <div key={q} className="card overflow-hidden">
+          <button
+            onClick={() => setOpen(open === index ? -1 : index)}
+            className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left font-black text-heading hover:bg-slate-50 transition-colors cursor-pointer"
+          >
             {q}
-            <ChevronDown className={`shrink-0 text-cyan transition ${open === index ? 'rotate-180' : ''}`} />
+            <ChevronDown
+              size={20}
+              className={`shrink-0 text-slate-400 transition-transform duration-200 ${open === index ? 'rotate-180' : ''}`}
+            />
           </button>
-          {open === index && <p className="px-5 pb-5 leading-7 text-muted">{a}</p>}
+          <AnimatePresence>
+            {open === index && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <p className="border-t border-border px-5 pb-5 pt-4 leading-7 text-muted">{a}</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       ))}
     </div>

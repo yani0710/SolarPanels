@@ -17,15 +17,15 @@ export function CustomApplianceModal({ open, onClose, onCreate, onRequireRegiste
     return (
       <Modal onClose={onClose}>
         <div className="grid gap-5 md:grid-cols-[0.8fr_1.2fr]">
-          <div className="rounded-lg border border-mint/20 bg-mint/10 p-5">
-            <BatteryCharging className="text-mint" />
-            <h3 className="mt-4 text-2xl font-black text-white">Запази собствени уреди</h3>
+          <div className="rounded-2xl border border-green-200 bg-green-50 p-5">
+            <BatteryCharging className="text-energy" />
+            <h3 className="mt-4 text-2xl font-black text-heading">Запази собствени уреди</h3>
             <p className="mt-2 leading-7 text-muted">Създай безплатен профил, за да пазиш свои уреди и да ги използваш в различни соларни сценарии.</p>
           </div>
           <div>
-            <h3 className="text-xl font-black text-white">Нужен е профил</h3>
+            <h3 className="text-xl font-black text-heading">Нужен е профил</h3>
             <p className="mt-2 leading-7 text-muted">Собствените уреди се пазят към акаунта ти, за да не изчезват след refresh.</p>
-            <button onClick={() => { onClose(); onRequireRegister(); }} className="premium-button mt-5 bg-gradient-to-r from-mint to-cyan text-navy shadow-glow">Създай безплатен профил</button>
+            <button onClick={() => { onClose(); onRequireRegister(); }} className="btn-primary mt-5">Създай безплатен профил</button>
           </div>
         </div>
       </Modal>
@@ -34,14 +34,14 @@ export function CustomApplianceModal({ open, onClose, onCreate, onRequireRegiste
 
   return (
     <Modal onClose={onClose}>
-      <h3 className="text-2xl font-black text-white">Нов собствен уред</h3>
-      <p className="mt-2 text-sm leading-6 text-muted">Попълни това, което знаеш. Ако не си сигурен за мощността, въведи приблизителна стойност и избери “приблизително”.</p>
-      {error && <p className="mt-3 rounded-lg border border-danger/30 bg-danger/12 p-3 text-sm text-red-100">{error}</p>}
+      <h3 className="text-2xl font-black text-heading">Нов собствен уред</h3>
+      <p className="mt-2 text-sm leading-6 text-muted">Попълни това, което знаеш. Ако не си сигурен за мощността, въведи приблизителна стойност.</p>
+      {error && <p className="mt-3 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</p>}
       <form
         className="mt-4 grid max-h-[72vh] gap-3 overflow-auto pr-1"
-        onSubmit={async (event) => {
-          event.preventDefault();
-          const data = new FormData(event.currentTarget);
+        onSubmit={async (e) => {
+          e.preventDefault();
+          const data = new FormData(e.currentTarget);
           setSaving(true);
           setError('');
           try {
@@ -102,17 +102,19 @@ export function CustomApplianceModal({ open, onClose, onCreate, onRequireRegiste
             ['daily', 'Всеки ден'], ['weekdays', 'Делнични дни'], ['weekends', 'Уикенд'], ['seasonal', 'Сезонно'], ['varies', 'Различно'], ['unknown', 'Не знам']
           ]} />
         </div>
-        <label className="flex min-h-11 items-center gap-2 rounded-md border border-white/12 bg-white/8 px-3 text-sm font-semibold text-slate-200">
-          <input type="checkbox" name="isCritical" /> Критичен при спиране на тока
+        <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border border-border bg-slate-50 px-3 text-sm font-semibold text-slate-700 hover:border-energy hover:bg-green-50 transition">
+          <input type="checkbox" name="isCritical" className="accent-green-600" /> Критичен при спиране на тока
         </label>
-        <label className="flex min-h-11 items-center gap-2 rounded-md border border-white/12 bg-white/8 px-3 text-sm font-semibold text-slate-200">
-          <input type="checkbox" name="highStartLoad" /> Висок стартов ток
+        <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border border-border bg-slate-50 px-3 text-sm font-semibold text-slate-700 hover:border-energy hover:bg-green-50 transition">
+          <input type="checkbox" name="highStartLoad" className="accent-green-600" /> Висок стартов ток
         </label>
         <label>
-          <span className="mb-1 block text-sm font-bold text-white">Бележка</span>
-          <textarea name="note" rows={3} className="premium-input px-3 py-2" placeholder="Напр. работи само през зимата" />
+          <span className="mb-1 block text-sm font-bold text-heading">Бележка</span>
+          <textarea name="note" rows={3} className="input-field px-3 py-2" placeholder="Напр. работи само през зимата" />
         </label>
-        <button disabled={saving} className="premium-button bg-gradient-to-r from-mint to-cyan text-navy shadow-glow disabled:opacity-60"><Save size={17} />{saving ? 'Запазване...' : 'Запази уред'}</button>
+        <button disabled={saving} className="btn-primary disabled:opacity-60">
+          <Save size={17} />{saving ? 'Запазване...' : 'Запази уред'}
+        </button>
       </form>
     </Modal>
   );
@@ -120,9 +122,9 @@ export function CustomApplianceModal({ open, onClose, onCreate, onRequireRegiste
 
 function Modal({ children, onClose }: { children: React.ReactNode; onClose: () => void }) {
   return (
-    <div className="fixed inset-0 z-[80] grid place-items-center bg-navy/70 p-4 backdrop-blur-xl">
-      <motion.div initial={{ opacity: 0, y: 18, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="mobile-card w-full max-w-3xl border border-white/12 bg-[#07111d] p-5 shadow-2xl sm:p-6">
-        <button className="float-right grid h-10 w-10 place-items-center rounded-md border border-white/12 bg-white/8 text-white" onClick={onClose} aria-label="Затвори"><X /></button>
+    <div className="fixed inset-0 z-[80] grid place-items-center bg-slate-900/60 p-4 backdrop-blur-sm">
+      <motion.div initial={{ opacity: 0, y: 18, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="card w-full max-w-3xl p-5 shadow-2xl sm:p-6">
+        <button className="float-right grid h-10 w-10 place-items-center rounded-xl border border-border bg-slate-100 text-slate-600 hover:bg-slate-200 transition cursor-pointer" onClick={onClose} aria-label="Затвори"><X /></button>
         {children}
       </motion.div>
     </div>
@@ -131,9 +133,21 @@ function Modal({ children, onClose }: { children: React.ReactNode; onClose: () =
 
 function Input(props: React.InputHTMLAttributes<HTMLInputElement> & { label: string }) {
   const { label, ...inputProps } = props;
-  return <label><span className="mb-1 block text-sm font-bold text-white">{label}</span><input {...inputProps} className="premium-input px-3 py-2" /></label>;
+  return (
+    <label>
+      <span className="mb-1 block text-sm font-bold text-heading">{label}</span>
+      <input {...inputProps} className="input-field px-3 py-2" />
+    </label>
+  );
 }
 
 function Select({ label, options, ...props }: React.SelectHTMLAttributes<HTMLSelectElement> & { label: string; options: Array<[string, string]> }) {
-  return <label><span className="mb-1 block text-sm font-bold text-white">{label}</span><select {...props} className="premium-input px-3 py-2">{options.map(([value, text]) => <option key={value} value={value}>{text}</option>)}</select></label>;
+  return (
+    <label>
+      <span className="mb-1 block text-sm font-bold text-heading">{label}</span>
+      <select {...props} className="input-field px-3 py-2">
+        {options.map(([value, text]) => <option key={value} value={value}>{text}</option>)}
+      </select>
+    </label>
+  );
 }

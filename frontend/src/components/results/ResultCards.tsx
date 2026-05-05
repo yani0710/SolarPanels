@@ -7,19 +7,35 @@ import { ConfidenceScore } from './ConfidenceScore';
 
 export function ResultCards({ result, onSave }: { result: RecommendationResult; onSave: () => void }) {
   return (
-    <div className="grid min-w-0 gap-4 lg:grid-cols-3">
-      <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mobile-card min-w-0 border border-white/12 bg-white/[0.065] p-5 shadow-card backdrop-blur-xl">
-        <SolarPanel className="text-mint" />
-        <h3 className="mt-3 text-lg font-black text-white sm:text-xl">Нужна мощност</h3>
-        <div className="mt-3 text-4xl font-black text-white sm:text-5xl">{result.recommendedPowerRange} <span className="text-xl text-mint">kWp</span></div>
+    <div className="grid min-w-0 gap-4 lg:grid-cols-5">
+      {/* Main kWp card — spans 3 of 5 columns on desktop */}
+      <motion.div
+        initial={{ opacity: 0, y: 18 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="card min-w-0 p-5 lg:col-span-3"
+      >
+        <SolarPanel className="text-energy" />
+        <h3 className="mt-3 text-lg font-black text-heading sm:text-xl">Нужна мощност</h3>
+        <div className="mt-3 text-4xl font-black text-heading sm:text-5xl">
+          {result.recommendedPowerRange} <span className="text-xl text-energy">kWp</span>
+        </div>
         <p className="mt-3 text-sm leading-6 text-muted">Ориентировъчна мощност за твоето потребление и локални слънчеви условия.</p>
         <div className="mt-5"><ConfidenceScore result={result} /></div>
-        <button onClick={onSave} className="premium-button mt-5 w-full bg-gradient-to-r from-mint to-cyan text-navy shadow-glow sm:w-auto">
+        <button onClick={onSave} className="btn-primary mt-5 w-full sm:w-auto">
           <Save size={16} /> Запази резултата
         </button>
       </motion.div>
-      <BatteryRecommendation result={result} />
-      <SystemTypeRecommendation result={result} />
+
+      {/* Battery card — 2 of 5 columns */}
+      <div className="min-w-0 lg:col-span-2">
+        <BatteryRecommendation result={result} />
+      </div>
+
+      {/* System type — full width */}
+      <div className="min-w-0 lg:col-span-5">
+        <SystemTypeRecommendation result={result} />
+      </div>
     </div>
   );
 }
