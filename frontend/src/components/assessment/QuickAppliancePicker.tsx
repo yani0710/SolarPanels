@@ -1,6 +1,6 @@
 import { Car, Check, ChevronDown, ChevronUp, Droplets, Lightbulb, Plus, Shirt, Snowflake, Tv, Utensils, X, Zap, type LucideIcon } from 'lucide-react';
 import { forwardRef, useImperativeHandle, useState } from 'react';
-import { QUICK_APPLIANCE_GROUPS, type QuickApplianceOption } from '../../data/quickApplianceGroups';
+import { QUICK_APPLIANCE_GROUPS } from '../../data/quickApplianceGroups';
 import type { ApplianceInput } from '../../types';
 
 const groupIcons: Record<string, LucideIcon> = {
