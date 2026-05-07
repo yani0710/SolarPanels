@@ -14,9 +14,11 @@ const flowPoints = [
   [-1.9, 0.22, 0.04],
   [-0.72, 0.1, 0.08],
   [0.62, -0.12, 0.04],
-  [1.66, -0.2, 0.02],
-  [2.36, -0.02, -0.08]
+  [1.72, -0.2, 0.02],
+  [2.72, -0.02, -0.08]
 ] as Array<[number, number, number]>;
+
+const htmlZIndexRange: [number, number] = [20, 0];
 
 function SunRig() {
   const sun = useRef<Mesh>(null);
@@ -56,7 +58,7 @@ function SunRig() {
           </mesh>
         ))}
       </group>
-      <Html position={[0.04, 0.58, 0]} center className="pointer-events-none select-none">
+      <Html position={[0.04, 0.58, 0]} center zIndexRange={htmlZIndexRange} className="pointer-events-none select-none">
         <MetricPill tone="amber" label="Sun" value="5.4h" />
       </Html>
     </group>
@@ -173,7 +175,7 @@ function BatteryStack() {
   });
 
   return (
-    <group position={[2.08, -0.35, 0.08]} rotation={[0.03, -0.08, 0]}>
+    <group position={[2.55, -0.35, 0.08]} rotation={[0.03, -0.08, 0]}>
       <mesh castShadow receiveShadow>
         <boxGeometry args={[0.58, 1.36, 0.5]} />
         <meshStandardMaterial color="#07111f" metalness={0.32} roughness={0.32} emissive="#0f766e" emissiveIntensity={0.18} />
@@ -188,7 +190,7 @@ function BatteryStack() {
           <meshStandardMaterial color="#dcfce7" emissive="#35e58b" emissiveIntensity={0.75} />
         </mesh>
       ))}
-      <Html position={[0.08, 0.88, 0]} center className="pointer-events-none hidden select-none sm:block">
+      <Html position={[0.08, 0.88, 0]} center zIndexRange={htmlZIndexRange} className="pointer-events-none hidden select-none sm:block">
         <MetricPill tone="green" label="Battery" value="8 kWh" />
       </Html>
     </group>
@@ -216,7 +218,7 @@ function InverterNode() {
 
 function GridTower() {
   return (
-    <group position={[2.78, -0.5, -0.18]} rotation={[0, -0.18, 0]}>
+    <group position={[3.28, -0.5, -0.18]} rotation={[0, -0.18, 0]}>
       <mesh castShadow>
         <cylinderGeometry args={[0.035, 0.045, 1.3, 8]} />
         <meshStandardMaterial color="#475569" metalness={0.34} roughness={0.38} />
@@ -231,7 +233,7 @@ function GridTower() {
           <meshStandardMaterial color="#64748b" />
         </mesh>
       ))}
-      <Html position={[-0.16, 0.82, 0]} center className="pointer-events-none hidden select-none sm:block">
+      <Html position={[-0.18, 0.82, 0]} center zIndexRange={htmlZIndexRange} className="pointer-events-none hidden select-none sm:block">
         <MetricPill tone="sky" label="Grid" value="ready" />
       </Html>
     </group>
@@ -291,7 +293,7 @@ function ProjectionScene() {
   });
 
   return (
-    <group ref={group} rotation={[0.06, -0.12, 0]} scale={0.92} position={[-0.05, -0.02, 0]}>
+    <group ref={group} rotation={[0.06, -0.12, 0]} scale={0.86} position={[-0.28, -0.02, 0]}>
       {[1.14, 1.6, 2.08, 2.58, 3.14].map((radius, index) => (
         <OrbitRing key={radius} radius={radius} opacity={0.11 - index * 0.015} color={index % 2 ? '#22c55e' : '#38bdf8'} />
       ))}
@@ -322,10 +324,10 @@ function SolarScene() {
       <pointLight position={[2.6, 1.2, 1.7]} color="#38bdf8" intensity={1.05} distance={5.6} />
       <ProjectionScene />
       <ContactShadows position={[0.15, -1.18, 0]} opacity={0.32} scale={6.2} blur={2.8} far={3.6} color="#14532d" />
-      <Html position={[-2.16, 2.18, 0]} center className="pointer-events-none hidden select-none sm:block">
+      <Html position={[-2.16, 2.18, 0]} center zIndexRange={htmlZIndexRange} className="pointer-events-none hidden select-none sm:block">
         <MetricCard label="Solar map" value="BG zones" detail="irradiance model" />
       </Html>
-      <Html position={[1.28, 1.35, 0]} center className="pointer-events-none hidden select-none md:block">
+      <Html position={[1.28, 1.35, 0]} center zIndexRange={htmlZIndexRange} className="pointer-events-none hidden select-none md:block">
         <MetricCard label="Projected" value="5.8 kWp" detail="hybrid-ready" />
       </Html>
       <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.42} minPolarAngle={0.95} maxPolarAngle={1.72} />
