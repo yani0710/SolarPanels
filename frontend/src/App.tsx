@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { AppProvider, useAppContext } from './context/AppContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { Navbar } from './components/layout/Navbar';
 import { EnergyBackground } from './components/layout/EnergyBackground';
 import { UserProfile } from './components/dashboard/UserProfile';
@@ -40,11 +41,13 @@ function AppInner() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <AppProvider>
-          <AppInner />
-        </AppProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <AppProvider>
+            <AppInner />
+          </AppProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

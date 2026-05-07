@@ -1,27 +1,31 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
+  darkMode: 'class',
   theme: {
     extend: {
       screens: {
         xs: '390px'
       },
       colors: {
-        // New semantic tokens (light system)
-        solar:   '#F59E0B',  // amber-400 — brand accent, solar
-        energy:  '#16A34A',  // green-600 — CTA, success
-        sky:     '#0EA5E9',  // sky-500   — info blue
-        surface: '#F8FAFC',  // slate-50  — page background
-        heading: '#0F172A',  // slate-900 — primary text
-        muted:   '#64748B',  // slate-500 — secondary text
-        border:  '#E2E8F0',  // slate-200 — borders
-        warning: '#F59E0B',  // amber-400
-        danger:  '#EF4444',  // red-500
+        // Semantic tokens — driven by CSS variables so they auto-switch in dark mode
+        // Usage: bg-surface, text-heading, text-muted, border-border
+        // Opacity modifier works: bg-surface/50 → rgb(var(--c-surface) / 0.5)
+        surface: 'rgb(var(--c-surface) / <alpha-value>)',
+        heading: 'rgb(var(--c-heading) / <alpha-value>)',
+        muted:   'rgb(var(--c-muted)   / <alpha-value>)',
+        border:  'rgb(var(--c-border)  / <alpha-value>)',
+        // Brand colours — fixed regardless of theme
+        solar:   '#F59E0B',
+        energy:  '#16A34A',
+        sky:     '#0EA5E9',
+        warning: '#F59E0B',
+        danger:  '#EF4444',
         // Legacy aliases — kept for HeroVisual Three.js labels (do NOT use in new code)
-        mint:    '#16A34A',  // remapped → energy green
-        cyan:    '#0EA5E9',  // remapped → sky blue
-        navy:    '#0F172A',  // remapped → heading dark
-        ink:     '#0F172A',  // remapped → heading dark
+        mint:    '#16A34A',
+        cyan:    '#0EA5E9',
+        navy:    '#0F172A',
+        ink:     '#0F172A',
       },
       boxShadow: {
         card:     '0 1px 3px rgba(15,23,42,0.08), 0 10px 28px rgba(15,23,42,0.06)',
