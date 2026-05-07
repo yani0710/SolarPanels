@@ -36,8 +36,8 @@ export function LoginModal({ open, onClose, onSwitch }: { open: boolean; onClose
 
 export function AuthShell({ title, children, onClose }: { title: string; children: React.ReactNode; onClose: () => void }) {
   return (
-    <div className="fixed inset-0 z-[90] grid place-items-center bg-slate-900/60 p-4 backdrop-blur-sm">
-      <div className="grid w-full max-w-3xl overflow-hidden rounded-2xl bg-white shadow-2xl md:grid-cols-[0.9fr_1.1fr]">
+    <div className="fixed inset-0 z-[200] grid place-items-center bg-slate-900/60 p-4 backdrop-blur-sm">
+      <div className="relative z-10 grid w-full max-w-3xl overflow-hidden rounded-2xl bg-white shadow-2xl md:grid-cols-[0.9fr_1.1fr]">
         {/* Left panel */}
         <div className="hidden border-r border-border bg-gradient-to-br from-green-50 to-amber-50 p-6 md:block">
           <div className="text-sm font-black uppercase tracking-[0.18em] text-energy flex items-center gap-2">
