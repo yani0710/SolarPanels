@@ -2,6 +2,7 @@ import type React from 'react';
 import { useState } from 'react';
 import { CheckCircle2, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import Logo from '../../assets/SolarPick.png';
 
 export function LoginModal({ open, onClose, onSwitch }: { open: boolean; onClose: () => void; onSwitch: () => void }) {
   const { login } = useAuth();
@@ -39,7 +40,10 @@ export function AuthShell({ title, children, onClose }: { title: string; childre
       <div className="grid w-full max-w-3xl overflow-hidden rounded-2xl bg-white shadow-2xl md:grid-cols-[0.9fr_1.1fr]">
         {/* Left panel */}
         <div className="hidden border-r border-border bg-gradient-to-br from-green-50 to-amber-50 p-6 md:block">
-          <div className="text-sm font-black uppercase tracking-[0.18em] text-energy">SolarWise profile</div>
+          <div className="text-sm font-black uppercase tracking-[0.18em] text-energy flex items-center gap-2">
+            <img src={Logo} alt="SolarPick Logo" className="h-7 w-7 rounded shadow-green object-cover" />
+            SolarPick profile
+          </div>
           <h2 className="mt-4 text-3xl font-black text-heading">Запазвай системи и сравнявай сценарии.</h2>
           <div className="mt-6 grid gap-3 text-sm font-semibold text-slate-700">
             {['Запазвай системи', 'Добавяй собствени уреди', 'Сравнявай сценарии'].map((item) => (
