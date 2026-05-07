@@ -13,8 +13,35 @@ const metrics = [
 
 export function Hero() {
   return (
-    <section id="top" className="relative overflow-hidden px-4 pb-8 pt-24 sm:px-6 sm:pb-10 sm:pt-28 lg:px-8">
-      <div className="mx-auto grid max-w-7xl items-center gap-8 lg:grid-cols-[0.86fr_1.14fr]">
+    <section id="top" className="relative isolate overflow-hidden px-4 pb-8 pt-24 sm:px-6 sm:pb-10 sm:pt-28 lg:px-8">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 hidden dark:block">
+        <motion.div
+          className="absolute -left-36 top-0 h-[620px] w-[78%] rotate-[-5deg] bg-[linear-gradient(105deg,transparent_0%,rgba(245,158,11,0.16)_24%,rgba(180,83,9,0.14)_45%,rgba(8,10,13,0)_74%)] blur-xl mix-blend-screen [mask-image:linear-gradient(to_bottom,transparent_0%,black_18%,black_72%,transparent_100%)]"
+          animate={{ x: ['-4%', '5%', '-4%'], y: ['0%', '7%', '0%'], opacity: [0.52, 0.78, 0.56] }}
+          transition={{ duration: 17, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute left-[22%] top-32 h-[360px] w-[56%] rotate-[3deg] bg-[linear-gradient(95deg,transparent_0%,rgba(251,191,36,0.10)_30%,rgba(245,158,11,0.12)_46%,rgba(8,10,13,0)_76%)] blur-2xl mix-blend-screen [mask-image:linear-gradient(to_bottom,transparent_0%,black_24%,black_66%,transparent_100%)]"
+          animate={{ x: ['5%', '-4%', '5%'], y: ['-2%', '10%', '-2%'], opacity: [0.38, 0.68, 0.4] }}
+          transition={{ duration: 19, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute inset-x-[-8%] top-48 h-36 rotate-[-4deg] bg-[linear-gradient(90deg,transparent_8%,rgba(245,158,11,0.10)_34%,rgba(251,191,36,0.09)_48%,rgba(39,39,42,0.10)_62%,transparent_90%)] blur-2xl mix-blend-screen"
+          animate={{ x: ['-8%', '10%', '-8%'], y: ['0%', '14%', '0%'], opacity: [0.38, 0.74, 0.38] }}
+          transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute left-[5%] top-24 h-px w-[62%] rotate-[-3deg] bg-gradient-to-r from-transparent via-amber-300/60 to-transparent"
+          animate={{ x: ['-6%', '8%', '-6%'], opacity: [0.45, 0.9, 0.45] }}
+          transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute left-[16%] top-64 h-px w-[54%] rotate-[-3deg] bg-gradient-to-r from-transparent via-amber-500/42 to-transparent"
+          animate={{ x: ['8%', '-7%', '8%'], opacity: [0.3, 0.72, 0.3] }}
+          transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      </div>
+      <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-8 lg:grid-cols-[0.86fr_1.14fr]">
         <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, ease: 'easeOut' }} className="relative z-10">
           <div className="mb-5 inline-flex max-w-full items-center gap-2 rounded-full border border-sky-200 bg-white/80 px-4 py-2 text-xs font-black uppercase tracking-wide text-sky shadow-sm backdrop-blur">
             <Sparkles size={14} className="shrink-0 text-solar" />

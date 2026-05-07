@@ -4,6 +4,7 @@ import { BatteryCharging, Home, Orbit, ShieldCheck, SunMedium } from 'lucide-rea
 import { motion } from 'framer-motion';
 import { Suspense, useMemo, useRef } from 'react';
 import { AdditiveBlending, BackSide, CatmullRomCurve3, DoubleSide, type Group, type Mesh, Vector3 } from 'three';
+import { useTheme } from '../../context/ThemeContext';
 
 const panelCells = Array.from({ length: 24 }, (_, index) => ({
   column: index % 6,
@@ -12,10 +13,11 @@ const panelCells = Array.from({ length: 24 }, (_, index) => ({
 
 const flowPoints = [
   [-1.9, 0.22, 0.04],
-  [-0.72, 0.1, 0.08],
-  [0.62, -0.12, 0.04],
-  [1.72, -0.2, 0.02],
-  [2.72, -0.02, -0.08]
+  [-0.72, 0.11, 0.08],
+  [0.72, -0.1, 0.08],
+  [2.08, -0.32, 0.26],
+  [2.88, -0.18, 0.1],
+  [3.5, 0.02, -0.08]
 ] as Array<[number, number, number]>;
 
 const htmlZIndexRange: [number, number] = [20, 0];
@@ -175,7 +177,7 @@ function BatteryStack() {
   });
 
   return (
-    <group position={[2.55, -0.35, 0.08]} rotation={[0.03, -0.08, 0]}>
+    <group position={[2.88, -0.38, 0.18]} rotation={[0.03, -0.1, 0]}>
       <mesh castShadow receiveShadow>
         <boxGeometry args={[0.58, 1.36, 0.5]} />
         <meshStandardMaterial color="#07111f" metalness={0.32} roughness={0.32} emissive="#0f766e" emissiveIntensity={0.18} />
@@ -199,7 +201,7 @@ function BatteryStack() {
 
 function InverterNode() {
   return (
-    <group position={[1.2, -0.58, 0.18]} rotation={[0.02, -0.22, 0]}>
+    <group position={[2.08, -0.66, 0.38]} rotation={[0.02, -0.2, 0]}>
       <mesh castShadow receiveShadow>
         <boxGeometry args={[0.44, 0.54, 0.28]} />
         <meshStandardMaterial color="#e2e8f0" metalness={0.2} roughness={0.34} />
@@ -218,7 +220,7 @@ function InverterNode() {
 
 function GridTower() {
   return (
-    <group position={[3.28, -0.5, -0.18]} rotation={[0, -0.18, 0]}>
+    <group position={[3.52, -0.5, -0.16]} rotation={[0, -0.18, 0]}>
       <mesh castShadow>
         <cylinderGeometry args={[0.035, 0.045, 1.3, 8]} />
         <meshStandardMaterial color="#475569" metalness={0.34} roughness={0.38} />
@@ -293,7 +295,7 @@ function ProjectionScene() {
   });
 
   return (
-    <group ref={group} rotation={[0.06, -0.12, 0]} scale={0.86} position={[-0.28, -0.02, 0]}>
+    <group ref={group} rotation={[0.06, -0.12, 0]} scale={0.78} position={[-0.38, -0.02, 0]}>
       {[1.14, 1.6, 2.08, 2.58, 3.14].map((radius, index) => (
         <OrbitRing key={radius} radius={radius} opacity={0.11 - index * 0.015} color={index % 2 ? '#22c55e' : '#38bdf8'} />
       ))}
@@ -313,17 +315,17 @@ function ProjectionScene() {
   );
 }
 
-function SolarScene() {
+function SolarScene({ isDark }: { isDark: boolean }) {
   return (
     <>
-      <color attach="background" args={['#dff6ff']} />
-      <fog attach="fog" args={['#dff6ff', 7, 14]} />
-      <ambientLight intensity={0.62} />
-      <hemisphereLight color="#f8fafc" groundColor="#bbf7d0" intensity={1.55} />
+      <color attach="background" args={[isDark ? '#101216' : '#dff6ff']} />
+      <fog attach="fog" args={[isDark ? '#101216' : '#dff6ff', 7, 14]} />
+      <ambientLight intensity={isDark ? 0.82 : 0.62} />
+      <hemisphereLight color={isDark ? '#f8fafc' : '#f8fafc'} groundColor={isDark ? '#18181b' : '#bbf7d0'} intensity={isDark ? 1.24 : 1.55} />
       <directionalLight position={[-3.6, 4.4, 2.4]} intensity={2.8} castShadow shadow-mapSize-width={1024} shadow-mapSize-height={1024} />
       <pointLight position={[2.6, 1.2, 1.7]} color="#38bdf8" intensity={1.05} distance={5.6} />
       <ProjectionScene />
-      <ContactShadows position={[0.15, -1.18, 0]} opacity={0.32} scale={6.2} blur={2.8} far={3.6} color="#14532d" />
+      <ContactShadows position={[0.15, -1.18, 0]} opacity={isDark ? 0.42 : 0.32} scale={6.2} blur={2.8} far={3.6} color={isDark ? '#020617' : '#14532d'} />
       <Html position={[-2.16, 2.18, 0]} center zIndexRange={htmlZIndexRange} className="pointer-events-none hidden select-none sm:block">
         <MetricCard label="Solar map" value="BG zones" detail="irradiance model" />
       </Html>
@@ -361,6 +363,8 @@ function MetricCard({ label, value, detail }: { label: string; value: string; de
 }
 
 export function HeroVisual() {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const chips = [
     ['5.8 kWp', SunMedium],
     ['Hybrid', Home],
@@ -373,7 +377,7 @@ export function HeroVisual() {
       initial={{ opacity: 0, y: 24, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.72, ease: 'easeOut' }}
-      className="projection-shell relative min-h-[380px] overflow-hidden rounded-2xl border border-white/70 bg-sky-100 shadow-[0_24px_80px_rgba(14,165,233,0.22)] sm:min-h-[500px]"
+      className="projection-shell relative min-h-[380px] overflow-hidden rounded-2xl border border-white/70 bg-sky-100 shadow-[0_24px_80px_rgba(14,165,233,0.22)] dark:border-zinc-700/70 dark:bg-zinc-950 dark:shadow-[0_24px_80px_rgba(0,0,0,0.48)] sm:min-h-[500px]"
     >
       <div className="absolute inset-x-3 top-3 z-10 flex flex-wrap gap-2 sm:inset-x-4 sm:top-4">
         {chips.map(([label, Icon]) => (
@@ -384,11 +388,11 @@ export function HeroVisual() {
         ))}
       </div>
 
-      <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(240,249,255,.64),rgba(240,253,244,.24)_58%,rgba(20,83,45,.16)),linear-gradient(110deg,rgba(245,158,11,.20),transparent_32%,rgba(14,165,233,.16)_68%,transparent)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(240,249,255,.64),rgba(240,253,244,.24)_58%,rgba(20,83,45,.16)),linear-gradient(110deg,rgba(245,158,11,.20),transparent_32%,rgba(14,165,233,.16)_68%,transparent)] dark:bg-[linear-gradient(to_bottom,rgba(8,10,13,.72),rgba(23,25,31,.42)_58%,rgba(0,0,0,.34)),linear-gradient(110deg,rgba(245,158,11,.10),transparent_32%,rgba(82,82,91,.22)_68%,transparent)]" />
       <div className="h-[380px] w-full sm:h-[500px] lg:h-[540px]">
         <Suspense fallback={<div className="grid h-full place-items-center text-sm font-semibold text-slate-600">Зареждаме 3D визуализация...</div>}>
           <Canvas camera={{ position: [0.1, 0.8, 5.75], fov: 44 }} dpr={[1, 1.75]} shadows gl={{ antialias: true, alpha: false }}>
-            <SolarScene />
+            <SolarScene isDark={isDark} />
           </Canvas>
         </Suspense>
       </div>
