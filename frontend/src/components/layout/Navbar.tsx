@@ -22,20 +22,20 @@ export function Navbar({ onAuth, onProfile }: { onAuth: (mode: 'login' | 'regist
   const linkClass = (active: boolean) =>
     `relative rounded-lg px-3.5 py-2 text-sm font-bold transition ${
       active
-        ? 'bg-emerald-50 dark:bg-emerald-900/30 text-energy shadow-sm'
-        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-heading'
+        ? 'bg-emerald-50 dark:bg-zinc-900/70 dark:ring-1 dark:ring-emerald-400/20 text-energy shadow-sm'
+        : 'text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-800/70 hover:text-heading'
     }`;
 
   const mobileLinkClass = (active: boolean) =>
     `block rounded-lg px-4 py-3 text-base font-bold transition ${
       active
-        ? 'bg-emerald-50 dark:bg-emerald-900/30 text-energy'
-        : 'text-heading hover:bg-slate-50 dark:hover:bg-slate-800/60 active:bg-slate-100 dark:active:bg-slate-800'
+        ? 'bg-emerald-50 dark:bg-zinc-900/70 dark:ring-1 dark:ring-emerald-400/20 text-energy'
+        : 'text-heading hover:bg-slate-50 dark:hover:bg-zinc-800/70 active:bg-slate-100 dark:active:bg-zinc-800'
     }`;
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between rounded-2xl border border-white/75 dark:border-slate-700/60 bg-white/86 dark:bg-slate-900/90 px-3 py-2.5 shadow-[0_12px_44px_rgba(15,23,42,0.10)] dark:shadow-[0_12px_44px_rgba(0,0,0,0.40)] backdrop-blur-2xl sm:px-4">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between rounded-2xl border border-white/75 dark:border-zinc-700/60 bg-white/86 dark:bg-zinc-950/90 dark:bg-[linear-gradient(135deg,rgba(8,10,13,0.94),rgba(23,25,31,0.90))] px-3 py-2.5 shadow-[0_12px_44px_rgba(15,23,42,0.10)] dark:shadow-[0_18px_54px_rgba(0,0,0,0.48)] backdrop-blur-2xl sm:px-4">
 
         {/* Logo */}
         <Link to="/" onClick={close} className="group flex min-w-0 items-center gap-3 font-black text-heading">
@@ -70,7 +70,7 @@ export function Navbar({ onAuth, onProfile }: { onAuth: (mode: 'login' | 'regist
           {/* Theme toggle — replaces the old "BG solar" badge */}
           <button
             onClick={toggleTheme}
-            className="hidden items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2 text-xs font-black uppercase tracking-wide text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition cursor-pointer lg:inline-flex"
+            className="hidden items-center gap-2 rounded-lg border border-slate-200 dark:border-zinc-700 bg-slate-100 dark:bg-zinc-900 px-3 py-2 text-xs font-black uppercase tracking-wide text-slate-700 dark:text-zinc-300 hover:bg-slate-200 dark:hover:bg-zinc-800 transition cursor-pointer lg:inline-flex"
             title={theme === 'light' ? 'Тъмна тема' : 'Светла тема'}
           >
             {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
@@ -81,7 +81,7 @@ export function Navbar({ onAuth, onProfile }: { onAuth: (mode: 'login' | 'regist
 
         {/* Mobile hamburger */}
         <button
-          className="grid h-11 w-11 place-items-center rounded-xl border border-border dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 md:hidden"
+          className="grid h-11 w-11 place-items-center rounded-xl border border-border dark:border-zinc-700 bg-slate-100 dark:bg-zinc-900 text-slate-700 dark:text-zinc-300 md:hidden"
           onClick={() => setOpen((v) => !v)}
           aria-label="Меню"
           aria-expanded={open}
@@ -98,9 +98,9 @@ export function Navbar({ onAuth, onProfile }: { onAuth: (mode: 'login' | 'regist
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.98 }}
             transition={{ duration: 0.18 }}
-            className="mx-auto mt-2 max-w-7xl rounded-2xl border border-white/80 dark:border-slate-700/50 bg-white/96 dark:bg-slate-900/96 p-3 shadow-card-md backdrop-blur-xl md:hidden"
+            className="mx-auto mt-2 max-w-7xl rounded-2xl border border-white/80 dark:border-zinc-700/60 bg-white/96 dark:bg-zinc-950/95 p-3 shadow-card-md backdrop-blur-xl md:hidden"
           >
-            <div className="mb-3 flex items-center gap-2 rounded-lg border border-sky-100 dark:border-sky-900/50 bg-sky-50 dark:bg-sky-900/20 px-3 py-2 text-xs font-black uppercase tracking-wide text-sky">
+            <div className="mb-3 flex items-center gap-2 rounded-lg border border-sky-100 dark:border-zinc-700/70 bg-sky-50 dark:bg-zinc-900/70 px-3 py-2 text-xs font-black uppercase tracking-wide text-sky">
               <Sparkles size={14} />
               Smart energy advisor
             </div>
@@ -126,7 +126,7 @@ export function Navbar({ onAuth, onProfile }: { onAuth: (mode: 'login' | 'regist
               {/* Theme toggle in mobile menu */}
               <button
                 onClick={() => { toggleTheme(); close(); }}
-                className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-base font-bold text-heading hover:bg-slate-50 dark:hover:bg-slate-800/60 transition cursor-pointer"
+                className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-base font-bold text-heading hover:bg-slate-50 dark:hover:bg-zinc-800/70 transition cursor-pointer"
               >
                 {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
                 {theme === 'light' ? 'Тъмна тема' : 'Светла тема'}

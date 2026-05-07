@@ -17,7 +17,7 @@ function AppInner() {
   const { authMode, setAuthMode, profileOpen, setProfileOpen, bumpRefreshKey } = useAppContext();
 
   return (
-    <div className="min-h-screen text-heading">
+    <div className="relative isolate min-h-screen text-heading">
       <EnergyBackground />
       <Navbar onAuth={setAuthMode} onProfile={() => setProfileOpen(true)} />
 
