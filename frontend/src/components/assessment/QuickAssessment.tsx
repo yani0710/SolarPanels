@@ -11,7 +11,7 @@ import { QuickAppliancePicker } from './QuickAppliancePicker';
 import { Stepper } from './Stepper';
 
 const steps = ['Обект', 'Сметка', 'Уреди', 'Профил', 'Backup', 'Условия', 'Цел'];
-const defaultBills: Record<string, number> = { apartment: 120, house: 210, villa: 90, business: 320, farm: 380 };
+const defaultBills: Record<string, number> = { apartment: 61, house: 107, villa: 46, business: 164, farm: 130 };
 const objectLabels = { apartment: 'Апартамент', house: 'Къща', villa: 'Вила', business: 'Малък бизнес', farm: 'Ферма / селски имот' };
 const goalLabels = {
   save: 'Да намаля сметката',
@@ -26,7 +26,7 @@ export function QuickAssessment({ onResult }: { onResult: (input: QuickAssessmen
   const [step, setStep] = useState(0);
   const [objectType, setObjectType] = useState<QuickAssessmentInput['objectType']>('house');
   const [region, setRegion] = useState('unknown');
-  const [monthlyBillBgn, setMonthlyBillBgn] = useState(180);
+  const [monthlyBillEur, setMonthlyBillEur] = useState(92);
   const [billKnown, setBillKnown] = useState(true);
   const [applianceSelections, setApplianceSelections] = useState<Record<string, string[]>>({ kitchen: ['basic'] });
   const [customAppliances, setCustomAppliances] = useState<ApplianceInput[]>([]);
@@ -52,7 +52,7 @@ export function QuickAssessment({ onResult }: { onResult: (input: QuickAssessmen
       mode: 'quick',
       objectType,
       region,
-      monthlyBillBgn: billKnown ? monthlyBillBgn : defaultBills[objectType],
+      monthlyBillEur: billKnown ? monthlyBillEur : defaultBills[objectType],
       billKnown,
       appliances: [...configuredAppliances, ...custom],
       usageTime,
@@ -85,14 +85,14 @@ export function QuickAssessment({ onResult }: { onResult: (input: QuickAssessmen
               <div className="rounded-xl border border-border bg-slate-50 p-4">
                 <input
                   type="range"
-                  min="50"
-                  max="700"
-                  value={monthlyBillBgn}
-                  onChange={(e) => { setMonthlyBillBgn(Number(e.target.value)); setBillKnown(true); }}
+                  min="25"
+                  max="360"
+                  value={monthlyBillEur}
+                  onChange={(e) => { setMonthlyBillEur(Number(e.target.value)); setBillKnown(true); }}
                   className="w-full accent-green-600"
                 />
                 <div className="mt-4 flex items-end justify-between gap-3">
-                  <div className="text-4xl font-black text-heading">{billKnown ? monthlyBillBgn : defaultBills[objectType]} <span className="text-xl text-muted">лв</span></div>
+                  <div className="text-4xl font-black text-heading">{billKnown ? monthlyBillEur : defaultBills[objectType]} <span className="text-xl text-muted">€</span></div>
                   <div className="text-sm font-semibold text-muted">на месец</div>
                 </div>
               </div>

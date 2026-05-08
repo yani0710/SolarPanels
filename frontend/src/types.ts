@@ -46,7 +46,7 @@ export interface QuickAssessmentInput {
   mode: 'quick';
   objectType: ObjectType;
   region: string;
-  monthlyBillBgn: number;
+  monthlyBillEur: number;
   billKnown: boolean;
   appliances: ApplianceInput[];
   usageTime: UsageTime;
@@ -60,7 +60,7 @@ export interface DetailedAssessmentInput {
   objectType: ObjectType;
   region: string;
   cityOrArea?: string;
-  monthlyBillBgn: number;
+  monthlyBillEur: number;
   monthlyKwh?: number;
   pricePerKwh?: number;
   dayNightTariff?: 'yes' | 'no' | 'unknown';
