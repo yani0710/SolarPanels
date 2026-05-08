@@ -37,6 +37,8 @@ interface SelectedAppliance {
   detail?: string;
   boilerMode?: 'small' | 'standard' | 'large' | 'custom' | 'unknown';
   sizeMode?: 'small' | 'standard' | 'large' | 'custom' | 'unknown';
+  unitBoilerModes?: Array<'small' | 'standard' | 'large' | 'custom' | 'unknown'>;
+  unitSizeModes?: Array<'small' | 'standard' | 'large' | 'custom' | 'unknown'>;
   unitPowerModes: Array<'unknown' | 'custom'>;
   unitKwValues: string[];
   intensity: 'low' | 'medium' | 'high' | 'unknown';
@@ -112,16 +114,30 @@ export const QuickAppliancePicker = forwardRef<
       const hours = durationToHours(appliance.durationPerDay);
       const presetKwhPerDay = ((bonusKwh * intensityMultiplier(appliance.intensity)) * hours) / 24;
       const perUnitKwh = Array.from({ length: appliance.count }).reduce<number>((sum, _, unitIdx) => {
+        const unitBoilerMode = appliance.unitBoilerModes?.[unitIdx] || appliance.boilerMode;
+        const unitSizeMode = appliance.unitSizeModes?.[unitIdx] || appliance.sizeMode;
         const unitMode = appliance.unitPowerModes[unitIdx] ?? 'unknown';
         const unitKw = Number(appliance.unitKwValues[unitIdx] ?? 0);
-        if (isFixedBoilerPreset) return sum + presetKwhPerDay;
-        if (isCustomOption) return sum + (Number.isFinite(unitKw) && unitKw > 0 ? unitKw * hours : 0);
-        if (sizeMode === 'custom') return sum + (Number.isFinite(unitKw) && unitKw > 0 ? unitKw * hours : 0);
-        if (sizeMode === 'small' || sizeMode === 'standard' || sizeMode === 'large' || sizeMode === 'unknown') {
-          return sum + (option.sizeKwhPerDay?.[sizeMode] ?? option.kwhPerDay);
+        if (appliance.groupId === 'boiler') {
+          const isFixedUnitBoilerPreset = unitBoilerMode !== 'custom';
+          const isCustomUnitOption = unitBoilerMode === 'custom';
+          if (isFixedUnitBoilerPreset) {
+            const unitBoilerKwh = unitBoilerMode === 'small' ? 2.2 : unitBoilerMode === 'standard' ? 3.2 : unitBoilerMode === 'large' ? 5 : 3.2;
+            return sum + ((unitBoilerKwh * intensityMultiplier(appliance.intensity)) * hours) / 24;
+          }
+          if (isCustomUnitOption) return sum + (Number.isFinite(unitKw) && unitKw > 0 ? unitKw * hours : 0);
+          return sum + presetKwhPerDay;
+        } else {
+          const isFixedUnitSizePreset = unitSizeMode !== 'custom';
+          const isCustomUnitSize = unitSizeMode === 'custom';
+          if (isFixedUnitSizePreset) {
+            const unitKwh = option.sizeKwhPerDay?.[unitSizeMode as 'small' | 'standard' | 'large' | 'unknown'] ?? option.kwhPerDay;
+            return sum + ((unitKwh * intensityMultiplier(appliance.intensity)) * hours) / 24;
+          }
+          if (isCustomUnitSize) return sum + (Number.isFinite(unitKw) && unitKw > 0 ? unitKw * hours : 0);
+          if (unitMode === 'custom') return sum + (Number.isFinite(unitKw) && unitKw > 0 ? unitKw * hours : 0);
+          return sum + ((option.sizeKwhPerDay?.[unitSizeMode as 'small' | 'standard' | 'large' | 'unknown'] ?? option.kwhPerDay) * intensityMultiplier(appliance.intensity) * hours) / 24;
         }
-        if (unitMode === 'custom') return sum + (Number.isFinite(unitKw) && unitKw > 0 ? unitKw * hours : 0);
-        return sum + option.kwhPerDay;
       }, 0);
 
       return {
@@ -129,8 +145,12 @@ export const QuickAppliancePicker = forwardRef<
         name: group.title,
         category: group.category,
         label: appliance.groupId === 'boiler'
-          ? `${group.title}: ${boilerMode === 'small' ? 'Малък' : boilerMode === 'standard' ? 'Среден' : boilerMode === 'large' ? 'Голям' : boilerMode === 'custom' ? 'Custom' : 'Не знам'}`
-          : `${group.title}: ${option.label} (${sizeMode === 'small' ? 'Малък' : sizeMode === 'standard' ? 'Среден' : sizeMode === 'large' ? 'Голям' : sizeMode === 'custom' ? 'Custom' : 'Не знам'})`,
+          ? appliance.count === 1
+            ? `${group.title}: ${boilerMode === 'small' ? 'Малък' : boilerMode === 'standard' ? 'Среден' : boilerMode === 'large' ? 'Голям' : boilerMode === 'custom' ? 'Custom' : 'Не знам'}`
+            : `${group.title}: ${appliance.count} бр. (${appliance.unitBoilerModes?.map(m => m === 'small' ? 'М' : m === 'standard' ? 'С' : m === 'large' ? 'Г' : m === 'custom' ? 'C' : '?').join(', ') || boilerMode === 'small' ? 'М' : boilerMode === 'standard' ? 'С' : boilerMode === 'large' ? 'Г' : boilerMode === 'custom' ? 'C' : '?'})`
+          : appliance.count === 1
+            ? `${group.title}: ${option.label} (${sizeMode === 'small' ? 'Малък' : sizeMode === 'standard' ? 'Среден' : sizeMode === 'large' ? 'Голям' : sizeMode === 'custom' ? 'Custom' : 'Не знам'})`
+            : `${group.title}: ${option.label} (${appliance.unitSizeModes?.map(m => m === 'small' ? 'М' : m === 'standard' ? 'С' : m === 'large' ? 'Г' : m === 'custom' ? 'C' : '?').join(', ') || sizeMode === 'small' ? 'М' : sizeMode === 'standard' ? 'С' : sizeMode === 'large' ? 'Г' : sizeMode === 'custom' ? 'C' : '?'})`,
         estimatedKwhPerDay: perUnitKwh,
         usageTime: option.usageTime,
         confidence: option.confidence,
@@ -148,6 +168,8 @@ export const QuickAppliancePicker = forwardRef<
       groupId, optionId, count: 1, detail: option?.detailDefault?.toString(),
       boilerMode: groupId === 'boiler' ? 'unknown' : undefined,
       sizeMode: groupId === 'boiler' ? undefined : 'unknown',
+      unitBoilerModes: groupId === 'boiler' ? ['unknown'] : undefined,
+      unitSizeModes: groupId === 'boiler' ? undefined : ['unknown'],
       unitPowerModes: ['unknown'], unitKwValues: ['1'],
       intensity: 'unknown', durationPerDay: 'unknown'
     };
@@ -299,10 +321,10 @@ export const QuickAppliancePicker = forwardRef<
               const option = group.options.find((o) => o.id === appliance.optionId)!;
               const isEditing = editingIndex === idx;
               const Icon = groupIcons[group.id];
-              const isFixedBoilerPreset = appliance.groupId === 'boiler' && appliance.boilerMode !== 'custom';
-              const isCustomOption = appliance.groupId === 'boiler' && appliance.boilerMode === 'custom';
-              const isFixedSizePreset = appliance.groupId !== 'boiler' && appliance.sizeMode !== 'custom';
-              const isCustomSize = appliance.groupId !== 'boiler' && appliance.sizeMode === 'custom';
+              const isFixedBoilerPreset = appliance.groupId === 'boiler' && appliance.boilerMode !== 'custom' && !appliance.unitBoilerModes?.some(m => m === 'custom');
+              const isCustomOption = appliance.groupId === 'boiler' && (appliance.boilerMode === 'custom' || appliance.unitBoilerModes?.some(m => m === 'custom'));
+              const isFixedSizePreset = appliance.groupId !== 'boiler' && appliance.sizeMode !== 'custom' && !appliance.unitSizeModes?.some(m => m === 'custom');
+              const isCustomSize = appliance.groupId !== 'boiler' && (appliance.sizeMode === 'custom' || appliance.unitSizeModes?.some(m => m === 'custom'));
 
               return (
                 <div key={`${appliance.groupId}-${appliance.optionId}-${idx}`} className={`rounded-2xl border transition-all ${isEditing ? 'border-energy/50 bg-green-50' : 'card'}`}>
@@ -322,8 +344,12 @@ export const QuickAppliancePicker = forwardRef<
                       </div>
                       <div className="text-[11px] text-muted">
                         {appliance.groupId === 'boiler'
-                          ? (appliance.boilerMode === 'small' ? 'Малък' : appliance.boilerMode === 'standard' ? 'Среден' : appliance.boilerMode === 'large' ? 'Голям' : appliance.boilerMode === 'custom' ? 'Custom' : 'Не знам')
-                          : (appliance.sizeMode === 'small' ? 'Малък' : appliance.sizeMode === 'standard' ? 'Среден' : appliance.sizeMode === 'large' ? 'Голям' : appliance.sizeMode === 'custom' ? 'Custom' : 'Не знам')}
+                          ? (appliance.count === 1
+                            ? (appliance.boilerMode === 'small' ? 'Малък' : appliance.boilerMode === 'standard' ? 'Среден' : appliance.boilerMode === 'large' ? 'Голям' : appliance.boilerMode === 'custom' ? 'Custom' : 'Не знам')
+                            : `Различни (${appliance.unitBoilerModes?.map(m => m === 'small' ? 'М' : m === 'standard' ? 'С' : m === 'large' ? 'Г' : m === 'custom' ? 'C' : '?').join(', ') || appliance.boilerMode === 'small' ? 'М' : appliance.boilerMode === 'standard' ? 'С' : appliance.boilerMode === 'large' ? 'Г' : appliance.boilerMode === 'custom' ? 'C' : '?'})`)
+                          : (appliance.count === 1
+                            ? (appliance.sizeMode === 'small' ? 'Малък' : appliance.sizeMode === 'standard' ? 'Среден' : appliance.sizeMode === 'large' ? 'Голям' : appliance.sizeMode === 'custom' ? 'Custom' : 'Не знам')
+                            : `Различни (${appliance.unitSizeModes?.map(m => m === 'small' ? 'М' : m === 'standard' ? 'С' : m === 'large' ? 'Г' : m === 'custom' ? 'C' : '?').join(', ') || appliance.sizeMode === 'small' ? 'М' : appliance.sizeMode === 'standard' ? 'С' : appliance.sizeMode === 'large' ? 'Г' : appliance.sizeMode === 'custom' ? 'C' : '?'})`)}
                         {' · '}
                         {intensityOptions.find(i => i.id === appliance.intensity)?.label}
                         {' · '}
@@ -347,9 +373,9 @@ export const QuickAppliancePicker = forwardRef<
                       <div>
                         <div className="mb-2 text-[11px] font-bold text-heading">Количество</div>
                         <div className="flex items-center gap-2">
-                          <button type="button" onClick={() => { const n = Math.max(1, appliance.count - 1); updateAppliance(idx, { count: n, unitKwValues: resizeArray(appliance.unitKwValues, n, '1'), unitPowerModes: resizeArray(appliance.unitPowerModes, n, 'unknown') }); }} className="grid h-9 w-9 place-items-center rounded-xl border border-border bg-white text-sm font-bold text-heading hover:border-energy cursor-pointer transition">-</button>
+                          <button type="button" onClick={() => { const n = Math.max(1, appliance.count - 1); updateAppliance(idx, { count: n, unitKwValues: resizeArray(appliance.unitKwValues, n, '1'), unitPowerModes: resizeArray(appliance.unitPowerModes, n, 'unknown'), unitBoilerModes: appliance.unitBoilerModes ? resizeArray(appliance.unitBoilerModes, n, 'unknown') : undefined, unitSizeModes: appliance.unitSizeModes ? resizeArray(appliance.unitSizeModes, n, 'unknown') : undefined }); }} className="grid h-9 w-9 place-items-center rounded-xl border border-border bg-white text-sm font-bold text-heading hover:border-energy cursor-pointer transition">-</button>
                           <span className="min-w-[28px] text-center text-sm font-bold text-heading">{appliance.count}</span>
-                          <button type="button" onClick={() => { const n = appliance.count + 1; updateAppliance(idx, { count: n, unitKwValues: resizeArray(appliance.unitKwValues, n, '1'), unitPowerModes: resizeArray(appliance.unitPowerModes, n, 'unknown') }); }} className="grid h-9 w-9 place-items-center rounded-xl border border-border bg-white text-sm font-bold text-heading hover:border-energy cursor-pointer transition">+</button>
+                          <button type="button" onClick={() => { const n = appliance.count + 1; updateAppliance(idx, { count: n, unitKwValues: resizeArray(appliance.unitKwValues, n, '1'), unitPowerModes: resizeArray(appliance.unitPowerModes, n, 'unknown'), unitBoilerModes: appliance.unitBoilerModes ? resizeArray(appliance.unitBoilerModes, n, 'unknown') : undefined, unitSizeModes: appliance.unitSizeModes ? resizeArray(appliance.unitSizeModes, n, 'unknown') : undefined }); }} className="grid h-9 w-9 place-items-center rounded-xl border border-border bg-white text-sm font-bold text-heading hover:border-energy cursor-pointer transition">+</button>
                         </div>
                       </div>
 
@@ -357,29 +383,96 @@ export const QuickAppliancePicker = forwardRef<
                       {appliance.groupId === 'boiler' ? (
                         <div>
                           <div className="mb-2 text-[11px] font-bold text-heading">Размер на бойлера</div>
-                          <div className="flex flex-wrap gap-2">
-                            {[{ id: 'small', label: 'Малък', kwh: 2.2 }, { id: 'standard', label: 'Среден', kwh: 3.2 }, { id: 'large', label: 'Голям', kwh: 5.0 }, { id: 'unknown', label: 'Не знам', kwh: 3.2 }, { id: 'custom', label: 'Custom', kwh: null as null }].map((mode) => (
-                              <button key={mode.id} type="button" onClick={() => updateAppliance(idx, { boilerMode: mode.id as SelectedAppliance['boilerMode'] })} className={`rounded-xl border px-3 py-2 text-xs font-semibold transition cursor-pointer ${appliance.boilerMode === mode.id ? smallBtnActive : smallBtnInactive}`}>
-                                <div>{mode.label}</div>
-                                <div className="text-[10px] text-muted">{mode.kwh == null ? 'по kW/L' : `≈ ${mode.kwh.toFixed(1)} kWh`}</div>
-                              </button>
-                            ))}
-                          </div>
+                          {appliance.count === 1 ? (
+                            <div className="flex flex-wrap gap-2">
+                              {[{ id: 'small', label: 'Малък', kwh: 2.2 }, { id: 'standard', label: 'Среден', kwh: 3.2 }, { id: 'large', label: 'Голям', kwh: 5.0 }, { id: 'unknown', label: 'Не знам', kwh: 3.2 }, { id: 'custom', label: 'Custom', kwh: null as null }].map((mode) => (
+                                <button key={mode.id} type="button" onClick={() => {
+                                  const updates: Partial<SelectedAppliance> = { boilerMode: mode.id as SelectedAppliance['boilerMode'] };
+                                  if (mode.id === 'custom') {
+                                    const nextKwValues = [...appliance.unitKwValues];
+                                    if (nextKwValues[0] === undefined) nextKwValues[0] = '1';
+                                    updates.unitKwValues = nextKwValues;
+                                  }
+                                  updateAppliance(idx, updates);
+                                }} className={`rounded-xl border px-3 py-2 text-xs font-semibold transition cursor-pointer ${appliance.boilerMode === mode.id ? smallBtnActive : smallBtnInactive}`}>
+                                  <div>{mode.label}</div>
+                                  <div className="text-[10px] text-muted">{mode.kwh == null ? 'по kW/L' : `≈ ${mode.kwh.toFixed(1)} kWh`}</div>
+                                </button>
+                              ))}
+                            </div>
+                          ) : (
+                            <div className="space-y-3">
+                              {Array.from({ length: appliance.count }).map((_, unitIdx) => (
+                                <div key={unitIdx}>
+                                  <div className="mb-2 text-[11px] font-bold text-heading">Бойлер {unitIdx + 1}</div>
+                                  <div className="flex flex-wrap gap-2">
+                                    {[{ id: 'small', label: 'Малък', kwh: 2.2 }, { id: 'standard', label: 'Среден', kwh: 3.2 }, { id: 'large', label: 'Голям', kwh: 5.0 }, { id: 'unknown', label: 'Не знам', kwh: 3.2 }, { id: 'custom', label: 'Custom', kwh: null as null }].map((mode) => (
+                                      <button key={mode.id} type="button" onClick={() => {
+                                        const nextModes = [...(appliance.unitBoilerModes || [])];
+                                        nextModes[unitIdx] = mode.id as 'small' | 'standard' | 'large' | 'custom' | 'unknown';
+                                        const nextKwValues = [...appliance.unitKwValues];
+                                        if (nextKwValues[unitIdx] === undefined) nextKwValues[unitIdx] = '1';
+                                        updateAppliance(idx, { unitBoilerModes: nextModes, unitKwValues: nextKwValues });
+                                      }} className={`rounded-xl border px-3 py-2 text-xs font-semibold transition cursor-pointer ${(appliance.unitBoilerModes?.[unitIdx] || appliance.boilerMode) === mode.id ? smallBtnActive : smallBtnInactive}`}>
+                                        <div>{mode.label}</div>
+                                        <div className="text-[10px] text-muted">{mode.kwh == null ? 'по kW/L' : `≈ ${mode.kwh.toFixed(1)} kWh`}</div>
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       ) : (
                         <div>
                           <div className="mb-2 text-[11px] font-bold text-heading">Размер</div>
-                          <div className="flex flex-wrap gap-2">
-                            {[{ id: 'small', label: 'Малък' }, { id: 'standard', label: 'Среден' }, { id: 'large', label: 'Голям' }, { id: 'unknown', label: 'Не знам' }, { id: 'custom', label: 'Custom' }].map((mode) => {
-                              const kwh = mode.id === 'custom' ? null : (option.sizeKwhPerDay?.[mode.id as 'small' | 'standard' | 'large' | 'unknown'] ?? option.kwhPerDay);
-                              return (
-                                <button key={mode.id} type="button" onClick={() => updateAppliance(idx, { sizeMode: mode.id as SelectedAppliance['sizeMode'] })} className={`rounded-xl border px-3 py-2 text-xs font-semibold transition cursor-pointer ${appliance.sizeMode === mode.id ? smallBtnActive : smallBtnInactive}`}>
-                                  <div>{mode.label}</div>
-                                  <div className="text-[10px] text-muted">{kwh == null ? 'по kW' : `≈ ${kwh.toFixed(1)} kWh`}</div>
-                                </button>
-                              );
-                            })}
-                          </div>
+                          {appliance.count === 1 ? (
+                            <div className="flex flex-wrap gap-2">
+                              {[{ id: 'small', label: 'Малък' }, { id: 'standard', label: 'Среден' }, { id: 'large', label: 'Голям' }, { id: 'unknown', label: 'Не знам' }, { id: 'custom', label: 'Custom' }].map((mode) => {
+                                const kwh = mode.id === 'custom' ? null : (option.sizeKwhPerDay?.[mode.id as 'small' | 'standard' | 'large' | 'unknown'] ?? option.kwhPerDay);
+                                return (
+                                  <button key={mode.id} type="button" onClick={() => {
+                                    const updates: Partial<SelectedAppliance> = { sizeMode: mode.id as SelectedAppliance['sizeMode'] };
+                                    if (mode.id === 'custom') {
+                                      const nextKwValues = [...appliance.unitKwValues];
+                                      if (nextKwValues[0] === undefined) nextKwValues[0] = '1';
+                                      updates.unitKwValues = nextKwValues;
+                                    }
+                                    updateAppliance(idx, updates);
+                                  }} className={`rounded-xl border px-3 py-2 text-xs font-semibold transition cursor-pointer ${appliance.sizeMode === mode.id ? smallBtnActive : smallBtnInactive}`}>
+                                    <div>{mode.label}</div>
+                                    <div className="text-[10px] text-muted">{kwh == null ? 'по kW' : `≈ ${kwh.toFixed(1)} kWh`}</div>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            <div className="space-y-3">
+                              {Array.from({ length: appliance.count }).map((_, unitIdx) => (
+                                <div key={unitIdx}>
+                                  <div className="mb-2 text-[11px] font-bold text-heading">Уред {unitIdx + 1}</div>
+                                  <div className="flex flex-wrap gap-2">
+                                    {[{ id: 'small', label: 'Малък' }, { id: 'standard', label: 'Среден' }, { id: 'large', label: 'Голям' }, { id: 'unknown', label: 'Не знам' }, { id: 'custom', label: 'Custom' }].map((mode) => {
+                                      const kwh = mode.id === 'custom' ? null : (option.sizeKwhPerDay?.[mode.id as 'small' | 'standard' | 'large' | 'unknown'] ?? option.kwhPerDay);
+                                      return (
+                                        <button key={mode.id} type="button" onClick={() => {
+                                          const nextModes = [...(appliance.unitSizeModes || [])];
+                                          nextModes[unitIdx] = mode.id as 'small' | 'standard' | 'large' | 'custom' | 'unknown';
+                                          const nextKwValues = [...appliance.unitKwValues];
+                                          if (nextKwValues[unitIdx] === undefined) nextKwValues[unitIdx] = '1';
+                                          updateAppliance(idx, { unitSizeModes: nextModes, unitKwValues: nextKwValues });
+                                        }} className={`rounded-xl border px-3 py-2 text-xs font-semibold transition cursor-pointer ${(appliance.unitSizeModes?.[unitIdx] || appliance.sizeMode) === mode.id ? smallBtnActive : smallBtnInactive}`}>
+                                          <div>{mode.label}</div>
+                                          <div className="text-[10px] text-muted">{kwh == null ? 'по kW' : `≈ ${kwh.toFixed(1)} kWh`}</div>
+                                        </button>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       )}
 
@@ -388,14 +481,22 @@ export const QuickAppliancePicker = forwardRef<
                         <div className="rounded-xl border border-energy/30 bg-green-50 px-3 py-2 text-[11px] font-semibold text-energy">За този preset мощността е фиксирана.</div>
                       ) : (isCustomOption || isCustomSize) ? (
                         <div className="space-y-2">
-                          <div className="rounded-xl border border-sky/25 bg-sky-50 px-3 py-2 text-[11px] font-semibold text-sky">Custom: въведи kW за всяка бройка.</div>
+                          <div className="rounded-xl border border-sky/25 bg-sky-50 px-3 py-2 text-[11px] font-semibold text-sky">Custom: въведи kW за уредите с custom режим.</div>
                           <div className="grid gap-2 sm:grid-cols-2">
-                            {Array.from({ length: appliance.count }).map((_, unitIdx) => (
-                              <label key={unitIdx}>
-                                <div className="mb-1 text-[11px] font-semibold text-muted">Уред {unitIdx + 1} (kW)</div>
-                                <input type="number" min={0.01} step={0.01} value={appliance.unitKwValues[unitIdx] ?? '1'} onChange={(e) => { const next = [...appliance.unitKwValues]; next[unitIdx] = e.target.value; updateAppliance(idx, { unitKwValues: next }); }} className="input-field h-9 px-3 text-sm" />
-                              </label>
-                            ))}
+                            {Array.from({ length: appliance.count }).map((_, unitIdx) => {
+                              const unitBoilerMode = appliance.unitBoilerModes?.[unitIdx] || appliance.boilerMode;
+                              const unitSizeMode = appliance.unitSizeModes?.[unitIdx] || appliance.sizeMode;
+                              const isUnitCustom = (appliance.groupId === 'boiler' && unitBoilerMode === 'custom') || (appliance.groupId !== 'boiler' && unitSizeMode === 'custom');
+
+                              if (!isUnitCustom) return null;
+
+                              return (
+                                <label key={unitIdx}>
+                                  <div className="mb-1 text-[11px] font-semibold text-muted">Уред {unitIdx + 1} (kW)</div>
+                                  <input type="number" min={0.01} step={0.01} value={appliance.unitKwValues[unitIdx] ?? '1'} onChange={(e) => { const next = [...appliance.unitKwValues]; next[unitIdx] = e.target.value; updateAppliance(idx, { unitKwValues: next }); }} className="input-field h-9 px-3 text-sm" />
+                                </label>
+                              );
+                            })}
                           </div>
                         </div>
                       ) : null}
