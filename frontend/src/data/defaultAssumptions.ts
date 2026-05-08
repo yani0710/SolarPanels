@@ -1,5 +1,5 @@
 export const DEFAULT_ASSUMPTIONS = {
-  pricePerKwhBgn: 0.30,
+  pricePerKwhEur: 0.153,
   averageSunHours: 3.8,
   systemSafetyFactor: 1.2,
   batterySafetyFactor: 1.25,

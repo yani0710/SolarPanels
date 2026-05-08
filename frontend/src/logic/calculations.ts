@@ -1,8 +1,8 @@
 import { DEFAULT_ASSUMPTIONS } from '../data/defaultAssumptions';
 import type { ApplianceInput, UsageTime } from '../types';
 
-export function estimateConsumptionFromBill(monthlyBillBgn: number, pricePerKwh = DEFAULT_ASSUMPTIONS.pricePerKwhBgn) {
-  return Math.max(0, monthlyBillBgn / pricePerKwh);
+export function estimateConsumptionFromBill(monthlyBillEur: number, pricePerKwh = DEFAULT_ASSUMPTIONS.pricePerKwhEur) {
+  return Math.max(0, monthlyBillEur / pricePerKwh);
 }
 
 export function calculateApplianceConsumption(appliance: ApplianceInput) {

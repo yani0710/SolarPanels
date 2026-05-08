@@ -135,7 +135,7 @@ function finalize(params: {
 }
 
 export function analyzeQuick(input: QuickAssessmentInput): RecommendationResult {
-  const billMonthlyKwh = estimateConsumptionFromBill(input.monthlyBillBgn);
+  const billMonthlyKwh = estimateConsumptionFromBill(input.monthlyBillEur);
   const applianceTotal = input.appliances.length ? calculateTotalConsumption(input.appliances) : { daily: 0, monthly: 0 };
   const monthlyKwh = input.billKnown ? Math.max(billMonthlyKwh, applianceTotal.monthly * 0.85) : Math.max(billMonthlyKwh, applianceTotal.monthly);
   const dailyKwh = monthlyKwh / 30;
@@ -159,7 +159,7 @@ export function analyzeQuick(input: QuickAssessmentInput): RecommendationResult 
 }
 
 export function analyzeDetailed(input: DetailedAssessmentInput): RecommendationResult {
-  const total = input.appliances.length ? calculateTotalConsumption(input.appliances) : { daily: estimateConsumptionFromBill(input.monthlyBillBgn, input.pricePerKwh) / 30, monthly: estimateConsumptionFromBill(input.monthlyBillBgn, input.pricePerKwh) };
+  const total = input.appliances.length ? calculateTotalConsumption(input.appliances) : { daily: estimateConsumptionFromBill(input.monthlyBillEur, input.pricePerKwh) / 30, monthly: estimateConsumptionFromBill(input.monthlyBillEur, input.pricePerKwh) };
   const monthlyKwh = input.monthlyKwh && input.monthlyKwh > 0 ? input.monthlyKwh : total.monthly;
   const dailyKwh = monthlyKwh / 30;
   const split = input.appliances.length ? calculateDayNightSplit(input.appliances) : calculateDayNightSplitFromUsage(dailyKwh, 'unknown');

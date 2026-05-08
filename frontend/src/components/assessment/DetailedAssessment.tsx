@@ -37,9 +37,9 @@ export function DetailedAssessment({ onResult, onRequireRegister }: { onResult: 
       mode: 'detailed',
       objectType: String(formData.get('objectType')) as DetailedAssessmentInput['objectType'],
       region: String(formData.get('region')),
-      monthlyBillBgn: Number(formData.get('monthlyBillBgn') || 220),
+      monthlyBillEur: Number(formData.get('monthlyBillEur') || 112),
       monthlyKwh: Number(formData.get('monthlyKwh') || 0) || undefined,
-      pricePerKwh: Number(formData.get('pricePerKwh') || 0.3),
+      pricePerKwh: Number(formData.get('pricePerKwh') || 0.153),
       goal: String(formData.get('goal')) as DetailedAssessmentInput['goal'],
       cityOrArea: String(formData.get('cityOrArea') || ''),
       dayNightTariff: String(formData.get('dayNightTariff') || 'unknown') as DetailedAssessmentInput['dayNightTariff'],
@@ -78,9 +78,9 @@ export function DetailedAssessment({ onResult, onRequireRegister }: { onResult: 
                   <Input label="Тип обект" name="objectType" as="select" options={[['house', 'Къща'], ['apartment', 'Апартамент'], ['villa', 'Вила'], ['business', 'Малък бизнес'], ['farm', 'Ферма']]} />
                   <Input label="Регион" name="region" as="select" options={Object.entries(REGION_SOLAR_DATA).map(([id, r]) => [id, r.label])} />
                   <Input label="Град или област" name="cityOrArea" placeholder="Не е задължително" />
-                  <Input label="Месечна сметка в лв" name="monthlyBillBgn" defaultValue="220" />
+                  <Input label="Месечна сметка в €" name="monthlyBillEur" defaultValue="112" />
                   <Input label="Месечно kWh, ако го знаеш" name="monthlyKwh" placeholder="Не е задължително" />
-                  <Input label="Цена на kWh" name="pricePerKwh" defaultValue="0.30" />
+                  <Input label="Цена на kWh (€)" name="pricePerKwh" defaultValue="0.153" />
                   <Input label="Дневна/нощна тарифа" name="dayNightTariff" as="select" options={[['unknown', 'Не знам'], ['yes', 'Да'], ['no', 'Не']]} />
                   <Input label="Захранване" name="gridPhase" as="select" options={[['unknown', 'Не знам'], ['single', 'Монофазно'], ['three', 'Трифазно']]} />
                   <Input label="Цел" name="goal" as="select" options={[['save', 'Намаляване на сметка'], ['backup', 'Backup'], ['independence', 'Независимост'], ['check', 'Проверка дали има смисъл'], ['offgrid', 'Off-grid']]} />
