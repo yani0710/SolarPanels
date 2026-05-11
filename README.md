@@ -5,9 +5,8 @@ SolarWise BG is a full-stack web app for estimating solar panel system needs, ba
 ## Tech Stack
 
 - Frontend: React, Vite, TypeScript, Tailwind CSS
-- Backend: Laravel 11 API
-- Database: SQLite through Laravel migrations and Eloquent
-- Authentication: Bearer-token auth
+- Backend: Browser localStorage for auth, profile, saved systems, appliances, and assistant usage
+- Optional backend scaffold: Laravel 11 in `backend-laravel/`
 
 ## What You Need To Install
 
@@ -62,7 +61,7 @@ Install these before running the project:
    npm install
    ```
 
-4. Create your environment files:
+4. Create your environment file if you want to customize local settings:
 
    ```bash
    copy .env.example .env
@@ -74,29 +73,10 @@ Install these before running the project:
    cp .env.example .env
    ```
 
-   Then copy the Laravel example into the backend:
-
-   ```bash
-   copy backend-laravel\.env.example backend-laravel\.env
-   ```
-
-   On macOS/Linux, use:
-
-   ```bash
-   cp backend-laravel/.env.example backend-laravel/.env
-   ```
-
-5. Start the frontend and Laravel API in two terminals:
+5. Start the app:
 
    ```bash
    npm run dev
-   ```
-
-   In a second terminal:
-
-   ```bash
-   cd backend-laravel
-   php artisan serve
    ```
 
 6. Open the app in your browser:
@@ -105,13 +85,7 @@ Install these before running the project:
    http://localhost:5173
    ```
 
-The Laravel backend API runs at:
-
-```text
-http://localhost:8000/api
-```
-
-The Laravel backend lives in [backend-laravel](backend-laravel).
+Auth, saved systems, custom appliances, and assistant usage now persist in the browser, so the app works without a running backend for those flows.
 
 ## Useful Commands
 
@@ -127,13 +101,6 @@ Run only the frontend:
 npm run dev:frontend
 ```
 
-Run only the Laravel backend:
-
-```bash
-cd backend-laravel
-php artisan serve
-```
-
 Check TypeScript:
 
 ```bash
@@ -146,25 +113,20 @@ Build the project:
 npm run build
 ```
 
-Laravel backend migrations:
-
-```bash
-cd backend-laravel
-php artisan migrate
-```
+The Laravel scaffold in [backend-laravel](backend-laravel) is optional and no longer required for the main browser-local app flow.
 
 ## Environment Variables
 
 The `.env.example` file contains the default local setup:
 
 ```env
-VITE_API_URL=http://localhost:8000/api
+VITE_API_URL=
 ```
 
 For local development, copying `.env.example` to `.env` is enough.
 
 ## Notes
 
-- The Laravel backend uses SQLite and standard Laravel migrations.
-- Local database files and Laravel vendor files are ignored by Git.
+- Profile data and saved app data live in browser localStorage.
+- The optional Laravel scaffold remains in `backend-laravel/` if you want a server-backed version later.
 - `node_modules` and build folders are ignored by Git.

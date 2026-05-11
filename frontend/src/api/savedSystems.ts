@@ -1,19 +1,18 @@
-import { apiRequest } from './client';
+import { createSavedSystemRecord, deleteSavedSystemRecord, listSavedSystemsForCurrentUser } from '../lib/browserStore';
 import type { RecommendationResult, SavedSystem } from '../types';
 
 export async function listSystems() {
-  return apiRequest<{ systems: SavedSystem[] }>('/systems');
+  return { systems: listSavedSystemsForCurrentUser() };
 }
 
 export async function getSavedSystems() {
-  const response = await apiRequest<{ systems: SavedSystem[] }>('/systems');
-  return response.systems;
+  return listSavedSystemsForCurrentUser();
 }
 
 export async function saveSystem(payload: { title: string; inputSnapshot: unknown; resultSnapshot: RecommendationResult }) {
-  return apiRequest<{ system: SavedSystem }>('/systems', { method: 'POST', body: JSON.stringify(payload) });
+  return Promise.resolve(createSavedSystemRecord(payload));
 }
 
 export async function deleteSystem(id: number) {
-  return apiRequest<{ ok: true }>(`/systems/${id}`, { method: 'DELETE' });
+  return deleteSavedSystemRecord(id);
 }

@@ -1,4 +1,4 @@
-import { apiRequest } from './client';
+import { addCustomApplianceRecord, createCustomApplianceRecord, deleteCustomApplianceRecord, listCustomApplianceInputs, readCustomAppliances } from '../lib/browserStore';
 import type { ApplianceInput } from '../types';
 
 export type CustomAppliancePayload = {
@@ -32,19 +32,33 @@ export interface CustomAppliance {
 }
 
 export async function listCustomAppliances() {
-  return apiRequest<{ appliances: ApplianceInput[] }>('/appliances');
+  return { appliances: listCustomApplianceInputs() };
 }
 
 export async function getSavedAppliances() {
-  const response = await apiRequest<{ appliances: CustomAppliance[] }>('/appliances/saved');
-  return response.appliances;
+  return readCustomAppliances().map((row) => ({
+    id: row.id,
+    name: row.name,
+    category: row.category,
+    wattage: row.wattage,
+    hoursPerDay: row.hoursPerDay,
+    daysPerMonth: row.daysPerMonth,
+    count: row.count,
+    usageTime: row.usageTime,
+    isCritical: row.isCritical,
+    certainty: row.certainty,
+    createdAt: row.createdAt,
+    seasonality: row.seasonality,
+    highStartLoad: row.highStartLoad,
+    workPattern: row.workPattern,
+    note: row.note,
+  })) as CustomAppliance[];
 }
 
 export async function createCustomAppliance(payload: CustomAppliancePayload) {
-  return apiRequest<{ appliance: ApplianceInput }>('/appliances', { method: 'POST', body: JSON.stringify(payload) });
+  return Promise.resolve(createCustomApplianceRecord(payload));
 }
 
 export async function addCustomAppliance(payload: CustomAppliancePayload) {
-  const response = await apiRequest<{ appliance: CustomAppliance }>('/appliances/add', { method: 'POST', body: JSON.stringify(payload) });
-  return response.appliance;
+  return Promise.resolve(addCustomApplianceRecord(payload).appliance as CustomAppliance);
 }

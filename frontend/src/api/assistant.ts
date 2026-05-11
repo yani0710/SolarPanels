@@ -1,4 +1,4 @@
-import { apiRequest } from './client';
+import { askLocalAssistant, getLocalAssistantUsage } from '../lib/browserStore';
 
 export interface AssistantUsage {
   used: number;
@@ -31,13 +31,11 @@ function guestId() {
 const guestHeaders = () => ({ 'X-Guest-Id': guestId() });
 
 export function getAssistantUsage() {
-  return apiRequest<AssistantUsageResponse>('/assistant/usage', { headers: guestHeaders() });
+  void guestHeaders;
+  return getLocalAssistantUsage() as Promise<AssistantUsageResponse>;
 }
 
 export function askAssistant(message: string, language: string = 'bg') {
-  return apiRequest<AssistantAskResponse>('/assistant/ask', {
-    method: 'POST',
-    headers: guestHeaders(),
-    body: JSON.stringify({ message, language })
-  });
+  void guestHeaders;
+  return askLocalAssistant(message, language as 'bg' | 'en') as Promise<AssistantAskResponse>;
 }

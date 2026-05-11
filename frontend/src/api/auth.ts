@@ -1,18 +1,18 @@
-import { apiRequest } from './client';
+import { getLocalUser, loginLocalUser, logoutLocalUser, registerLocalUser } from '../lib/browserStore';
 import type { User } from '../types';
 
 export async function register(payload: { name: string; email: string; password: string }) {
-  return apiRequest<{ user: User; token: string }>('/auth/register', { method: 'POST', body: JSON.stringify(payload) });
+  return registerLocalUser(payload) as Promise<{ user: User; token: string }>;
 }
 
 export async function login(payload: { email: string; password: string }) {
-  return apiRequest<{ user: User; token: string }>('/auth/login', { method: 'POST', body: JSON.stringify(payload) });
+  return loginLocalUser(payload) as Promise<{ user: User; token: string }>;
 }
 
 export async function me() {
-  return apiRequest<{ user: User }>('/auth/me');
+  return getLocalUser();
 }
 
 export async function logout() {
-  return apiRequest<{ ok: true }>('/auth/logout', { method: 'POST' });
+  return logoutLocalUser();
 }
