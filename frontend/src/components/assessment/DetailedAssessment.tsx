@@ -94,7 +94,7 @@ export function DetailedAssessment({ onResult, onRequireRegister }: { onResult: 
                       type="button"
                       key={p.id}
                       onClick={() => { setProfileId(p.id); setAppliances(p.appliances); }}
-                      className={`min-h-32 rounded-2xl border p-4 text-left transition active:scale-[.99] cursor-pointer ${profileId === p.id ? 'border-energy bg-green-50 shadow-green' : 'card hover:border-energy/50'}`}
+                      className={`min-h-32 rounded-2xl border p-4 text-left transition active:scale-[.99] cursor-pointer ${profileId === p.id ? 'border-energy bg-amber-50 shadow-green' : 'card hover:border-energy/50'}`}
                     >
                       <div className="font-black text-heading">{p.label}</div>
                       <p className="mt-2 text-sm leading-5 text-muted">{p.description}</p>
@@ -195,8 +195,8 @@ function CheckBlock({ title, name, options }: { title: string; name: string; opt
       <div className="mb-3 text-sm font-black text-heading">{title}</div>
       <div className="flex flex-wrap gap-2">
         {options.map(([value, text]) => (
-          <label key={value} className="flex min-h-10 cursor-pointer items-center gap-2 rounded-xl border border-border bg-white px-3 text-sm font-semibold text-slate-700 hover:border-energy hover:bg-green-50 transition">
-            <input type="checkbox" name={name} value={value} className="accent-green-600" />
+          <label key={value} className="flex min-h-10 cursor-pointer items-center gap-2 rounded-xl border border-border bg-white px-3 text-sm font-semibold text-slate-700 hover:border-energy hover:bg-amber-50 transition">
+            <input type="checkbox" name={name} value={value} className="accent-amber-500" />
             {text}
           </label>
         ))}

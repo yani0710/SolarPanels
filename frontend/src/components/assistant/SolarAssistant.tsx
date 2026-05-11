@@ -147,7 +147,7 @@ export function SolarAssistant({ onAuth, onNewAppliance }: { onAuth: (mode: 'log
   void onNewAppliance;
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
-  const [language, setLanguage] = useState<'bg' | 'en'>('bg');
+  const [language, setLanguage] = useState<'bg' | 'en'>('en');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [phase, setPhase] = useState<'menu' | 'answered'>('menu');
   const [relatedIds, setRelatedIds] = useState<string[]>([]);
@@ -376,7 +376,7 @@ export function SolarAssistant({ onAuth, onNewAppliance }: { onAuth: (mode: 'log
                       <button
                         key={qa.id}
                         onClick={() => handleSelect(qa)}
-                        className="w-full rounded-xl border border-border dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 text-left text-sm font-semibold text-slate-700 dark:text-slate-300 hover:border-energy hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-energy transition cursor-pointer"
+                        className="w-full rounded-xl border border-border dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 text-left text-sm font-semibold text-slate-700 dark:text-slate-300 hover:border-energy hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-energy transition cursor-pointer"
                       >
                         {lang === 'bg' ? qa.qBG : qa.qEN}
                       </button>
@@ -392,7 +392,7 @@ export function SolarAssistant({ onAuth, onNewAppliance }: { onAuth: (mode: 'log
       {/* Floating toggle button */}
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex min-h-12 items-center gap-2 rounded-xl bg-energy px-4 py-3 font-black text-white shadow-green hover:bg-green-700 transition cursor-pointer"
+        className="flex min-h-12 items-center gap-2 rounded-xl border border-[#FFD166]/30 bg-[linear-gradient(135deg,#FF9F43,#FFD166)] px-4 py-3 font-black text-[#111315] shadow-[0_18px_44px_rgba(255,159,67,0.28)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_58px_rgba(255,159,67,0.34)]"
       >
         <MessageCircle size={20} />
         <span className="hidden sm:inline">{lang === 'bg' ? 'AI Помощник' : 'Solar AI'}</span>

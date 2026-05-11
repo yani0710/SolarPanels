@@ -4,9 +4,9 @@ import type { RecommendationResult } from '../../types';
 export function HonestAdvice({ result }: { result: RecommendationResult }) {
   const risky = result.systemType === 'needs-inspection' || result.warnings.length > 1;
   return (
-    <div className={`rounded-2xl border p-5 sm:p-6 ${risky ? 'border-amber-300 bg-amber-50' : 'border-green-200 bg-green-50'}`}>
+    <div className={`rounded-2xl border p-5 sm:p-6 ${risky ? 'border-amber-300 bg-amber-50' : 'border-energy/30 bg-amber-50/60'}`}>
       <div className="flex items-center gap-3">
-        <span className={`grid h-11 w-11 place-items-center rounded-xl ${risky ? 'bg-amber-100 text-amber-600' : 'bg-green-100 text-energy'}`}>
+        <span className={`grid h-11 w-11 place-items-center rounded-xl ${risky ? 'bg-amber-100 text-amber-600' : 'bg-amber-100 text-energy'}`}>
           <ShieldCheck />
         </span>
         <h3 className="text-xl font-black text-heading">Честен съвет</h3>

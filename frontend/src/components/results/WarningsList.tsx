@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 export function WarningsList({ warnings }: { warnings: string[] }) {
   if (!warnings.length) {
     return (
-      <div className="rounded-2xl border border-green-200 bg-green-50 p-4 text-sm font-semibold text-green-800">
+      <div className="rounded-2xl border border-energy/30 bg-amber-50 p-4 text-sm font-semibold text-energy">
         <CheckCircle2 className="mr-2 inline text-energy" size={18} />
         Няма силни предупреждения при въведените условия.
       </div>

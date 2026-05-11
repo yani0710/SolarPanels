@@ -89,7 +89,7 @@ export function QuickAssessment({ onResult }: { onResult: (input: QuickAssessmen
                   max="360"
                   value={monthlyBillEur}
                   onChange={(e) => { setMonthlyBillEur(Number(e.target.value)); setBillKnown(true); }}
-                  className="w-full accent-green-600"
+                  className="w-full accent-amber-500"
                 />
                 <div className="mt-4 flex items-end justify-between gap-3">
                   <div className="text-4xl font-black text-heading">{billKnown ? monthlyBillEur : defaultBills[objectType]} <span className="text-xl text-muted">€</span></div>
@@ -101,7 +101,7 @@ export function QuickAssessment({ onResult }: { onResult: (input: QuickAssessmen
                 onClick={() => setBillKnown(false)}
                 className={`mt-3 rounded-xl border px-4 py-2.5 text-sm font-bold transition cursor-pointer ${
                   !billKnown
-                    ? 'border-energy bg-green-50 text-energy'
+                    ? 'border-energy bg-amber-50 text-energy'
                     : 'border-border bg-white text-muted hover:border-energy hover:text-energy'
                 }`}
               >
@@ -179,9 +179,9 @@ function ChipGrid({ value, options, onChange }: { value: string; options: Array<
             key={id}
             onClick={() => onChange(id)}
             className={`flex min-h-14 items-center justify-between gap-3 rounded-xl border px-4 py-3 text-left text-sm font-bold transition-all cursor-pointer ${
-              active
-                ? 'border-energy bg-green-50 text-energy shadow-green'
-                : 'border-border bg-white text-slate-700 hover:border-energy hover:bg-green-50 hover:text-energy'
+                  active
+                    ? 'border-energy bg-amber-50 text-energy shadow-green'
+                : 'border-border bg-white text-slate-700 hover:border-energy hover:bg-amber-50 hover:text-energy'
             }`}
           >
             {label}

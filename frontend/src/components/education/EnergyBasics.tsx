@@ -15,7 +15,7 @@ export function EnergyBasics() {
           className="relative overflow-hidden rounded-xl border border-white/80 bg-white/82 p-6 shadow-card backdrop-blur transition-shadow hover:shadow-card-md"
         >
           <div className="absolute right-5 top-4 text-4xl font-black text-slate-100">{step}</div>
-          <div className="relative grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br from-emerald-100 to-sky-100 text-energy">
+          <div className="relative grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br from-amber-100 to-sky-100 text-energy">
             <Icon size={24} />
           </div>
           <h3 className="relative mt-4 text-xl font-black text-heading">{title}</h3>

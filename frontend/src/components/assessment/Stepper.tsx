@@ -26,7 +26,7 @@ export function Stepper({ steps, current, onNavigate }: StepperProps) {
                   isCompleted
                     ? 'bg-energy text-white hover:bg-green-700 cursor-pointer'
                     : isCurrent
-                      ? 'bg-energy text-white ring-4 ring-green-100 cursor-default'
+                      ? 'bg-energy text-white ring-4 ring-amber-100 cursor-default'
                       : 'bg-slate-200 text-slate-500 cursor-not-allowed'
                 }`}
               >

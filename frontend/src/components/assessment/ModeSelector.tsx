@@ -36,7 +36,7 @@ export function ModeSelector({ mode, onChange }: { mode: 'quick' | 'detailed'; o
             onClick={() => onChange(item.id)}
             className={`relative overflow-hidden rounded-2xl border p-5 text-left transition-all sm:p-6 cursor-pointer ${
               selected
-                ? 'border-energy bg-green-50 shadow-green ring-1 ring-energy/30'
+                ? 'border-energy bg-amber-50 shadow-green ring-1 ring-energy/30'
                 : 'card hover:border-energy/40 hover:shadow-card-md'
             }`}
           >

@@ -17,7 +17,7 @@ export function CustomApplianceModal({ open, onClose, onCreate, onRequireRegiste
     return (
       <Modal onClose={onClose}>
         <div className="grid gap-5 md:grid-cols-[0.8fr_1.2fr]">
-          <div className="rounded-2xl border border-green-200 bg-green-50 p-5">
+          <div className="rounded-2xl border border-energy/30 bg-amber-50 p-5">
             <BatteryCharging className="text-energy" />
             <h3 className="mt-4 text-2xl font-black text-heading">Запази собствени уреди</h3>
             <p className="mt-2 leading-7 text-muted">Създай безплатен профил, за да пазиш свои уреди и да ги използваш в различни соларни сценарии.</p>
@@ -102,11 +102,11 @@ export function CustomApplianceModal({ open, onClose, onCreate, onRequireRegiste
             ['daily', 'Всеки ден'], ['weekdays', 'Делнични дни'], ['weekends', 'Уикенд'], ['seasonal', 'Сезонно'], ['varies', 'Различно'], ['unknown', 'Не знам']
           ]} />
         </div>
-        <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border border-border bg-slate-50 px-3 text-sm font-semibold text-slate-700 hover:border-energy hover:bg-green-50 transition">
-          <input type="checkbox" name="isCritical" className="accent-green-600" /> Критичен при спиране на тока
+        <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border border-border bg-slate-50 px-3 text-sm font-semibold text-slate-700 hover:border-energy hover:bg-amber-50 transition">
+          <input type="checkbox" name="isCritical" className="accent-amber-500" /> Критичен при спиране на тока
         </label>
-        <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border border-border bg-slate-50 px-3 text-sm font-semibold text-slate-700 hover:border-energy hover:bg-green-50 transition">
-          <input type="checkbox" name="highStartLoad" className="accent-green-600" /> Висок стартов ток
+        <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border border-border bg-slate-50 px-3 text-sm font-semibold text-slate-700 hover:border-energy hover:bg-amber-50 transition">
+          <input type="checkbox" name="highStartLoad" className="accent-amber-500" /> Висок стартов ток
         </label>
         <label>
           <span className="mb-1 block text-sm font-bold text-heading">Бележка</span>

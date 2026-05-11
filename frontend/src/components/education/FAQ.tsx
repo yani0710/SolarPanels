@@ -1,30 +1,34 @@
 import { ChevronDown } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
+import { useTheme } from '../../context/ThemeContext';
 
 const items = [
-  ['Какво означава kWp?', 'kWp е пикова мощност на соларната система при стандартни условия. Това не е постоянното производство.'],
-  ['Какво означава kWh?', 'kWh е количество енергия. Сметката за ток обикновено се базира на kWh.'],
-  ['Кога ми трябва батерия?', 'Най-често при вечерно потребление, резервно захранване или желание за по-голяма независимост.'],
-  ['Работи ли on-grid система при спиране на тока?', 'Стандартна on-grid система обикновено не работи при спиране. За backup най-често трябва hybrid инвертор и батерия.'],
-  ['Защо засенчването е проблем?', 'Сянката намалява производството и може силно да влоши икономиката на системата.'],
-  ['Защо резултатите са ориентировъчни?', 'Без оглед, точна ориентация, наклон и реални уреди резултатът е добра първа оценка, не проект.']
-];
+  ['What does kWp mean?', 'kWp is the peak capacity of a solar array under standard test conditions. It is useful for sizing, but real production changes with weather, orientation, season, and shade.'],
+  ['What does kWh mean?', 'kWh measures energy used or stored. Electricity bills, daily consumption, and battery capacity are usually discussed in kWh.'],
+  ['When does a battery make sense?', 'A battery is strongest when you have evening demand, backup needs, time-of-use tariffs, or a goal to use more of your own solar production.'],
+  ['Will an on-grid system work during an outage?', 'A standard on-grid system usually shuts down during an outage. Backup generally requires a hybrid inverter, battery, and a protected load setup.'],
+  ['Why does shading matter so much?', 'Shade can reduce production more than people expect, especially when it hits key panels during peak solar hours. It can affect both output and payback.'],
+  ['Are the results final engineering specs?', 'No. They are decision-grade estimates for planning and comparison. A professional site survey is still needed before installation.']
+] as const;
 
 export function FAQ() {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const [open, setOpen] = useState(0);
+
   return (
     <div className="grid gap-3">
-      {items.map(([q, a], index) => (
-        <div key={q} className="card overflow-hidden">
+      {items.map(([question, answer], index) => (
+        <div key={question} className={"overflow-hidden rounded-xl border shadow-[0_18px_55px_rgba(0,0,0,0.18)] backdrop-blur-xl " + (isLight ? "border-slate-200 bg-white/80" : "border-white/10 bg-[#181B1F]/72")}>
           <button
             onClick={() => setOpen(open === index ? -1 : index)}
-            className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left font-black text-heading hover:bg-slate-50 transition-colors cursor-pointer"
+            className={"flex w-full cursor-pointer items-center justify-between gap-4 px-5 py-4 text-left font-black transition-colors " + (isLight ? "text-navy hover:bg-slate-50" : "text-[#F5F7FA] hover:bg-white/[0.04]")}
           >
-            {q}
+            {question}
             <ChevronDown
               size={20}
-              className={`shrink-0 text-slate-400 transition-transform duration-200 ${open === index ? 'rotate-180' : ''}`}
+              className={`shrink-0 text-[#4FD1FF] transition-transform duration-200 ${open === index ? 'rotate-180' : ''}`}
             />
           </button>
           <AnimatePresence>
@@ -35,7 +39,7 @@ export function FAQ() {
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
-                <p className="border-t border-border px-5 pb-5 pt-4 leading-7 text-muted">{a}</p>
+                <p className={"border-t px-5 pb-5 pt-4 leading-7 " + (isLight ? "border-slate-200 text-slate-600" : "border-white/10 text-[#AAB3C2]")}>{answer}</p>
               </motion.div>
             )}
           </AnimatePresence>

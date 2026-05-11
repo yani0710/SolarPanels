@@ -53,7 +53,7 @@ export function SavedSystems({ refreshKey = 0 }: { refreshKey?: number }) {
                 <div className="font-black text-heading">{system.resultSnapshot.recommendedBatteryRange ?? system.recommendedBatteryKwh} kWh</div>
                 <div className="text-xs text-muted">батерия</div>
               </div>
-              <div className="rounded-xl bg-green-100 p-2 text-center">
+              <div className="rounded-xl bg-amber-100 p-2 text-center">
                 <div className="font-black capitalize text-energy">{system.systemType}</div>
                 <div className="text-xs text-muted">тип</div>
               </div>
@@ -65,7 +65,7 @@ export function SavedSystems({ refreshKey = 0 }: { refreshKey?: number }) {
             {/* View full analysis */}
             <button
               onClick={() => setSelectedSystem(system)}
-              className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-slate-50 py-2.5 text-sm font-bold text-slate-700 hover:border-energy hover:bg-green-50 hover:text-energy transition cursor-pointer"
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-slate-50 py-2.5 text-sm font-bold text-slate-700 hover:border-energy hover:bg-amber-50 hover:text-energy transition cursor-pointer"
             >
               <Eye size={16} /> Виж пълен анализ
             </button>
