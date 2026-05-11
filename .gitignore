@@ -13,8 +13,10 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-backend/data/*.sqlite
-backend/data/*.sqlite-*
+backend-laravel/database/*.sqlite
+backend-laravel/database/*.sqlite-*
+backend-laravel/storage/
+backend-laravel/vendor/
 data/*.sqlite
 data/*.sqlite-*
 

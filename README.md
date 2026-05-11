@@ -5,9 +5,9 @@ SolarWise BG is a full-stack web app for estimating solar panel system needs, ba
 ## Tech Stack
 
 - Frontend: React, Vite, TypeScript, Tailwind CSS
-- Backend: Node.js, Express, TypeScript
-- Database: SQLite through Prisma Client
-- Authentication: JWT and bcrypt
+- Backend: Laravel 11 API
+- Database: SQLite through Laravel migrations and Eloquent
+- Authentication: Bearer-token auth
 
 ## What You Need To Install
 
@@ -56,13 +56,13 @@ Install these before running the project:
    cd SolarPanels
    ```
 
-3. Install all dependencies:
+3. Install the frontend dependencies:
 
    ```bash
    npm install
    ```
 
-4. Create your environment file:
+4. Create your environment files:
 
    ```bash
    copy .env.example .env
@@ -74,10 +74,29 @@ Install these before running the project:
    cp .env.example .env
    ```
 
-5. Start the frontend and backend:
+   Then copy the Laravel example into the backend:
+
+   ```bash
+   copy backend-laravel\.env.example backend-laravel\.env
+   ```
+
+   On macOS/Linux, use:
+
+   ```bash
+   cp backend-laravel/.env.example backend-laravel/.env
+   ```
+
+5. Start the frontend and Laravel API in two terminals:
 
    ```bash
    npm run dev
+   ```
+
+   In a second terminal:
+
+   ```bash
+   cd backend-laravel
+   php artisan serve
    ```
 
 6. Open the app in your browser:
@@ -86,11 +105,13 @@ Install these before running the project:
    http://localhost:5173
    ```
 
-The backend API runs at:
+The Laravel backend API runs at:
 
 ```text
-http://localhost:4000/api
+http://localhost:8000/api
 ```
+
+The Laravel backend lives in [backend-laravel](backend-laravel).
 
 ## Useful Commands
 
@@ -106,10 +127,11 @@ Run only the frontend:
 npm run dev:frontend
 ```
 
-Run only the backend:
+Run only the Laravel backend:
 
 ```bash
-npm run dev:backend
+cd backend-laravel
+php artisan serve
 ```
 
 Check TypeScript:
@@ -124,10 +146,11 @@ Build the project:
 npm run build
 ```
 
-Start the built backend:
+Laravel backend migrations:
 
 ```bash
-npm --workspace backend run start
+cd backend-laravel
+php artisan migrate
 ```
 
 ## Environment Variables
@@ -135,19 +158,13 @@ npm --workspace backend run start
 The `.env.example` file contains the default local setup:
 
 ```env
-VITE_API_URL=http://localhost:4000/api
-PORT=4000
-JWT_SECRET=change-me-in-production
-DATABASE_PATH=./data/solarwise.sqlite
-DATABASE_URL=file:./backend/data/solarwise.sqlite
-OPENAI_API_KEY=
-OPENAI_MODEL=
+VITE_API_URL=http://localhost:8000/api
 ```
 
 For local development, copying `.env.example` to `.env` is enough.
 
 ## Notes
 
-- The SQLite database is created automatically when the backend starts.
-- Local database files are ignored by Git.
+- The Laravel backend uses SQLite and standard Laravel migrations.
+- Local database files and Laravel vendor files are ignored by Git.
 - `node_modules` and build folders are ignored by Git.
