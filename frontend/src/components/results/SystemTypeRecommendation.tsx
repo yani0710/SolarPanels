@@ -4,8 +4,8 @@ import type { RecommendationResult, SystemType } from '../../types';
 
 const content: Record<SystemType, { title: string; text: string; icon: typeof Network; tone: string; iconColor: string }> = {
   'on-grid':         { title: 'On-grid',     text: 'Подходящо за намаляване на сметката без задължителна батерия.',         icon: Network,        tone: 'from-sky-50 to-white border-sky-200',        iconColor: 'text-sky' },
-  hybrid:            { title: 'Hybrid',      text: 'Подходящо за вечерно потребление, backup и по-гъвкава система.',         icon: BatteryCharging, tone: 'from-green-50 to-sky-50 border-energy/30',    iconColor: 'text-energy' },
-  'off-grid':        { title: 'Off-grid',    text: 'Подходящо при автономност и слаб или липсващ достъп до мрежа.',         icon: Home,            tone: 'from-amber-50 to-green-50 border-solar/30',   iconColor: 'text-solar' },
+  hybrid:            { title: 'Hybrid',      text: 'Подходящо за вечерно потребление, backup и по-гъвкава система.',         icon: BatteryCharging, tone: 'from-amber-50 to-sky-50 border-energy/30',    iconColor: 'text-energy' },
+  'off-grid':        { title: 'Off-grid',    text: 'Подходящо при автономност и слаб или липсващ достъп до мрежа.',         icon: Home,            tone: 'from-amber-50 to-amber-50/60 border-solar/30',   iconColor: 'text-solar' },
   'needs-inspection':{ title: 'Нужен оглед', text: 'Има риск в условията. Препоръчва се професионална проверка.', icon: AlertTriangle,   tone: 'from-amber-100 to-red-50 border-warning/30', iconColor: 'text-warning' }
 };
 
@@ -25,7 +25,7 @@ export function SystemTypeRecommendation({ result }: { result: RecommendationRes
       <div className="mt-2 text-4xl font-black text-heading">{item.title}</div>
       <div className="mt-4 grid grid-cols-3 gap-2">
         {[SunMedium, BatteryCharging, Network].map((SmallIcon, index) => (
-          <div key={index} className={`grid h-14 place-items-center rounded-xl border ${index === 1 && result.systemType === 'on-grid' ? 'border-border bg-slate-50 text-slate-300' : 'border-energy/20 bg-green-100 text-energy'}`}>
+          <div key={index} className={`grid h-14 place-items-center rounded-xl border ${index === 1 && result.systemType === 'on-grid' ? 'border-border bg-slate-50 text-slate-300' : 'border-energy/20 bg-amber-100 text-energy'}`}>
             <SmallIcon size={20} />
           </div>
         ))}

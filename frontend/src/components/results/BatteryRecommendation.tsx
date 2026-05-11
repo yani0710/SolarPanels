@@ -10,7 +10,7 @@ export function BatteryRecommendation({ result }: { result: RecommendationResult
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: 0.08 }}
-      className={`min-w-0 rounded-2xl border p-5 h-full ${result.batteryNeeded ? 'border-energy/30 bg-green-50' : 'card'}`}
+      className={`min-w-0 rounded-2xl border p-5 h-full ${result.batteryNeeded ? 'border-energy/30 bg-amber-50' : 'card'}`}
     >
       <BatteryCharging className={result.batteryNeeded ? 'text-energy' : 'text-muted'} />
       <h3 className="mt-3 text-lg font-black text-heading sm:text-xl">Батерия</h3>

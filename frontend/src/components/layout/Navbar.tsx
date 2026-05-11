@@ -1,96 +1,125 @@
-import { Menu, Moon, Sparkles, Sun, X } from 'lucide-react';
+import { Menu, Moon, Sun, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { UserMenu } from '../auth/UserMenu';
 import { useTheme } from '../../context/ThemeContext';
 import Logo from '../../assets/SolarPick.png';
 
-const navItems = [
-  { to: '/', label: 'Начало', end: true },
-  { to: '/byrza-otsenka', label: 'Бърза оценка', end: false },
-  { to: '/detaylna-otsenka', label: 'Детайлна оценка', end: false }
+const routeItems = [
+  { to: '/', label: 'Home', end: true },
+  { to: '/byrza-otsenka', label: 'Quick Estimate', end: false },
+  { to: '/detaylna-otsenka', label: 'Detailed Design', end: false }
+] as const;
+
+const homeAnchors = [
+  { href: '#features', label: 'Features' },
+  { href: '#calculator', label: 'Calculator' },
+  { href: '#faq', label: 'FAQ' }
 ] as const;
 
 export function Navbar({ onAuth, onProfile }: { onAuth: (mode: 'login' | 'register') => void; onProfile: () => void }) {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
+  const isHome = location.pathname === '/';
+
+  useEffect(() => {
+    const update = () => setScrolled(window.scrollY > 18);
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    return () => window.removeEventListener('scroll', update);
+  }, []);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [location.pathname]);
 
   const close = () => setOpen(false);
 
   const linkClass = (active: boolean) =>
-    `relative rounded-lg px-3.5 py-2 text-sm font-bold transition ${
-      active
-        ? 'bg-emerald-50 dark:bg-zinc-900/70 dark:ring-1 dark:ring-emerald-400/20 text-energy shadow-sm'
-        : 'text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-800/70 hover:text-heading'
-    }`;
+    `relative rounded-lg px-3.5 py-2 text-sm font-bold transition ` +
+    (theme === 'light'
+      ? active
+        ? 'bg-amber-50 text-energy shadow-[0_0_28px_rgba(255,159,67,0.12)] ring-1 ring-amber-200'
+        : 'text-slate-600 hover:bg-amber-50 hover:text-energy'
+      : active
+        ? 'bg-white/[0.08] text-[#F5F7FA] shadow-[0_0_28px_rgba(79,209,255,0.12)] ring-1 ring-white/10'
+        : 'text-[#AAB3C2] hover:bg-white/[0.06] hover:text-[#F5F7FA]');
 
-  const mobileLinkClass = (active: boolean) =>
-    `block rounded-lg px-4 py-3 text-base font-bold transition ${
-      active
-        ? 'bg-emerald-50 dark:bg-zinc-900/70 dark:ring-1 dark:ring-emerald-400/20 text-energy'
-        : 'text-heading hover:bg-slate-50 dark:hover:bg-zinc-800/70 active:bg-slate-100 dark:active:bg-zinc-800'
-    }`;
+  const mobileLinkClass = (active = false) =>
+    `block rounded-lg px-4 py-3 text-base font-bold transition ` +
+    (theme === 'light'
+      ? active
+        ? 'bg-amber-50 text-energy ring-1 ring-amber-200'
+        : 'text-slate-600 hover:bg-amber-50 hover:text-energy'
+      : active
+        ? 'bg-white/[0.08] text-[#F5F7FA] ring-1 ring-white/10'
+        : 'text-[#AAB3C2] hover:bg-white/[0.06] hover:text-[#F5F7FA]');
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between rounded-2xl border border-white/75 dark:border-zinc-700/60 bg-white/86 dark:bg-zinc-950/90 dark:bg-[linear-gradient(135deg,rgba(8,10,13,0.94),rgba(23,25,31,0.90))] px-3 py-2.5 shadow-[0_12px_44px_rgba(15,23,42,0.10)] dark:shadow-[0_18px_54px_rgba(0,0,0,0.48)] backdrop-blur-2xl sm:px-4">
-
-        {/* Logo */}
-        <Link to="/" onClick={close} className="group flex min-w-0 items-center gap-3 font-black text-heading">
-          <span className="relative grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-amber-200 via-white to-emerald-100 shadow-green">
+      <nav
+        className={`mx-auto flex max-w-7xl items-center justify-between rounded-xl border px-3 py-2.5 transition-all duration-300 sm:px-4 ` +
+          (theme === 'light'
+            ? (scrolled
+                ? 'border-amber-200/70 bg-white/90 shadow-card backdrop-blur-xl'
+                : 'border-amber-200/40 bg-white/80 shadow-none backdrop-blur-xl')
+            : (scrolled
+                ? 'border-white/10 bg-[#111315]/78 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl'
+                : 'border-white/[0.07] bg-[#181B1F]/38 shadow-none backdrop-blur-xl'))}
+      >
+        <Link to="/" onClick={close} className="group flex min-w-0 items-center gap-3 font-black">
+          <span className="relative grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-xl border border-white/10 bg-[linear-gradient(135deg,rgba(255,159,67,0.18),rgba(79,209,255,0.14))] shadow-[0_0_30px_rgba(255,159,67,0.16)]">
             <img src={Logo} alt="SolarPick Logo" className="h-9 w-9 rounded-lg object-cover transition-transform duration-200 group-hover:scale-105" />
           </span>
           <span className="min-w-0">
-            <span className="block truncate text-sm uppercase tracking-[0.22em] sm:text-[15px]">SolarPick</span>
-            <span className="hidden text-[11px] font-extrabold uppercase tracking-wide text-muted sm:block">Solar sizing studio</span>
+            <span className={"block truncate text-sm uppercase tracking-[0.22em] sm:text-[15px] " + (theme === 'light' ? 'text-navy' : 'text-[#F5F7FA]')}>SolarPick</span>
+            <span className="hidden text-[11px] font-extrabold uppercase tracking-wide sm:block" style={{ color: theme === 'light' ? '#64748B' : '#AAB3C2' }}>Energy intelligence</span>
           </span>
         </Link>
 
-        {/* Desktop nav links */}
-        <div className="hidden items-center gap-1 md:flex">
-          {navItems.map((item) => (
+        <div className="hidden items-center gap-1 lg:flex">
+          {routeItems.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
               end={item.end}
-              className={({ isActive }) => linkClass(isActive && (item.to !== '/' || location.pathname === '/'))}
+              className={({ isActive }) => linkClass(isActive && (item.to !== '/' || isHome))}
             >
               {item.label}
             </NavLink>
           ))}
-          {location.pathname === '/' && (
-            <a href="#faq" className={linkClass(false)}>FAQ</a>
-          )}
+          {isHome && homeAnchors.map((item) => (
+            <a key={item.href} href={item.href} className={linkClass(false)}>
+              {item.label}
+            </a>
+          ))}
         </div>
 
-        {/* Desktop right actions */}
         <div className="hidden items-center gap-3 md:flex">
-          {/* Theme toggle — replaces the old "BG solar" badge */}
           <button
             onClick={toggleTheme}
-            className="hidden items-center gap-2 rounded-lg border border-slate-200 dark:border-zinc-700 bg-slate-100 dark:bg-zinc-900 px-3 py-2 text-xs font-black uppercase tracking-wide text-slate-700 dark:text-zinc-300 hover:bg-slate-200 dark:hover:bg-zinc-800 transition cursor-pointer lg:inline-flex"
-            title={theme === 'light' ? 'Тъмна тема' : 'Светла тема'}
+            className={"grid h-10 w-10 place-items-center rounded-lg border transition " + (theme === 'light' ? 'border-slate-200 bg-slate-100 text-slate-500 hover:border-amber-300 hover:bg-amber-50 hover:text-energy' : 'border border-white/10 bg-white/[0.05] text-[#AAB3C2] hover:border-[#FFD166]/30 hover:bg-[#FFD166]/10 hover:text-[#FFD166]')}
+            title={theme === 'light' ? 'Dark theme' : 'Light theme'}
+            aria-label={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}
           >
-            {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
-            {theme === 'light' ? 'Тъмна' : 'Светла'}
+            {theme === 'light' ? <Moon size={17} /> : <Sun size={17} />}
           </button>
           <UserMenu onAuth={onAuth} onProfile={onProfile} />
         </div>
 
-        {/* Mobile hamburger */}
         <button
-          className="grid h-11 w-11 place-items-center rounded-xl border border-border dark:border-zinc-700 bg-slate-100 dark:bg-zinc-900 text-slate-700 dark:text-zinc-300 md:hidden"
-          onClick={() => setOpen((v) => !v)}
-          aria-label="Меню"
+          className={"grid h-11 w-11 place-items-center rounded-xl border md:hidden " + (theme === 'light' ? 'border-slate-200 bg-slate-100 text-slate-500' : 'border border-white/10 bg-white/[0.06] text-[#F5F7FA]')}
+          onClick={() => setOpen((value) => !value)}
+          aria-label="Menu"
           aria-expanded={open}
         >
           {open ? <X size={20} /> : <Menu size={20} />}
         </button>
       </nav>
 
-      {/* Mobile dropdown */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -98,38 +127,34 @@ export function Navbar({ onAuth, onProfile }: { onAuth: (mode: 'login' | 'regist
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.98 }}
             transition={{ duration: 0.18 }}
-            className="mx-auto mt-2 max-w-7xl rounded-2xl border border-white/80 dark:border-zinc-700/60 bg-white/96 dark:bg-zinc-950/95 p-3 shadow-card-md backdrop-blur-xl md:hidden"
+            className="mx-auto mt-2 max-w-7xl rounded-xl border border-white/10 bg-[#111315]/92 p-3 shadow-[0_22px_70px_rgba(0,0,0,0.34)] backdrop-blur-2xl md:hidden"
           >
-            <div className="mb-3 flex items-center gap-2 rounded-lg border border-sky-100 dark:border-zinc-700/70 bg-sky-50 dark:bg-zinc-900/70 px-3 py-2 text-xs font-black uppercase tracking-wide text-sky">
-              <Sparkles size={14} />
-              Smart energy advisor
-            </div>
-
             <div className="grid gap-1">
-              {navItems.map((item) => (
+              {routeItems.map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}
                   end={item.end}
                   onClick={close}
-                  className={({ isActive }) => mobileLinkClass(isActive && (item.to !== '/' || location.pathname === '/'))}
+                  className={({ isActive }) => mobileLinkClass(isActive && (item.to !== '/' || isHome))}
                 >
                   {item.label}
                 </NavLink>
               ))}
-              {location.pathname === '/' && (
-                <a href="#faq" onClick={close} className={mobileLinkClass(false)}>FAQ</a>
-              )}
+              {isHome && homeAnchors.map((item) => (
+                <a key={item.href} href={item.href} onClick={close} className={mobileLinkClass()}>
+                  {item.label}
+                </a>
+              ))}
             </div>
 
-            <div className="mt-3 space-y-1 border-t border-border dark:border-slate-700 pt-3">
-              {/* Theme toggle in mobile menu */}
+            <div className="mt-3 space-y-2 border-t border-white/10 pt-3">
               <button
                 onClick={() => { toggleTheme(); close(); }}
-                className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-base font-bold text-heading hover:bg-slate-50 dark:hover:bg-zinc-800/70 transition cursor-pointer"
+                className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-base font-bold text-[#AAB3C2] transition hover:bg-white/[0.06] hover:text-[#F5F7FA]"
               >
                 {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
-                {theme === 'light' ? 'Тъмна тема' : 'Светла тема'}
+                {theme === 'light' ? 'Dark theme' : 'Light theme'}
               </button>
               <UserMenu onAuth={onAuth} onProfile={onProfile} />
             </div>

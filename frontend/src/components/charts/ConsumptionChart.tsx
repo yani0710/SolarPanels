@@ -11,7 +11,7 @@ export function ConsumptionChart({ result }: { result: RecommendationResult }) {
     <div className="card h-72 min-w-0 p-3 sm:p-4">
       <div className="mb-2 flex items-center justify-between gap-3">
         <h3 className="font-black text-heading">Потребление</h3>
-        <span className="rounded-lg border border-green-200 bg-green-100 px-2 py-1 text-xs font-bold text-energy">kWh</span>
+        <span className="rounded-lg border border-energy/30 bg-amber-100 px-2 py-1 text-xs font-bold text-energy">kWh</span>
       </div>
       <ResponsiveContainer width="100%" height="86%">
         <BarChart data={data} margin={{ top: 8, right: 8, left: -24, bottom: 0 }}>

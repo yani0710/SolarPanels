@@ -16,8 +16,8 @@ export function ToastContainer() {
             exit={{ opacity: 0, y: 8, scale: 0.95 }}
             transition={{ duration: 0.22, ease: 'easeOut' }}
             className={`pointer-events-auto flex items-center gap-3 rounded-2xl border px-4 py-3 shadow-card-md min-w-[260px] max-w-[90vw] ${
-              toast.type === 'success'
-                ? 'border-green-200 bg-white text-heading'
+               toast.type === 'success'
+                ? 'border-energy/30 bg-white text-heading'
                 : 'border-red-200 bg-white text-heading'
             }`}
           >

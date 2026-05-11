@@ -14,7 +14,7 @@ export function TopConsumers({ result }: { result: RecommendationResult }) {
             </div>
             <div className="flex flex-wrap gap-2 text-sm font-black">
               <span className="rounded-lg bg-slate-100 px-3 py-2 text-heading">{item.monthlyKwh} kWh/мес.</span>
-              <span className="rounded-lg bg-green-100 px-3 py-2 text-energy">{item.percent}%</span>
+              <span className="rounded-lg bg-amber-100 px-3 py-2 text-energy">{item.percent}%</span>
             </div>
           </div>
         ))}

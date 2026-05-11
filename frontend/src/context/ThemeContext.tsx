@@ -7,13 +7,13 @@ interface ThemeContextValue {
   toggleTheme: () => void;
 }
 
-const ThemeContext = createContext<ThemeContextValue>({ theme: 'light', toggleTheme: () => {} });
+const ThemeContext = createContext<ThemeContextValue>({ theme: 'dark', toggleTheme: () => {} });
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => {
     const saved = localStorage.getItem('theme') as Theme | null;
     if (saved === 'dark' || saved === 'light') return saved;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    return 'dark';
   });
 
   useEffect(() => {

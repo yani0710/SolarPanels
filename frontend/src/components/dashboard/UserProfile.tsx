@@ -131,7 +131,7 @@ export function UserProfile({ isOpen, onClose, onNewAppliance }: { isOpen: boole
                               <div className="font-black text-heading">{system.resultSnapshot.recommendedBatteryRange ?? system.recommendedBatteryKwh} kWh</div>
                               <div className="text-muted">батерия</div>
                             </div>
-                            <div className="rounded-lg bg-green-100 p-1.5 text-center">
+                            <div className="rounded-lg bg-amber-100 p-1.5 text-center">
                               <div className="font-black text-energy capitalize">{system.systemType}</div>
                               <div className="text-muted">тип</div>
                             </div>
@@ -140,7 +140,7 @@ export function UserProfile({ isOpen, onClose, onNewAppliance }: { isOpen: boole
                           {/* View full analysis button */}
                           <button
                             onClick={() => setSelectedSystem(system)}
-                            className="mt-2.5 flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-slate-50 py-2 text-xs font-bold text-slate-700 hover:border-energy hover:bg-green-50 hover:text-energy transition cursor-pointer"
+                            className="mt-2.5 flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-slate-50 py-2 text-xs font-bold text-slate-700 hover:border-energy hover:bg-amber-50 hover:text-energy transition cursor-pointer"
                           >
                             <Eye size={14} /> Виж пълен анализ
                           </button>
@@ -156,7 +156,7 @@ export function UserProfile({ isOpen, onClose, onNewAppliance }: { isOpen: boole
                     <h3 className="text-sm font-black uppercase tracking-wide text-heading">
                       Мои уреди ({appliances.length})
                     </h3>
-                    <button onClick={() => setShowAddForm(!showAddForm)} className="inline-flex items-center gap-1 rounded-xl bg-green-100 px-2.5 py-1.5 text-xs font-bold text-energy hover:bg-green-200 transition cursor-pointer">
+                    <button onClick={() => setShowAddForm(!showAddForm)} className="inline-flex items-center gap-1 rounded-xl bg-amber-100 px-2.5 py-1.5 text-xs font-bold text-energy hover:bg-amber-200 transition cursor-pointer">
                       <Plus size={14} /> Добави
                     </button>
                   </div>
@@ -166,7 +166,7 @@ export function UserProfile({ isOpen, onClose, onNewAppliance }: { isOpen: boole
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       onSubmit={handleAddAppliance}
-                      className="mb-4 space-y-2 rounded-2xl border border-green-200 bg-green-50 p-3"
+                      className="mb-4 space-y-2 rounded-2xl border border-energy/30 bg-amber-50 p-3"
                     >
                       <input type="text" placeholder="Название (напр. Фризер)" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="input-field h-9 text-sm" required />
                       <select value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} className="input-field h-9 text-sm">

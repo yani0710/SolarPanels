@@ -212,10 +212,10 @@ export const QuickAppliancePicker = forwardRef<
   const selectedCountForGroup = (groupId: string) =>
     selectedAppliances.filter((item) => item.groupId === groupId).length;
 
-  const chipActive = 'border-energy bg-green-50 text-energy';
-  const chipInactive = 'border-border bg-white text-slate-700 hover:border-energy hover:bg-green-50 hover:text-energy';
-  const smallBtnActive = 'border-energy bg-green-50 text-energy';
-  const smallBtnInactive = 'border-border bg-white text-slate-700 hover:border-energy hover:bg-green-50';
+  const chipActive = 'border-energy bg-amber-50 text-energy';
+  const chipInactive = 'border-border bg-white text-slate-700 hover:border-energy hover:bg-amber-50 hover:text-energy';
+  const smallBtnActive = 'border-energy bg-amber-50 text-energy';
+  const smallBtnInactive = 'border-border bg-white text-slate-700 hover:border-energy hover:bg-amber-50';
 
   return (
     <div className="space-y-3">
@@ -233,7 +233,7 @@ export const QuickAppliancePicker = forwardRef<
               onClick={() => toggleGroup(group.id)}
               className="flex w-full cursor-pointer items-center gap-3 px-4 py-3.5 text-left"
             >
-              <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl transition ${selectedCount > 0 ? 'bg-green-100 text-energy' : 'bg-slate-100 text-slate-500'}`}>
+              <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl transition ${selectedCount > 0 ? 'bg-amber-100 text-energy' : 'bg-slate-100 text-slate-500'}`}>
                 <Icon size={18} />
               </span>
               <div className="flex-1 min-w-0">
@@ -289,7 +289,7 @@ export const QuickAppliancePicker = forwardRef<
 
       {/* Custom saved appliances */}
       {customAppliances.length > 0 && (
-        <div className="rounded-2xl border border-green-200 bg-green-50 p-4">
+        <div className="rounded-2xl border border-energy/30 bg-amber-50 p-4">
           <div className="mb-3 text-xs font-black uppercase tracking-wide text-energy">Моите запазени уреди</div>
           <div className="flex flex-wrap gap-2">
             {customAppliances.map((item) => {
@@ -327,7 +327,7 @@ export const QuickAppliancePicker = forwardRef<
               const isCustomSize = appliance.groupId !== 'boiler' && (appliance.sizeMode === 'custom' || appliance.unitSizeModes?.some(m => m === 'custom'));
 
               return (
-                <div key={`${appliance.groupId}-${appliance.optionId}-${idx}`} className={`rounded-2xl border transition-all ${isEditing ? 'border-energy/50 bg-green-50' : 'card'}`}>
+                <div key={`${appliance.groupId}-${appliance.optionId}-${idx}`} className={`rounded-2xl border transition-all ${isEditing ? 'border-energy/50 bg-amber-50' : 'card'}`}>
                   {/* Appliance row header */}
                   <div className="flex items-center gap-3 p-3">
                     <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-slate-100 text-energy">
@@ -478,7 +478,7 @@ export const QuickAppliancePicker = forwardRef<
 
                       {/* Power info */}
                       {isFixedBoilerPreset || isFixedSizePreset ? (
-                        <div className="rounded-xl border border-energy/30 bg-green-50 px-3 py-2 text-[11px] font-semibold text-energy">За този preset мощността е фиксирана.</div>
+                        <div className="rounded-xl border border-energy/30 bg-amber-50 px-3 py-2 text-[11px] font-semibold text-energy">За този preset мощността е фиксирана.</div>
                       ) : (isCustomOption || isCustomSize) ? (
                         <div className="space-y-2">
                           <div className="rounded-xl border border-sky/25 bg-sky-50 px-3 py-2 text-[11px] font-semibold text-sky">Custom: въведи kW за уредите с custom режим.</div>
