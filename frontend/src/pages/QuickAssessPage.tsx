@@ -9,10 +9,12 @@ import { useAuth } from '../context/AuthContext';
 import { useAppContext } from '../context/AppContext';
 import { saveSystem } from '../api/savedSystems';
 import type { QuickAssessmentInput, RecommendationResult } from '../types';
+import { useLanguage } from '../context/LanguageContext';
 
 export function QuickAssessPage() {
   const { user } = useAuth();
   const { setAuthMode, bumpRefreshKey, showToast } = useAppContext();
+  const { t } = useLanguage();
   const [pendingSave, setPendingSave] = useState(false);
   const [input, setInput] = useState<QuickAssessmentInput | null>(null);
   const [result, setResult] = useState<RecommendationResult | null>(() => {
@@ -36,7 +38,7 @@ export function QuickAssessPage() {
     if (!result || !input) return;
     await saveSystem({ title: `${result.recommendedPowerRange} kWp · ${result.systemType}`, inputSnapshot: input, resultSnapshot: result });
     bumpRefreshKey();
-    showToast('Системата е запазена успешно!');
+    showToast(t('Pages', 'System saved successfully!'));
   };
 
   useEffect(() => {
@@ -57,10 +59,10 @@ export function QuickAssessPage() {
       <div className="border-b border-border bg-white px-4 pt-20 pb-6 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <Link to="/" className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-heading transition mb-4">
-            <ArrowLeft size={16} /> Начало
+            <ArrowLeft size={16} /> {t('Navbar', 'Home')}
           </Link>
-          <h1 className="text-2xl font-black text-heading sm:text-3xl">Бърза оценка</h1>
-          <p className="mt-2 text-sm text-muted">7 лесни стъпки · резултат за минути · без технически знания</p>
+          <h1 className="text-2xl font-black text-heading sm:text-3xl">{t('Navbar', 'Quick Estimate')}</h1>
+          <p className="mt-2 text-sm text-muted">{t('Pages', '7 easy steps · result in minutes · no technical knowledge')}</p>
         </div>
       </div>
 
@@ -77,7 +79,7 @@ export function QuickAssessPage() {
             onClick={() => { setResult(null); setInput(null); localStorage.removeItem('solarwise_quick_result'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
             className="btn-secondary mt-6 w-full sm:w-auto"
           >
-            <RotateCcw size={16} /> Нова оценка
+            <RotateCcw size={16} /> {t('Pages', 'New assessment')}
           </button>
         </Section>
       )}
