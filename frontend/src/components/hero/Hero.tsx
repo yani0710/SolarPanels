@@ -13,6 +13,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { HeroVisual } from './HeroVisual';
 import { useTheme } from '../../context/ThemeContext';
+import { useLanguage } from '../../context/LanguageContext';
 
 const proofPoints = [
   'Roof, usage, battery, and grid signals in one model',
@@ -29,6 +30,7 @@ const metrics = [
 
 export function Hero() {
   const { theme } = useTheme();
+  const { t } = useLanguage();
   const isLight = theme === 'light';
 
   return (
@@ -57,22 +59,22 @@ export function Hero() {
         >
           <div className={"mb-6 inline-flex max-w-full items-center gap-2 rounded-full border px-4 py-2 text-xs font-extrabold uppercase tracking-[0.18em] shadow-[0_0_32px_rgba(255,159,67,0.12)] backdrop-blur-xl " + (isLight ? "border-amber-200/60 bg-amber-50/80 text-energy" : "border-white/10 bg-white/[0.06] text-[#FFD166]")}>
             <Sparkles size={14} className="shrink-0 text-[#FF9F43]" />
-            <span className="truncate">Premium energy intelligence</span>
+            <span className="truncate">{t('Hero', 'Premium energy intelligence')}</span>
           </div>
 
           <h1 className={"max-w-[22rem] text-4xl font-black leading-[1.02] sm:max-w-4xl sm:text-6xl sm:leading-[0.96] lg:text-7xl " + (isLight ? "text-navy" : "text-[#F5F7FA]")}>
-            Design your solar future before it reaches your roof.
+            {t('Hero', 'Design your solar future before it reaches your roof.')}
           </h1>
           <p className={"mt-6 max-w-2xl text-lg leading-8 sm:text-xl " + (isLight ? "text-slate-600" : "text-[#AAB3C2]")}>
-            SolarPick models panels, battery capacity, household demand, and grid behavior in one cinematic workspace so you can size a cleaner energy system with confidence.
+            {t('Hero', 'SolarPick models panels, battery capacity, household demand, and grid behavior in one cinematic workspace so you can size a cleaner energy system with confidence.')}
           </p>
 
           <div className="mt-8 grid gap-3 sm:flex sm:flex-row">
             <Link to="/byrza-otsenka" className="btn-primary">
-              <Gauge size={18} /> Start quick estimate <ArrowRight size={18} />
+              <Gauge size={18} /> {t('Hero', 'Start quick estimate')} <ArrowRight size={18} />
             </Link>
             <Link to="/detaylna-otsenka" className="btn-secondary">
-              <SlidersHorizontal size={18} /> Build detailed plan
+              <SlidersHorizontal size={18} /> {t('Hero', 'Build detailed plan')}
             </Link>
           </div>
 
@@ -85,7 +87,7 @@ export function Hero() {
               >
                 <Icon size={18} className={"shrink-0 " + (isLight ? "text-energy" : "text-[#4FD1FF]")} />
                 <div className={"mt-3 text-2xl font-black " + (isLight ? "text-navy" : "text-[#F5F7FA]")}>{value}</div>
-                <div className={"mt-1 text-xs font-bold uppercase tracking-[0.16em] " + (isLight ? "text-slate-500" : "text-[#AAB3C2]")}>{label}</div>
+                <div className={"mt-1 text-xs font-bold uppercase tracking-[0.16em] " + (isLight ? "text-slate-500" : "text-[#AAB3C2]")}>{t('Hero', label)}</div>
               </motion.div>
             ))}
           </div>
@@ -96,7 +98,7 @@ export function Hero() {
                 <span className={"grid h-7 w-7 shrink-0 place-items-center rounded-lg border " + (isLight ? "border-energy/20 bg-amber-50 text-energy" : "border-[#FFD166]/20 bg-[#FFD166]/10 text-[#FFD166]")}>
                   <ShieldCheck size={15} />
                 </span>
-                {point}
+                {t('Hero', point)}
               </div>
             ))}
           </div>
@@ -110,11 +112,11 @@ export function Hero() {
             <div className={"mb-4 flex items-center justify-between gap-3 text-xs font-black uppercase tracking-[0.16em] " + (isLight ? "text-slate-500" : "text-[#AAB3C2]")}>
               <span className="inline-flex items-center gap-2">
                 <Layers3 size={14} className={isLight ? "text-energy" : "text-[#4FD1FF]"} />
-                Live energy map
+                {t('Hero', 'Live energy map')}
               </span>
               <span className={"inline-flex items-center gap-1 " + (isLight ? "text-energy" : "text-[#FFD166]")}>
                 <Zap size={13} />
-                active
+                {t('Hero', 'active')}
               </span>
             </div>
             <div className="grid gap-3 sm:grid-cols-3">
@@ -124,8 +126,8 @@ export function Hero() {
                 ['Backup signal', 'battery resilience', '52%']
               ].map(([label, text, width]) => (
                 <div key={label} className={"rounded-lg border p-3 " + (isLight ? "border-slate-200 bg-white/60" : "border-white/10 bg-[#111315]/58")}>
-                  <div className={"text-sm font-black " + (isLight ? "text-navy" : "text-[#F5F7FA]")}>{label}</div>
-                  <div className={"mt-1 text-xs font-semibold " + (isLight ? "text-slate-500" : "text-[#AAB3C2]")}>{text}</div>
+                  <div className={"text-sm font-black " + (isLight ? "text-navy" : "text-[#F5F7FA]")}>{t('Hero', label)}</div>
+                  <div className={"mt-1 text-xs font-semibold " + (isLight ? "text-slate-500" : "text-[#AAB3C2]")}>{t('Hero', text)}</div>
                   <div className={"mt-3 h-1.5 overflow-hidden rounded-full " + (isLight ? "bg-slate-200" : "bg-white/10")}>
                     <motion.div
                       initial={{ width: 0 }}

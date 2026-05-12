@@ -2,6 +2,7 @@ import { ChevronDown } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import { useTheme } from '../../context/ThemeContext';
+import { useLanguage } from '../../context/LanguageContext';
 
 const items = [
   ['What does kWp mean?', 'kWp is the peak capacity of a solar array under standard test conditions. It is useful for sizing, but real production changes with weather, orientation, season, and shade.'],
@@ -14,6 +15,7 @@ const items = [
 
 export function FAQ() {
   const { theme } = useTheme();
+  const { t } = useLanguage();
   const isLight = theme === 'light';
   const [open, setOpen] = useState(0);
 
@@ -25,7 +27,7 @@ export function FAQ() {
             onClick={() => setOpen(open === index ? -1 : index)}
             className={"flex w-full cursor-pointer items-center justify-between gap-4 px-5 py-4 text-left font-black transition-colors " + (isLight ? "text-navy hover:bg-slate-50" : "text-[#F5F7FA] hover:bg-white/[0.04]")}
           >
-            {question}
+            {t('FAQ', question)}
             <ChevronDown
               size={20}
               className={`shrink-0 text-[#4FD1FF] transition-transform duration-200 ${open === index ? 'rotate-180' : ''}`}
@@ -39,7 +41,7 @@ export function FAQ() {
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
-                <p className={"border-t px-5 pb-5 pt-4 leading-7 " + (isLight ? "border-slate-200 text-slate-600" : "border-white/10 text-[#AAB3C2]")}>{answer}</p>
+                <p className={"border-t px-5 pb-5 pt-4 leading-7 " + (isLight ? "border-slate-200 text-slate-600" : "border-white/10 text-[#AAB3C2]")}>{t('FAQ', answer)}</p>
               </motion.div>
             )}
           </AnimatePresence>

@@ -1,9 +1,10 @@
-import { Menu, Moon, Sun, X } from 'lucide-react';
+import { Languages, Menu, Moon, Sun, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { UserMenu } from '../auth/UserMenu';
 import { useTheme } from '../../context/ThemeContext';
+import { useLanguage } from '../../context/LanguageContext';
 import Logo from '../../assets/SolarPick.png';
 
 const routeItems = [
@@ -23,6 +24,7 @@ export function Navbar({ onAuth, onProfile }: { onAuth: (mode: 'login' | 'regist
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
+  const { language, toggleLanguage, t } = useLanguage();
   const isHome = location.pathname === '/';
 
   useEffect(() => {
@@ -76,7 +78,7 @@ export function Navbar({ onAuth, onProfile }: { onAuth: (mode: 'login' | 'regist
           </span>
           <span className="min-w-0">
             <span className={"block truncate text-sm uppercase tracking-[0.22em] sm:text-[15px] " + (theme === 'light' ? 'text-navy' : 'text-[#F5F7FA]')}>SolarPick</span>
-            <span className="hidden text-[11px] font-extrabold uppercase tracking-wide sm:block" style={{ color: theme === 'light' ? '#64748B' : '#AAB3C2' }}>Energy intelligence</span>
+            <span className="hidden text-[11px] font-extrabold uppercase tracking-wide sm:block" style={{ color: theme === 'light' ? '#64748B' : '#AAB3C2' }}>{t('Navbar', 'Energy intelligence')}</span>
           </span>
         </Link>
 
@@ -88,12 +90,12 @@ export function Navbar({ onAuth, onProfile }: { onAuth: (mode: 'login' | 'regist
               end={item.end}
               className={({ isActive }) => linkClass(isActive && (item.to !== '/' || isHome))}
             >
-              {item.label}
+              {t('Navbar', item.label)}
             </NavLink>
           ))}
           {isHome && homeAnchors.map((item) => (
             <a key={item.href} href={item.href} className={linkClass(false)}>
-              {item.label}
+              {t('Navbar', item.label)}
             </a>
           ))}
         </div>
@@ -102,10 +104,19 @@ export function Navbar({ onAuth, onProfile }: { onAuth: (mode: 'login' | 'regist
           <button
             onClick={toggleTheme}
             className={"grid h-10 w-10 place-items-center rounded-lg border transition " + (theme === 'light' ? 'border-slate-200 bg-slate-100 text-slate-500 hover:border-amber-300 hover:bg-amber-50 hover:text-energy' : 'border border-white/10 bg-white/[0.05] text-[#AAB3C2] hover:border-[#FFD166]/30 hover:bg-[#FFD166]/10 hover:text-[#FFD166]')}
-            title={theme === 'light' ? 'Dark theme' : 'Light theme'}
+            title={theme === 'light' ? t('Navbar', 'Dark theme') : t('Navbar', 'Light theme')}
             aria-label={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}
           >
             {theme === 'light' ? <Moon size={17} /> : <Sun size={17} />}
+          </button>
+          <button
+            onClick={toggleLanguage}
+            className={"flex h-10 items-center gap-1.5 rounded-lg border px-2.5 font-bold text-xs transition " + (theme === 'light' ? 'border-slate-200 bg-slate-100 text-slate-500 hover:border-amber-300 hover:bg-amber-50 hover:text-energy' : 'border border-white/10 bg-white/[0.05] text-[#AAB3C2] hover:border-[#FFD166]/30 hover:bg-[#FFD166]/10 hover:text-[#FFD166]')}
+            title={language === 'bg' ? 'English' : 'Български'}
+            aria-label={language === 'bg' ? 'Switch to English' : 'Превключи на български'}
+          >
+            <Languages size={15} />
+            <span>{language === 'bg' ? 'BG' : 'EN'}</span>
           </button>
           <UserMenu onAuth={onAuth} onProfile={onProfile} />
         </div>
@@ -138,12 +149,12 @@ export function Navbar({ onAuth, onProfile }: { onAuth: (mode: 'login' | 'regist
                   onClick={close}
                   className={({ isActive }) => mobileLinkClass(isActive && (item.to !== '/' || isHome))}
                 >
-                  {item.label}
+                  {t('Navbar', item.label)}
                 </NavLink>
               ))}
               {isHome && homeAnchors.map((item) => (
                 <a key={item.href} href={item.href} onClick={close} className={mobileLinkClass()}>
-                  {item.label}
+                  {t('Navbar', item.label)}
                 </a>
               ))}
             </div>
@@ -154,7 +165,14 @@ export function Navbar({ onAuth, onProfile }: { onAuth: (mode: 'login' | 'regist
                 className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-base font-bold text-[#AAB3C2] transition hover:bg-white/[0.06] hover:text-[#F5F7FA]"
               >
                 {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
-                {theme === 'light' ? 'Dark theme' : 'Light theme'}
+                {theme === 'light' ? t('Navbar', 'Dark theme') : t('Navbar', 'Light theme')}
+              </button>
+              <button
+                onClick={() => { toggleLanguage(); close(); }}
+                className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-base font-bold text-[#AAB3C2] transition hover:bg-white/[0.06] hover:text-[#F5F7FA]"
+              >
+                <Languages size={18} />
+                {t('Navbar', 'Български')}
               </button>
               <UserMenu onAuth={onAuth} onProfile={onProfile} />
             </div>

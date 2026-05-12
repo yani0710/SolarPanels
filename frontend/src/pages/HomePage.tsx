@@ -23,6 +23,7 @@ import { Section } from '../components/layout/Section';
 import { FAQ } from '../components/education/FAQ';
 import { Footer } from '../components/layout/Footer';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const features = [
   ['3D system modeling', 'A visual energy map connects roof, panels, inverter, battery, home load, and grid behavior.', Layers3],
@@ -55,6 +56,7 @@ const testimonials = [
 
 export function HomePage() {
   const { theme } = useTheme();
+  const { t } = useLanguage();
   const isLight = theme === 'light';
 
   return (
@@ -64,12 +66,12 @@ export function HomePage() {
       <Section id="features">
         <div className="grid gap-8 lg:grid-cols-[0.74fr_1.26fr] lg:items-end">
           <div>
-            <p className={"text-sm font-black uppercase tracking-[0.2em] " + (isLight ? "text-navy" : "text-[#FF9F43]")}>Intelligent platform</p>
+            <p className={"text-sm font-black uppercase tracking-[0.2em] " + (isLight ? "text-navy" : "text-[#FF9F43]")}>{t('HomePage', 'Intelligent platform')}</p>
             <h2 className={"mt-3 text-3xl font-black leading-tight sm:text-4xl " + (isLight ? "text-navy" : "text-[#F5F7FA]")}>
-              Premium energy planning without burying people in technical noise.
+              {t('HomePage', 'Premium energy planning without burying people in technical noise.')}
             </h2>
             <p className={"mt-4 text-base leading-7 " + (isLight ? "text-slate-600" : "text-[#AAB3C2]")}>
-              The interface keeps the 3D system at the center while the surrounding panels surface only the decisions that matter: size, savings, battery value, and confidence.
+              {t('HomePage', 'The interface keeps the 3D system at the center while the surrounding panels surface only the decisions that matter: size, savings, battery value, and confidence.')}
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
@@ -86,8 +88,8 @@ export function HomePage() {
                 <div className={"grid h-11 w-11 place-items-center rounded-xl border shadow-[0_0_26px_rgba(79,209,255,0.10)] transition group-hover:border-[#FFD166]/24 group-hover:text-[#FFD166] " + (isLight ? "border-sky-200 bg-sky-50 text-sky" : "border-[#4FD1FF]/18 bg-[#4FD1FF]/10 text-[#4FD1FF]")}>
                   <Icon size={21} />
                 </div>
-                <h3 className={"mt-4 text-lg font-black " + (isLight ? "text-navy" : "text-[#F5F7FA]")}>{title}</h3>
-                <p className={"mt-2 text-sm leading-6 " + (isLight ? "text-slate-600" : "text-[#AAB3C2]")}>{text}</p>
+                <h3 className={"mt-4 text-lg font-black " + (isLight ? "text-navy" : "text-[#F5F7FA]")}>{t('HomePage', title)}</h3>
+                <p className={"mt-2 text-sm leading-6 " + (isLight ? "text-slate-600" : "text-[#AAB3C2]")}>{t('HomePage', text)}</p>
               </motion.div>
             ))}
           </div>
@@ -105,24 +107,24 @@ export function HomePage() {
           >
             <div className="mb-5 flex items-center justify-between gap-3">
               <div>
-                <p className={"text-xs font-black uppercase tracking-[0.18em] " + (isLight ? "text-navy" : "text-[#4FD1FF]")}>Calculator preview</p>
-                <h2 className={"mt-2 text-2xl font-black sm:text-3xl " + (isLight ? "text-navy" : "text-[#F5F7FA]")}>Configure a solar system in minutes.</h2>
+                <p className={"text-xs font-black uppercase tracking-[0.18em] " + (isLight ? "text-navy" : "text-[#4FD1FF]")}>{t('HomePage', 'Calculator preview')}</p>
+                <h2 className={"mt-2 text-2xl font-black sm:text-3xl " + (isLight ? "text-navy" : "text-[#F5F7FA]")}>{t('HomePage', 'Configure a solar system in minutes.')}</h2>
               </div>
               <div className={"hidden rounded-xl border px-3 py-2 text-xs font-black uppercase tracking-[0.14em] sm:block " + (isLight ? "border-amber-200 bg-amber-50 text-navy" : "border-[#FFD166]/20 bg-[#FFD166]/10 text-[#FFD166]")}>
-                live model
+                {t('HomePage', 'live model')}
               </div>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
-              {[
+              {([
                 ['Monthly usage', '680 kWh', '72%'],
                 ['Daytime load', '44%', '44%'],
                 ['Roof potential', '42 m2', '82%'],
                 ['Backup priority', 'Essential', '58%']
-              ].map(([label, value, width]) => (
+              ] as const).map(([label, value, width]) => (
                 <div key={label} className={"rounded-lg border p-4 " + (isLight ? "border-slate-200 bg-white/60" : "border-white/10 bg-[#111315]/58")}>
                   <div className="flex items-center justify-between gap-3">
-                    <span className={"text-sm font-bold " + (isLight ? "text-slate-500" : "text-[#AAB3C2]")}>{label}</span>
+                    <span className={"text-sm font-bold " + (isLight ? "text-slate-500" : "text-[#AAB3C2]")}>{t('HomePage', label)}</span>
                     <span className={"text-sm font-black " + (isLight ? "text-navy" : "text-[#F5F7FA]")}>{value}</span>
                   </div>
                   <div className={"mt-4 h-2 overflow-hidden rounded-full " + (isLight ? "bg-slate-200" : "bg-white/10")}>
@@ -140,13 +142,13 @@ export function HomePage() {
 
             <div className={"mt-5 rounded-lg border p-4 " + (isLight ? "border-sky-200 bg-sky-50" : "border-[#4FD1FF]/16 bg-[#4FD1FF]/[0.06]")}>
               <div className="grid gap-4 sm:grid-cols-3">
-                {[
+                {([
                   ['System', '5.8 kWp'],
                   ['Battery', '8 kWh'],
                   ['Payback', '6.4 yrs']
-                ].map(([label, value]) => (
+                ] as const).map(([label, value]) => (
                   <div key={label}>
-                    <div className={"text-xs font-black uppercase tracking-[0.16em] " + (isLight ? "text-slate-500" : "text-[#AAB3C2]")}>{label}</div>
+                    <div className={"text-xs font-black uppercase tracking-[0.16em] " + (isLight ? "text-slate-500" : "text-[#AAB3C2]")}>{t('HomePage', label)}</div>
                     <div className={"mt-1 text-2xl font-black " + (isLight ? "text-navy" : "text-[#F5F7FA]")}>{value}</div>
                   </div>
                 ))}
@@ -160,22 +162,22 @@ export function HomePage() {
             viewport={{ once: true, amount: 0.35 }}
             transition={{ duration: 0.55 }}
           >
-            <p className={"text-sm font-black uppercase tracking-[0.2em] " + (isLight ? "text-navy" : "text-[#FFD166]")}>Guided workflow</p>
+            <p className={"text-sm font-black uppercase tracking-[0.2em] " + (isLight ? "text-navy" : "text-[#FFD166]")}>{t('HomePage', 'Guided workflow')}</p>
             <h2 className={"mt-3 text-3xl font-black leading-tight sm:text-4xl " + (isLight ? "text-navy" : "text-[#F5F7FA]")}>
-              Start simple, then add detail only where it improves the recommendation.
+              {t('HomePage', 'Start simple, then add detail only where it improves the recommendation.')}
             </h2>
             <p className={"mt-4 text-base leading-7 " + (isLight ? "text-slate-600" : "text-[#AAB3C2]")}>
-              Quick Estimate gets you a clean first pass. Detailed Design adds appliances, backup behavior, and confidence signals when you want a sharper system plan.
+              {t('HomePage', 'Quick Estimate gets you a clean first pass. Detailed Design adds appliances, backup behavior, and confidence signals when you want a sharper system plan.')}
             </p>
             <div className="mt-7 grid gap-3 sm:grid-cols-2">
               <Link to="/byrza-otsenka" className="btn-primary">
                 <Gauge size={18} />
-                Quick estimate
+                {t('HomePage', 'Quick estimate')}
                 <ArrowRight size={18} />
               </Link>
               <Link to="/detaylna-otsenka" className="btn-secondary">
                 <SlidersHorizontal size={18} />
-                Detailed design
+                {t('HomePage', 'Detailed design')}
               </Link>
             </div>
           </motion.div>
@@ -185,18 +187,18 @@ export function HomePage() {
       <Section id="compare">
         <div className="mb-8 grid gap-4 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
           <div>
-            <p className={"text-sm font-black uppercase tracking-[0.2em] " + (isLight ? "text-navy" : "text-[#4FD1FF]")}>Compare scenarios</p>
-            <h2 className={"mt-3 text-3xl font-black leading-tight sm:text-4xl " + (isLight ? "text-navy" : "text-[#F5F7FA]")}>Choose the energy path that fits the way you actually live.</h2>
+            <p className={"text-sm font-black uppercase tracking-[0.2em] " + (isLight ? "text-navy" : "text-[#4FD1FF]")}>{t('HomePage', 'Compare scenarios')}</p>
+            <h2 className={"mt-3 text-3xl font-black leading-tight sm:text-4xl " + (isLight ? "text-navy" : "text-[#F5F7FA]")}>{t('HomePage', 'Choose the energy path that fits the way you actually live.')}</h2>
           </div>
           <p className={"text-base leading-7 " + (isLight ? "text-slate-600" : "text-[#AAB3C2]")}>
-            The table favors clarity over jargon, so homeowners can compare budget, resilience, and autonomy without decoding installer terminology.
+            {t('HomePage', 'The table favors clarity over jargon, so homeowners can compare budget, resilience, and autonomy without decoding installer terminology.')}
           </p>
         </div>
 
         <div className={"overflow-hidden rounded-xl border shadow-[0_24px_80px_rgba(0,0,0,0.24)] backdrop-blur-xl " + (isLight ? "border-slate-200 bg-white/80" : "border-white/10 bg-[#181B1F]/72")}>
           <div className={"grid min-w-[760px] grid-cols-4 border-b text-sm font-black " + (isLight ? "border-slate-200 bg-slate-50 text-navy" : "border-white/10 bg-white/[0.04] text-[#F5F7FA]")}>
-            {['Scenario', 'Grid-tied', 'Hybrid', 'Backup-first'].map((heading) => (
-              <div key={heading} className="px-5 py-4">{heading}</div>
+            {(['Scenario', 'Grid-tied', 'Hybrid', 'Backup-first'] as const).map((heading) => (
+              <div key={heading} className="px-5 py-4">{t('HomePage', heading)}</div>
             ))}
           </div>
           <div className={"min-w-[760px] divide-y " + (isLight ? "divide-slate-200" : "divide-white/10")}>
@@ -205,7 +207,7 @@ export function HomePage() {
                 {row.map((cell, index) => (
                   <div key={cell} className={`px-5 py-4 ${index === 0 ? (isLight ? 'font-black text-navy' : 'font-black text-[#F5F7FA]') : (isLight ? 'font-semibold text-slate-600' : 'font-semibold text-[#AAB3C2]')}`}>
                     {index > 0 && row[0] !== 'Best for' ? <CheckCircle2 size={15} className="mr-2 inline text-[#FFD166]" /> : null}
-                    {cell}
+                    {t('HomePage', cell)}
                   </div>
                 ))}
               </div>
@@ -217,12 +219,12 @@ export function HomePage() {
       <Section id="savings" className={(isLight ? "bg-slate-100/50" : "bg-[#111315]/36")}>
         <div className="grid gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
           <div>
-            <p className={"text-sm font-black uppercase tracking-[0.2em] " + (isLight ? "text-navy" : "text-[#FF9F43]")}>Savings intelligence</p>
+            <p className={"text-sm font-black uppercase tracking-[0.2em] " + (isLight ? "text-navy" : "text-[#FF9F43]")}>{t('HomePage', 'Savings intelligence')}</p>
             <h2 className={"mt-3 text-3xl font-black leading-tight sm:text-4xl " + (isLight ? "text-navy" : "text-[#F5F7FA]")}>
-              Practical savings, backup, and confidence metrics in one view.
+              {t('HomePage', 'Practical savings, backup, and confidence metrics in one view.')}
             </h2>
             <p className={"mt-4 text-base leading-7 " + (isLight ? "text-slate-600" : "text-[#AAB3C2]")}>
-              A premium visual system is useful only when the numbers stay readable. SolarPick keeps the dashboard calm, scannable, and decision-ready.
+              {t('HomePage', 'A premium visual system is useful only when the numbers stay readable. SolarPick keeps the dashboard calm, scannable, and decision-ready.')}
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -239,7 +241,7 @@ export function HomePage() {
                   <div className={"text-4xl font-black " + (isLight ? "text-navy" : "text-[#F5F7FA]")}>{value}</div>
                   <LineChart size={22} className="text-[#4FD1FF]" />
                 </div>
-                <p className={"mt-3 text-sm font-semibold leading-6 " + (isLight ? "text-slate-600" : "text-[#AAB3C2]")}>{label}</p>
+                <p className={"mt-3 text-sm font-semibold leading-6 " + (isLight ? "text-slate-600" : "text-[#AAB3C2]")}>{t('HomePage', label)}</p>
               </motion.div>
             ))}
           </div>
@@ -249,12 +251,12 @@ export function HomePage() {
       <Section id="testimonials">
         <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className={"text-sm font-black uppercase tracking-[0.2em] " + (isLight ? "text-navy" : "text-[#FFD166]")}>Customer signal</p>
-            <h2 className={"mt-3 text-3xl font-black leading-tight sm:text-4xl " + (isLight ? "text-navy" : "text-[#F5F7FA]")}>Built for confident decisions, not dashboard theater.</h2>
+            <p className={"text-sm font-black uppercase tracking-[0.2em] " + (isLight ? "text-navy" : "text-[#FFD166]")}>{t('HomePage', 'Customer signal')}</p>
+            <h2 className={"mt-3 text-3xl font-black leading-tight sm:text-4xl " + (isLight ? "text-navy" : "text-[#F5F7FA]")}>{t('HomePage', 'Built for confident decisions, not dashboard theater.')}</h2>
           </div>
             <div className={"inline-flex w-fit items-center gap-2 rounded-xl border px-4 py-3 text-sm font-black " + (isLight ? "border-sky-200 bg-sky-50 text-navy" : "border-[#4FD1FF]/18 bg-[#4FD1FF]/10 text-[#A6EAFF]")}>
             <Sparkles size={17} />
-            Renewable energy, premium UX
+            {t('HomePage', 'Renewable energy, premium UX')}
           </div>
         </div>
         <div className="grid gap-4 md:grid-cols-3">
@@ -268,7 +270,7 @@ export function HomePage() {
               whileHover={{ y: -5 }}
               className={"rounded-xl border p-5 shadow-[0_18px_55px_rgba(0,0,0,0.20)] backdrop-blur-xl " + (isLight ? "border-slate-200 bg-white/80" : "border-white/10 bg-[#181B1F]/72")}
             >
-              <blockquote className={"text-sm font-semibold leading-7 " + (isLight ? "text-slate-700" : "text-[#D7DEE9]")}>"{quote}"</blockquote>
+              <blockquote className={"text-sm font-semibold leading-7 " + (isLight ? "text-slate-700" : "text-[#D7DEE9]")}>"{t('Testimonials', quote)}"</blockquote>
               <figcaption className={"mt-5 border-t pt-4 " + (isLight ? "border-slate-200" : "border-white/10")}>
                 <div className={"font-black " + (isLight ? "text-navy" : "text-[#F5F7FA]")}>{name}</div>
                 <div className={"text-sm font-semibold " + (isLight ? "text-slate-500" : "text-[#AAB3C2]")}>{role}</div>
@@ -282,10 +284,10 @@ export function HomePage() {
         <div className="mb-8 grid gap-4 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
           <div>
             <p className={"text-sm font-black uppercase tracking-[0.2em] " + (isLight ? "text-navy" : "text-[#FF9F43]")}>FAQ</p>
-            <h2 className={"mt-3 text-3xl font-black leading-tight sm:text-4xl " + (isLight ? "text-navy" : "text-[#F5F7FA]")}>Solar planning, made plain.</h2>
+            <h2 className={"mt-3 text-3xl font-black leading-tight sm:text-4xl " + (isLight ? "text-navy" : "text-[#F5F7FA]")}>{t('HomePage', 'Solar planning, made plain.')}</h2>
           </div>
           <p className={"text-base leading-7 " + (isLight ? "text-slate-600" : "text-[#AAB3C2]")}>
-            Short answers for the questions that usually slow down a solar decision.
+            {t('HomePage', 'Short answers for the questions that usually slow down a solar decision.')}
           </p>
         </div>
         <FAQ />
@@ -296,19 +298,19 @@ export function HomePage() {
           <div>
             <div className={"inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-black uppercase tracking-[0.16em] " + (isLight ? "border-amber-200 bg-amber-50 text-energy" : "border-white/10 bg-white/[0.06] text-[#FFD166]")}>
               <Zap size={14} />
-              Ready when you are
+              {t('HomePage', 'Ready when you are')}
             </div>
             <h2 className={"mt-4 max-w-2xl text-3xl font-black leading-tight sm:text-4xl " + (isLight ? "text-navy" : "text-[#F5F7FA]")}>
-              Turn your home energy profile into a clear solar plan.
+              {t('HomePage', 'Turn your home energy profile into a clear solar plan.')}
             </h2>
           </div>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row lg:mt-0">
             <Link to="/byrza-otsenka" className="btn-primary">
-              Start now
+              {t('HomePage', 'Start now')}
               <ArrowRight size={18} />
             </Link>
             <Link to="/detaylna-otsenka" className="btn-secondary">
-              Explore details
+              {t('HomePage', 'Explore details')}
             </Link>
           </div>
         </div>
