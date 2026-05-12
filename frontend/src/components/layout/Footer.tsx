@@ -1,5 +1,6 @@
 import { BatteryCharging, Gauge, Mail, MapPin, ShieldCheck, SunMedium } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../../context/LanguageContext';
 import Logo from '../../assets/SolarPick.png';
 
 const columns = [
@@ -9,6 +10,8 @@ const columns = [
 ] as const;
 
 export function Footer() {
+  const { t } = useLanguage();
+
   return (
     <footer className="border-t border-white/10 bg-[#111315]/92 px-4 py-12 backdrop-blur-xl">
       <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.15fr_1.45fr]">
@@ -19,22 +22,22 @@ export function Footer() {
             </span>
             <span>
               <span className="block text-sm font-black uppercase tracking-[0.22em] text-[#F5F7FA]">SolarPick</span>
-              <span className="text-xs font-bold uppercase tracking-[0.16em] text-[#AAB3C2]">Energy intelligence</span>
+              <span className="text-xs font-bold uppercase tracking-[0.16em] text-[#AAB3C2]">{t('Footer', 'Energy intelligence')}</span>
             </span>
           </Link>
           <p className="mt-5 max-w-md text-sm leading-7 text-[#AAB3C2]">
-            A premium renewable-energy planning platform for sizing solar arrays, batteries, and practical home energy scenarios before installation.
+            {t('Footer', 'A premium renewable-energy planning platform for sizing solar arrays, batteries, and practical home energy scenarios before installation.')}
           </p>
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            {[
+            {([
               [SunMedium, 'Solar-first planning'],
               [BatteryCharging, 'Battery-ready scenarios'],
               [Gauge, 'Decision-grade estimates'],
               [ShieldCheck, 'Clear confidence signals']
-            ].map(([Icon, label]) => (
-              <div key={label as string} className="flex items-center gap-2 text-sm font-semibold text-[#D7DEE9]">
+            ] as const).map(([Icon, label]) => (
+              <div key={label} className="flex items-center gap-2 text-sm font-semibold text-[#D7DEE9]">
                 <Icon size={16} className="text-[#FFD166]" />
-                {label as string}
+                {t('Footer', label)}
               </div>
             ))}
           </div>
@@ -43,12 +46,12 @@ export function Footer() {
         <div className="grid gap-8 sm:grid-cols-3">
           {columns.map(([title, items]) => (
             <div key={title}>
-              <h3 className="text-sm font-black uppercase tracking-[0.18em] text-[#F5F7FA]">{title}</h3>
+              <h3 className="text-sm font-black uppercase tracking-[0.18em] text-[#F5F7FA]">{t('Footer', title)}</h3>
               <ul className="mt-4 space-y-3">
                 {items.map((item) => (
                   <li key={item}>
                     <a href={item === 'Quick estimate' ? '/byrza-otsenka' : item === 'Detailed design' ? '/detaylna-otsenka' : '#top'} className="text-sm font-semibold text-[#AAB3C2] transition hover:text-[#FFD166]">
-                      {item}
+                      {t('Footer', item)}
                     </a>
                   </li>
                 ))}
@@ -59,9 +62,9 @@ export function Footer() {
       </div>
 
       <div className="mx-auto mt-10 flex max-w-7xl flex-col gap-4 border-t border-white/10 pt-6 text-sm font-semibold text-[#AAB3C2] sm:flex-row sm:items-center sm:justify-between">
-        <div>Energy-tech MVP 2026. Estimates require professional validation before installation.</div>
+        <div>{t('Footer', 'Energy-tech MVP 2026. Estimates require professional validation before installation.')}</div>
         <div className="flex flex-wrap gap-4">
-          <span className="inline-flex items-center gap-2"><MapPin size={15} className="text-[#4FD1FF]" /> Bulgaria and EU-ready</span>
+          <span className="inline-flex items-center gap-2"><MapPin size={15} className="text-[#4FD1FF]" /> {t('Footer', 'Bulgaria and EU-ready')}</span>
           <span className="inline-flex items-center gap-2"><Mail size={15} className="text-[#4FD1FF]" /> hello@solarpick.energy</span>
         </div>
       </div>

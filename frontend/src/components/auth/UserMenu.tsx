@@ -1,10 +1,12 @@
 import { LogOut, User } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
+import { useLanguage } from '../../context/LanguageContext';
 
 export function UserMenu({ onAuth, onProfile }: { onAuth: (mode: 'login' | 'register') => void; onProfile: () => void }) {
   const { user, logout } = useAuth();
   const { theme } = useTheme();
+  const { t } = useLanguage();
   const isLight = theme === 'light';
 
   if (user) {
@@ -29,8 +31,8 @@ export function UserMenu({ onAuth, onProfile }: { onAuth: (mode: 'login' | 'regi
 
   return (
     <div className="flex gap-2">
-      <button onClick={() => onAuth('login')} className="btn-secondary min-h-[40px] px-4 py-2 text-sm">Sign in</button>
-      <button onClick={() => onAuth('register')} className="btn-primary min-h-[40px] px-4 py-2 text-sm">Create account</button>
+      <button onClick={() => onAuth('login')} className="btn-secondary min-h-[40px] px-4 py-2 text-sm">{t('UserMenu', 'Sign in')}</button>
+      <button onClick={() => onAuth('register')} className="btn-primary min-h-[40px] px-4 py-2 text-sm">{t('UserMenu', 'Create account')}</button>
     </div>
   );
 }

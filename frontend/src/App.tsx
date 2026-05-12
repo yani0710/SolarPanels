@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { AppProvider, useAppContext } from './context/AppContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { LanguageProvider } from './context/LanguageContext';
 import { Navbar } from './components/layout/Navbar';
 import { EnergyBackground } from './components/layout/EnergyBackground';
 import { UserProfile } from './components/dashboard/UserProfile';
@@ -42,11 +43,13 @@ export default function App() {
   return (
     <BrowserRouter>
       <ThemeProvider>
-        <AuthProvider>
-          <AppProvider>
-            <AppInner />
-          </AppProvider>
-        </AuthProvider>
+        <LanguageProvider>
+          <AuthProvider>
+            <AppProvider>
+              <AppInner />
+            </AppProvider>
+          </AuthProvider>
+        </LanguageProvider>
       </ThemeProvider>
     </BrowserRouter>
   );
