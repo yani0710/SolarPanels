@@ -7,21 +7,30 @@ import { REGION_SOLAR_DATA } from '../../data/regionSolarData';
 import { quickSelectionsToAppliances } from '../../data/quickApplianceGroups';
 import { listCustomAppliances } from '../../api/appliances';
 import { useAuth } from '../../context/AuthContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { QuickAppliancePicker } from './QuickAppliancePicker';
 import { Stepper } from './Stepper';
 
-const steps = ['Обект', 'Сметка', 'Уреди', 'Профил', 'Backup', 'Условия', 'Цел'];
 const defaultBills: Record<string, number> = { apartment: 61, house: 107, villa: 46, business: 164, farm: 130 };
-const objectLabels = { apartment: 'Апартамент', house: 'Къща', villa: 'Вила', business: 'Малък бизнес', farm: 'Ферма / селски имот' };
-const goalLabels = {
-  save: 'Да намаля сметката',
-  backup: 'Да имам резервно захранване',
-  independence: 'По-голяма независимост',
-  check: 'Да проверя дали има смисъл'
+
+const objectLabelsMap: Record<string, string> = {
+  apartment: 'Apartment',
+  house: 'House',
+  villa: 'Villa',
+  business: 'Small business',
+  farm: 'Farm / rural property'
+};
+
+const goalLabelsMap: Record<string, string> = {
+  save: 'Reduce my bill',
+  backup: 'Have backup power',
+  independence: 'More independence',
+  check: 'Check if it is worth it'
 };
 
 export function QuickAssessment({ onResult }: { onResult: (input: QuickAssessmentInput, result: RecommendationResult) => void }) {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const pickerRef = useRef<{ getAppliances: () => ApplianceInput[] }>(null);
   const [step, setStep] = useState(0);
   const [objectType, setObjectType] = useState<QuickAssessmentInput['objectType']>('house');
@@ -35,6 +44,18 @@ export function QuickAssessment({ onResult }: { onResult: (input: QuickAssessmen
   const [wantsBackup, setWantsBackup] = useState<QuickAssessmentInput['wantsBackup']>('unknown');
   const [sunCondition, setSunCondition] = useState<QuickAssessmentInput['sunCondition']>('urban');
   const [goal, setGoal] = useState<QuickAssessmentInput['goal']>('save');
+
+  const steps = [t('QuickAssessment', 'Object'), t('QuickAssessment', 'Bill'), t('QuickAssessment', 'Appliances'), t('QuickAssessment', 'Profile'), t('QuickAssessment', 'Backup Step'), t('QuickAssessment', 'Conditions'), t('QuickAssessment', 'Goal')];
+
+  const objectLabels: Record<string, string> = {};
+  for (const [key, labelKey] of Object.entries(objectLabelsMap)) {
+    objectLabels[key] = t('QuickAssessment', labelKey);
+  }
+
+  const goalLabels: Record<string, string> = {};
+  for (const [key, labelKey] of Object.entries(goalLabelsMap)) {
+    goalLabels[key] = t('QuickAssessment', labelKey);
+  }
 
   useEffect(() => {
     if (!user) {
@@ -69,10 +90,10 @@ export function QuickAssessment({ onResult }: { onResult: (input: QuickAssessmen
       <AnimatePresence mode="wait">
         <motion.div key={step} initial={{ opacity: 0, x: 18 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -18 }} transition={{ duration: 0.22 }}>
           {step === 0 && (
-            <Panel title="Какъв е обектът?" hint="Избери най-близкия вариант. Ако не си сигурен, къща е добра начална база.">
+            <Panel title={t('QuickAssessment', 'What is the property type?')} hint={t('QuickAssessment', 'Choose the closest option. If unsure, house is a good starting point.')}>
               <ChipGrid value={objectType} onChange={(value) => setObjectType(value as QuickAssessmentInput['objectType'])} options={Object.entries(objectLabels)} />
               <label className="mt-5 block">
-                <span className="mb-2 block text-sm font-bold text-heading">Регион</span>
+                <span className="mb-2 block text-sm font-bold text-heading">{t('QuickAssessment', 'Region')}</span>
                 <select value={region} onChange={(e) => setRegion(e.target.value)} className="input-field px-4 py-3">
                   {Object.entries(REGION_SOLAR_DATA).map(([id, item]) => <option key={id} value={id}>{item.label}</option>)}
                 </select>
@@ -81,7 +102,7 @@ export function QuickAssessment({ onResult }: { onResult: (input: QuickAssessmen
           )}
 
           {step === 1 && (
-            <Panel title="Колко е средната месечна сметка?" hint="Ако не знаеш, ще използваме разумна средна стойност според типа обект.">
+            <Panel title={t('QuickAssessment', 'What is the average monthly bill?')} hint={t('QuickAssessment', 'If you do not know, we will use a reasonable average.')}>
               <div className="rounded-xl border border-border bg-slate-50 p-4">
                 <input
                   type="range"
@@ -93,7 +114,7 @@ export function QuickAssessment({ onResult }: { onResult: (input: QuickAssessmen
                 />
                 <div className="mt-4 flex items-end justify-between gap-3">
                   <div className="text-4xl font-black text-heading">{billKnown ? monthlyBillEur : defaultBills[objectType]} <span className="text-xl text-muted">€</span></div>
-                  <div className="text-sm font-semibold text-muted">на месец</div>
+                  <div className="text-sm font-semibold text-muted">{t('QuickAssessment', 'per month')}</div>
                 </div>
               </div>
               <button
@@ -105,13 +126,13 @@ export function QuickAssessment({ onResult }: { onResult: (input: QuickAssessmen
                     : 'border-border bg-white text-muted hover:border-energy hover:text-energy'
                 }`}
               >
-                Не знам, използвай средна стойност
+                {t('QuickAssessment', 'I do not know, use average')}
               </button>
             </Panel>
           )}
 
           {step === 2 && (
-            <Panel title="Кои основни уреди използваш?" hint="Изборът помага да преценим вечерния товар и дали батерията има смисъл.">
+            <Panel title={t('QuickAssessment', 'Which main appliances do you use?')} hint={t('QuickAssessment', 'Helps assess evening load and whether battery makes sense.')}>
               <QuickAppliancePicker
                 ref={pickerRef}
                 selections={applianceSelections}
@@ -123,10 +144,10 @@ export function QuickAssessment({ onResult }: { onResult: (input: QuickAssessmen
             </Panel>
           )}
 
-          {step === 3 && <Panel title="Кога използваш най-много ток?" hint="Вечерното потребление е най-важният сигнал за батерия."><ChipGrid value={usageTime} onChange={(value) => setUsageTime(value as QuickAssessmentInput['usageTime'])} options={[['day', 'Основно през деня'], ['evening', 'Основно вечер'], ['balanced', 'Равномерно'], ['unknown', 'Не знам']]} /></Panel>}
-          {step === 4 && <Panel title="Искаш ли ток при спиране?" hint="Backup нуждите често променят системата от on-grid към hybrid."><ChipGrid value={wantsBackup} onChange={(value) => setWantsBackup(value as QuickAssessmentInput['wantsBackup'])} options={[['yes', 'Да, искам backup'], ['no', 'Не, само по-ниска сметка'], ['unknown', 'Не знам']]} /></Panel>}
-          {step === 5 && <Panel title="Какви са условията около имота?" hint="Силното засенчване може да направи препоръката несигурна."><ChipGrid value={sunCondition} onChange={(value) => setSunCondition(value as QuickAssessmentInput['sunCondition'])} options={[['open', 'Открито място'], ['urban', 'Нормални градски условия'], ['partialShade', 'Частично засенчване'], ['heavyShade', 'Много дървета / гора'], ['unknown', 'Не знам']]} /></Panel>}
-          {step === 6 && <Panel title="Каква е основната цел?" hint="Ще получиш честен резултат, включително ако соларна система не е добра идея."><ChipGrid value={goal} onChange={(value) => setGoal(value as QuickAssessmentInput['goal'])} options={Object.entries(goalLabels)} /></Panel>}
+          {step === 3 && <Panel title={t('QuickAssessment', 'When do you use the most electricity?')} hint={t('QuickAssessment', 'Evening consumption is the most important battery signal.')}><ChipGrid value={usageTime} onChange={(value) => setUsageTime(value as QuickAssessmentInput['usageTime'])} options={[['day', t('QuickAssessment', 'Mainly during the day')], ['evening', t('QuickAssessment', 'Mainly in the evening')], ['balanced', t('QuickAssessment', 'Balanced')], ['unknown', t('QuickAssessment', 'I do not know')]]} /></Panel>}
+          {step === 4 && <Panel title={t('QuickAssessment', 'Do you want backup power?')} hint={t('QuickAssessment', 'Backup needs often change the system from on-grid to hybrid.')}><ChipGrid value={wantsBackup} onChange={(value) => setWantsBackup(value as QuickAssessmentInput['wantsBackup'])} options={[['yes', t('QuickAssessment', 'Yes, I want backup')], ['no', t('QuickAssessment', 'No, just lower bill')], ['unknown', t('QuickAssessment', 'I do not know')]]} /></Panel>}
+          {step === 5 && <Panel title={t('QuickAssessment', 'What are the conditions around the property?')} hint={t('QuickAssessment', 'Heavy shading can make the recommendation uncertain.')}><ChipGrid value={sunCondition} onChange={(value) => setSunCondition(value as QuickAssessmentInput['sunCondition'])} options={[['open', t('QuickAssessment', 'Open area')], ['urban', t('QuickAssessment', 'Normal urban conditions')], ['partialShade', t('QuickAssessment', 'Partial shading')], ['heavyShade', t('QuickAssessment', 'Heavy trees / forest')], ['unknown', t('QuickAssessment', 'I do not know')]]} /></Panel>}
+          {step === 6 && <Panel title={t('QuickAssessment', 'What is the main goal?')} hint={t('QuickAssessment', 'You will get an honest result, including if solar is not a good idea.')}><ChipGrid value={goal} onChange={(value) => setGoal(value as QuickAssessmentInput['goal'])} options={Object.entries(goalLabels)} /></Panel>}
         </motion.div>
       </AnimatePresence>
 
@@ -137,15 +158,15 @@ export function QuickAssessment({ onResult }: { onResult: (input: QuickAssessmen
           className="btn-secondary disabled:opacity-40"
           disabled={step === 0}
         >
-          <ArrowLeft size={18} /> Назад
+          <ArrowLeft size={18} /> {t('QuickAssessment', 'Back')}
         </button>
         {step < steps.length - 1 ? (
           <button type="button" onClick={() => setStep((s) => s + 1)} className="btn-secondary">
-            Напред <ArrowRight size={18} />
+            {t('QuickAssessment', 'Next')} <ArrowRight size={18} />
           </button>
         ) : (
           <button type="button" onClick={submit} className="btn-primary col-span-2 sm:col-span-1">
-            <Sparkles size={18} /> Покажи препоръка
+            <Sparkles size={18} /> {t('QuickAssessment', 'Show recommendation')}
           </button>
         )}
       </div>
