@@ -8,6 +8,7 @@ import { quickSelectionsToAppliances } from '../../data/quickApplianceGroups';
 import { listCustomAppliances } from '../../api/appliances';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
+import { getRegionLabel } from '../../data/regionSolarData';
 import { QuickAppliancePicker } from './QuickAppliancePicker';
 import { Stepper } from './Stepper';
 
@@ -30,7 +31,7 @@ const goalLabelsMap: Record<string, string> = {
 
 export function QuickAssessment({ onResult }: { onResult: (input: QuickAssessmentInput, result: RecommendationResult) => void }) {
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const pickerRef = useRef<{ getAppliances: () => ApplianceInput[] }>(null);
   const [step, setStep] = useState(0);
   const [objectType, setObjectType] = useState<QuickAssessmentInput['objectType']>('house');
@@ -95,7 +96,7 @@ export function QuickAssessment({ onResult }: { onResult: (input: QuickAssessmen
               <label className="mt-5 block">
                 <span className="mb-2 block text-sm font-bold text-heading">{t('QuickAssessment', 'Region')}</span>
                 <select value={region} onChange={(e) => setRegion(e.target.value)} className="input-field px-4 py-3">
-                  {Object.entries(REGION_SOLAR_DATA).map(([id, item]) => <option key={id} value={id}>{item.label}</option>)}
+                  {Object.keys(REGION_SOLAR_DATA).map((id) => <option key={id} value={id}>{getRegionLabel(id, language)}</option>)}
                 </select>
               </label>
             </Panel>
