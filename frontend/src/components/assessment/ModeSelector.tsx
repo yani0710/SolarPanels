@@ -1,24 +1,27 @@
 import { CheckCircle2, Gauge, SlidersHorizontal } from 'lucide-react';
 import { motion } from 'framer-motion';
-
-const modes = [
-  {
-    id: 'quick',
-    title: 'Бърза оценка',
-    text: 'За хора, които искат резултат с малко въпроси и разумни средни стойности.',
-    icon: Gauge,
-    features: ['5-7 лесни стъпки', 'Не знам опции', 'Резултат за минути', 'Уреди чрез групи']
-  },
-  {
-    id: 'detailed',
-    title: 'Детайлна оценка',
-    text: 'Premium configurator с уреди, backup нужди и live summary панел.',
-    icon: SlidersHorizontal,
-    features: ['Конкретни уреди', 'Пресети и ръчни настройки', 'Backup анализ', 'По-точна препоръка']
-  }
-] as const;
+import { useLanguage } from '../../context/LanguageContext';
 
 export function ModeSelector({ mode, onChange }: { mode: 'quick' | 'detailed'; onChange: (mode: 'quick' | 'detailed') => void }) {
+  const { t } = useLanguage();
+
+  const modes = [
+    {
+      id: 'quick' as const,
+      titleKey: 'Quick assessment',
+      textKey: 'For people who want results with few questions and reasonable averages.',
+      icon: Gauge,
+      featureKeys: ['5-7 easy steps', 'I do not know options', 'Result in minutes', 'Appliances via groups']
+    },
+    {
+      id: 'detailed' as const,
+      titleKey: 'Detailed assessment',
+      textKey: 'Premium configurator with appliances, backup needs, and live summary panel.',
+      icon: SlidersHorizontal,
+      featureKeys: ['Specific appliances', 'Presets and manual settings', 'Backup analysis', 'More accurate recommendation']
+    }
+  ];
+
   return (
     <div className="grid gap-4 md:grid-cols-2">
       {modes.map((item, index) => {
@@ -45,15 +48,15 @@ export function ModeSelector({ mode, onChange }: { mode: 'quick' | 'detailed'; o
                 <Icon size={24} />
               </span>
               <div>
-                <div className="text-xl font-black text-heading">{item.title}</div>
-                <p className="mt-2 text-sm leading-6 text-muted">{item.text}</p>
+                <div className="text-xl font-black text-heading">{t('ModeSelector', item.titleKey)}</div>
+                <p className="mt-2 text-sm leading-6 text-muted">{t('ModeSelector', item.textKey)}</p>
               </div>
             </div>
             <div className="mt-5 grid gap-2 sm:grid-cols-2">
-              {item.features.map((feature) => (
-                <span key={feature} className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+              {item.featureKeys.map((key) => (
+                <span key={key} className="flex items-center gap-2 text-sm font-semibold text-slate-700">
                   <CheckCircle2 size={16} className="text-energy" />
-                  {feature}
+                  {t('ModeSelector', key)}
                 </span>
               ))}
             </div>

@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft, Calendar, X } from 'lucide-react';
 import { ResultsDashboard } from './ResultsDashboard';
 import type { SavedSystem } from '../../types';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface Props {
   system: SavedSystem | null;
@@ -9,6 +10,8 @@ interface Props {
 }
 
 export function SystemDetailModal({ system, onClose }: Props) {
+  const { t, language } = useLanguage();
+  const dateLocale = language === 'bg' ? 'bg-BG' : 'en-GB';
   return (
     <AnimatePresence>
       {system && (
@@ -37,19 +40,19 @@ export function SystemDetailModal({ system, onClose }: Props) {
                   onClick={onClose}
                   className="inline-flex items-center gap-2 rounded-xl border border-border bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200 transition cursor-pointer shrink-0"
                 >
-                  <ArrowLeft size={16} /> Назад
+                  <ArrowLeft size={16} /> {t('Results', 'Back')}
                 </button>
                 <div className="min-w-0 flex-1">
                   <h2 className="truncate text-lg font-black text-heading">{system.title}</h2>
                   <div className="flex items-center gap-1.5 text-xs text-muted">
                     <Calendar size={12} />
-                    <span>Запазена на {new Date(system.createdAt).toLocaleDateString('bg-BG', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                    <span>{t('Common', 'Saved on')} {new Date(system.createdAt).toLocaleDateString(dateLocale, { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                   </div>
                 </div>
                 <button
                   onClick={onClose}
                   className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-border bg-slate-100 text-slate-600 hover:bg-slate-200 transition cursor-pointer"
-                  aria-label="Затвори"
+                  aria-label={t('Common', 'Close')}
                 >
                   <X size={18} />
                 </button>

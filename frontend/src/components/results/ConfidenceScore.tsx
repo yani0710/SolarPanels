@@ -1,7 +1,9 @@
 import { motion } from 'framer-motion';
 import type { RecommendationResult } from '../../types';
+import { useLanguage } from '../../context/LanguageContext';
 
 export function ConfidenceScore({ result }: { result: RecommendationResult }) {
+  const { t } = useLanguage();
   const circumference = 2 * Math.PI * 28;
   const offset = circumference - (result.confidenceScore / 100) * circumference;
   return (
@@ -31,8 +33,8 @@ export function ConfidenceScore({ result }: { result: RecommendationResult }) {
         <div className="absolute inset-0 grid place-items-center text-sm font-black text-heading">{result.confidenceScore}%</div>
       </div>
       <div>
-        <div className="font-black text-heading">Увереност: {result.confidence}</div>
-        <p className="mt-1 text-sm leading-5 text-muted">По-ниска стойност означава повече средни стойности или несигурни условия.</p>
+        <div className="font-black text-heading">{t('Results', 'Confidence')}: {t('Results', result.confidence)}</div>
+        <p className="mt-1 text-sm leading-5 text-muted">{t('Results', 'Lower value means more average values or uncertain conditions.')}</p>
       </div>
     </div>
   );

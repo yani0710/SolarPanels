@@ -38,15 +38,29 @@ function rangeLabel(value: number, minStep = 0.5) {
   return `${low % 1 === 0 ? low.toFixed(0) : low.toFixed(1)}-${high % 1 === 0 ? high.toFixed(0) : high.toFixed(1)}`;
 }
 
-function topConsumers(appliances: Array<{ name: string; label?: string; daily: number }>, monthlyKwh: number) {
+function localizeField(text: string | { bg: string; en: string }, lang: 'bg' | 'en'): string {
+  if (typeof text === 'string') return text;
+  return text[lang] ?? '';
+}
+
+function topConsumers(appliances: Array<{ name: string | { bg: string; en: string }; label?: string | { bg: string; en: string }; daily: number }>, monthlyKwh: number) {
   return appliances
     .map((item) => {
       const monthly = item.daily * 30;
+      const nameBg = localizeField(item.name, 'bg');
+      const nameEn = localizeField(item.name, 'en');
+      const labelBg = item.label ? localizeField(item.label, 'bg') : '';
+      const labelEn = item.label ? localizeField(item.label, 'en') : '';
       return {
-        name: item.label ? `${item.name} · ${item.label}` : item.name,
+        name: {
+          bg: labelBg ? `${nameBg} · ${labelBg}` : nameBg,
+          en: labelEn ? `${nameEn} · ${labelEn}` : nameEn
+        },
         monthlyKwh: Math.round(monthly),
         percent: Math.round((monthly / Math.max(monthlyKwh, 1)) * 100),
-        advice: monthly > 120 ? 'Голям консуматор. Проверете време на работа и ефективност.' : 'Нормален принос към общото потребление.'
+        advice: monthly > 120
+          ? { bg: 'Голям консуматор. Проверете време на работа и ефективност.', en: 'High consumer. Check operating hours and efficiency.' }
+          : { bg: 'Нормален принос към общото потребление.', en: 'Normal contribution to total consumption.' }
       };
     })
     .sort((a, b) => b.monthlyKwh - a.monthlyKwh)
@@ -62,14 +76,14 @@ function confidencePenalty(appliances: ApplianceInput[]) {
 }
 
 function applianceMeta(appliances: ApplianceInput[]) {
-  return appliances.map((item) => ({ name: item.name, label: item.label, daily: calculateApplianceConsumption(item) }));
+  return appliances.map((item) => ({ name: item.name as string | { bg: string; en: string }, label: item.label as string | { bg: string; en: string } | undefined, daily: calculateApplianceConsumption(item) }));
 }
 
 function highStartWarnings(appliances: ApplianceInput[], systemType: SystemType, wantsBackup: boolean) {
   if (!wantsBackup && systemType !== 'off-grid') return [];
   const risky = appliances.filter((item) => item.highStartLoad && item.isCritical);
   if (!risky.length) return [];
-  return ['Някои критични уреди имат висок стартов ток. При backup/off-grid може да е нужен по-мощен инвертор.'];
+  return [{ bg: 'Някои критични уреди имат висок стартов ток. При backup/off-grid може да е нужен по-мощен инвертор.', en: 'Some critical appliances have a high startup current. For backup/off-grid a more powerful inverter may be needed.' }];
 }
 
 function finalize(params: {
@@ -125,8 +139,8 @@ function finalize(params: {
     criticalLoadKwh: Math.round((params.criticalKwh ?? 0) * 10) / 10,
     warnings,
     chartData: [
-      { name: 'Ден', value: Math.round(params.dayKwh * 10) / 10 },
-      { name: 'Вечер', value: Math.round(params.eveningKwh * 10) / 10 }
+      { name: 'Day', value: Math.round(params.dayKwh * 10) / 10 },
+      { name: 'Evening', value: Math.round(params.eveningKwh * 10) / 10 }
     ]
   };
   const advice = generateSmartAdvice(partial);

@@ -21,6 +21,14 @@ const categoryMeta: Record<ApplianceCategory | 'all', { label: { bg: string; en:
   custom: { label: { bg: 'Собствени', en: 'Custom' }, icon: <Flame size={18} /> }
 };
 
+const quickChipKeys: { bg: string; en: string }[] = [
+  { bg: 'Бойлер', en: 'Boiler' },
+  { bg: 'Климатик', en: 'AC' },
+  { bg: 'Хладилник', en: 'Fridge' },
+  { bg: 'Пералня', en: 'Washer' },
+  { bg: 'Лаптоп', en: 'Laptop' },
+];
+
 export function ApplianceSelector({ selected, customAppliances, onChange, onCustom }: { selected: ApplianceInput[]; customAppliances: ApplianceInput[]; onChange: (items: ApplianceInput[]) => void; onCustom: () => void }) {
   const { language, t } = useLanguage();
   const [query, setQuery] = useState('');
@@ -34,7 +42,10 @@ export function ApplianceSelector({ selected, customAppliances, onChange, onCust
   const allAppliances = useMemo(() => [...customAppliances, ...APPLIANCE_PRESETS], [customAppliances]);
   const filtered = allAppliances.filter((item) => {
     const matchesCategory = category === 'all' || item.category === category;
-    const text = `${item.name} ${item.label} ${item.explanation}`.toLowerCase();
+    const name = getLocalizedText(item.name, language, '');
+    const lbl = getLocalizedText(item.label, language, '');
+    const expl = getLocalizedText(item.explanation, language, '');
+    const text = `${name} ${lbl} ${expl}`.toLowerCase();
     return matchesCategory && text.includes(query.toLowerCase());
   });
 
@@ -42,36 +53,45 @@ export function ApplianceSelector({ selected, customAppliances, onChange, onCust
     <div className="min-w-0">
       <div className="mb-4 grid gap-3 sm:flex sm:items-end sm:justify-between">
         <div className="min-w-0">
-          <h3 className="text-xl font-black text-white">Appliance configurator</h3>
-          <p className="mt-1 text-sm leading-6 text-muted">Добави уреди чрез търсене, категории или quick chips. Сложните настройки са само когато ти трябват.</p>
+          <h3 className="text-xl font-black text-white">{t('QuickAppliancePicker', 'Appliance configurator')}</h3>
+          <p className="mt-1 text-sm leading-6 text-muted">{t('QuickAppliancePicker', 'Add appliances via search, categories or quick chips. Complex settings are only when you need them.')}</p>
         </div>
         <button type="button" onClick={onCustom} className="premium-button border border-mint/40 bg-mint/12 text-mint hover:-translate-y-0.5">
-          <Plus size={17} /> Добави собствен уред
+          <Plus size={17} /> {t('Appliance', 'Add custom appliance')}
         </button>
       </div>
 
       <label className="mb-3 flex min-h-12 items-center gap-2 rounded-lg border border-white/12 bg-white/[0.055] px-4 shadow-sm">
         <Search size={18} className="text-cyan" />
-        <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Потърси уред..." className="min-h-0 flex-1 border-0 bg-transparent p-0 text-white outline-none placeholder:text-muted/70" />
+        <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('Appliance', 'Search appliance...')} className="min-h-0 flex-1 border-0 bg-transparent p-0 text-white outline-none placeholder:text-muted/70" />
       </label>
 
       <div className="mb-4 flex gap-2 overflow-x-auto pb-1">
         {(Object.keys(categoryMeta) as Array<ApplianceCategory | 'all'>).map((id) => (
           <button key={id} type="button" onClick={() => setCategory(id)} className={`flex shrink-0 items-center gap-2 rounded-md border px-3 py-2 text-sm font-bold ${category === id ? 'border-mint bg-mint/15 text-white shadow-glow' : 'border-white/12 bg-white/[0.055] text-slate-300 hover:border-cyan/40 hover:bg-white/[0.075]'}`}>
-            {categoryMeta[id].icon}{categoryMeta[id].label}
+            {categoryMeta[id].icon}{getLocalizedText(categoryMeta[id].label, language)}
           </button>
         ))}
       </div>
 
       <div className="mb-4 flex flex-wrap gap-2">
-        {quickChips.map((chip) => <button key={chip} type="button" onClick={() => setQuery(chip)} className="rounded-md bg-white/8 px-3 py-1.5 text-xs font-bold text-slate-300 hover:bg-white/12 hover:text-white">{chip}</button>)}
+        {quickChipKeys.map((chip) => {
+          const chipLabel = chip[language];
+          return (
+            <button key={chipLabel} type="button" onClick={() => setQuery(chipLabel)} className="rounded-md bg-white/8 px-3 py-1.5 text-xs font-bold text-slate-300 hover:bg-white/12 hover:text-white">{chipLabel}</button>
+          );
+        })}
       </div>
 
       {customAppliances.length > 0 && (
         <div className="mb-5 rounded-lg border border-mint/25 bg-mint/8 p-3">
-          <h4 className="mb-3 px-1 text-sm font-black text-white">Моите уреди</h4>
+          <h4 className="mb-3 px-1 text-sm font-black text-white">{t('Appliance', 'My appliances')}</h4>
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            {customAppliances.filter((item) => `${item.name} ${item.label}`.toLowerCase().includes(query.toLowerCase())).map((preset) => <AppliancePresetCard key={preset.id} preset={preset} selected={selected.some((item) => item.id === preset.id)} onToggle={toggle} />)}
+            {customAppliances.filter((item) => {
+              const name = getLocalizedText(item.name, language, '');
+              const lbl = getLocalizedText(item.label, language, '');
+              return `${name} ${lbl}`.toLowerCase().includes(query.toLowerCase());
+            }).map((preset) => <AppliancePresetCard key={preset.id} preset={preset} selected={selected.some((item) => item.id === preset.id)} onToggle={toggle} />)}
           </div>
         </div>
       )}

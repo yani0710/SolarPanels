@@ -2,6 +2,8 @@ import { Car, Check, ChevronDown, ChevronUp, Droplets, Lightbulb, Plus, Shirt, S
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import { QUICK_APPLIANCE_GROUPS } from '../../data/quickApplianceGroups';
 import type { ApplianceInput } from '../../types';
+import { useLanguage } from '../../context/LanguageContext';
+import { getLocalizedText } from '../../utils/applianceTranslations';
 
 const groupIcons: Record<string, LucideIcon> = {
   boiler: Droplets,
@@ -13,22 +15,6 @@ const groupIcons: Record<string, LucideIcon> = {
   transport: Car,
   outdoor: Zap
 };
-
-const intensityOptions = [
-  { id: 'low', label: 'Рядко' },
-  { id: 'medium', label: 'Средно' },
-  { id: 'high', label: 'Често' },
-  { id: 'unknown', label: 'Не знам' }
-];
-
-const durationPerDayOptions = [
-  { id: 'unknown', label: 'Не знам' },
-  { id: 'minimal', label: '< 1 ч.' },
-  { id: 'short', label: '1-3 ч.' },
-  { id: 'medium', label: '3-6 ч.' },
-  { id: 'long', label: '6-12 ч.' },
-  { id: 'constant', label: 'Целия ден' }
-];
 
 interface SelectedAppliance {
   groupId: string;
@@ -58,12 +44,43 @@ export const QuickAppliancePicker = forwardRef<
   { selections, onChange, customAppliances = [], selectedCustom = [], onCustomChange },
   ref
 ) {
-  // Track which categories are expanded (default: first group open)
+  const { t, language } = useLanguage();
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(
     () => new Set([QUICK_APPLIANCE_GROUPS[0]?.id ?? ''])
   );
   const [selectedAppliances, setSelectedAppliances] = useState<SelectedAppliance[]>([]);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+
+  const intensityOptions = [
+    { id: 'low', label: t('QuickAppliancePicker', 'Rarely') },
+    { id: 'medium', label: t('QuickAppliancePicker', 'Medium frequency') },
+    { id: 'high', label: t('QuickAppliancePicker', 'Often') },
+    { id: 'unknown', label: t('QuickAssessment', 'I do not know') }
+  ];
+
+  const durationPerDayOptions = [
+    { id: 'unknown', label: t('QuickAssessment', 'I do not know') },
+    { id: 'minimal', label: t('QuickAppliancePicker', '< 1 hr') },
+    { id: 'short', label: t('QuickAppliancePicker', '1-3 hrs') },
+    { id: 'medium', label: t('QuickAppliancePicker', '3-6 hrs') },
+    { id: 'long', label: t('QuickAppliancePicker', '6-12 hrs') },
+    { id: 'constant', label: t('QuickAppliancePicker', 'All day') }
+  ];
+
+  const sizeModes = [
+    { id: 'small', label: t('QuickAppliancePicker', 'Small') },
+    { id: 'standard', label: t('QuickAppliancePicker', 'Standard') },
+    { id: 'large', label: t('QuickAppliancePicker', 'Large') },
+    { id: 'unknown', label: t('QuickAppliancePicker', 'Unknown') },
+    { id: 'custom', label: 'Custom' }
+  ];
+
+  const sizeAbbrev = (mode: string): string => {
+    const map: Record<string, { bg: string; en: string }> = {
+      small: { bg: 'М', en: 'S' }, standard: { bg: 'С', en: 'M' }, large: { bg: 'Г', en: 'L' }, custom: { bg: 'C', en: 'C' }
+    };
+    return map[mode]?.[language] ?? '?';
+  };
 
   const toggleGroup = (groupId: string) => {
     setExpandedGroups((prev) => {
@@ -99,8 +116,6 @@ export const QuickAppliancePicker = forwardRef<
       const option = group.options.find((o) => o.id === appliance.optionId)!;
       const boilerMode = appliance.boilerMode ?? 'unknown';
       const sizeMode = appliance.groupId === 'boiler' ? 'unknown' : (appliance.sizeMode ?? 'unknown');
-      const isFixedBoilerPreset = appliance.groupId === 'boiler' && boilerMode !== 'custom';
-      const isCustomOption = appliance.groupId === 'boiler' && boilerMode === 'custom';
       const isCustomBoiler = appliance.groupId === 'boiler' && boilerMode === 'custom';
       const isFreezer = appliance.optionId === 'freezer';
       const freezerLiters = Number(appliance.detail ?? option.detailDefault ?? 220);
@@ -140,21 +155,38 @@ export const QuickAppliancePicker = forwardRef<
         }
       }, 0);
 
+      const groupTitleBg = getLocalizedText(group.title, 'bg');
+      const groupTitleEn = getLocalizedText(group.title, 'en');
+      const optionLabelBg = getLocalizedText(option.label, 'bg');
+      const optionLabelEn = getLocalizedText(option.label, 'en');
+      const sizeLabelBg = (mode: string) => mode === 'small' ? 'Малък' : mode === 'standard' ? 'Среден' : mode === 'large' ? 'Голям' : mode === 'custom' ? 'Custom' : 'Не знам';
+      const sizeLabelEn = (mode: string) => mode === 'small' ? 'Small' : mode === 'standard' ? 'Standard' : mode === 'large' ? 'Large' : mode === 'custom' ? 'Custom' : 'Unknown';
+
+      const labelBg = appliance.groupId === 'boiler'
+        ? appliance.count === 1
+          ? `${groupTitleBg}: ${sizeLabelBg(boilerMode)}`
+          : `${groupTitleBg}: ${appliance.count} бр. (${appliance.unitBoilerModes?.map(m => sizeAbbrev(m)).join(', ') ?? sizeAbbrev(boilerMode)})`
+        : appliance.count === 1
+          ? `${groupTitleBg}: ${optionLabelBg} (${sizeLabelBg(sizeMode)})`
+          : `${groupTitleBg}: ${optionLabelBg} (${appliance.unitSizeModes?.map(m => sizeAbbrev(m)).join(', ') ?? sizeAbbrev(sizeMode)})`;
+
+      const labelEn = appliance.groupId === 'boiler'
+        ? appliance.count === 1
+          ? `${groupTitleEn}: ${sizeLabelEn(boilerMode)}`
+          : `${groupTitleEn}: ${appliance.count} pcs. (${appliance.unitBoilerModes?.map(m => sizeAbbrev(m)).join(', ') ?? sizeAbbrev(boilerMode)})`
+        : appliance.count === 1
+          ? `${groupTitleEn}: ${optionLabelEn} (${sizeLabelEn(sizeMode)})`
+          : `${groupTitleEn}: ${optionLabelEn} (${appliance.unitSizeModes?.map(m => sizeAbbrev(m)).join(', ') ?? sizeAbbrev(sizeMode)})`;
+
       return {
         id: `configured-${appliance.groupId}-${appliance.optionId}-${index}`,
         name: group.title,
         category: group.category,
-        label: appliance.groupId === 'boiler'
-          ? appliance.count === 1
-            ? `${group.title}: ${boilerMode === 'small' ? 'Малък' : boilerMode === 'standard' ? 'Среден' : boilerMode === 'large' ? 'Голям' : boilerMode === 'custom' ? 'Custom' : 'Не знам'}`
-            : `${group.title}: ${appliance.count} бр. (${appliance.unitBoilerModes?.map(m => m === 'small' ? 'М' : m === 'standard' ? 'С' : m === 'large' ? 'Г' : m === 'custom' ? 'C' : '?').join(', ') || boilerMode === 'small' ? 'М' : boilerMode === 'standard' ? 'С' : boilerMode === 'large' ? 'Г' : boilerMode === 'custom' ? 'C' : '?'})`
-          : appliance.count === 1
-            ? `${group.title}: ${option.label} (${sizeMode === 'small' ? 'Малък' : sizeMode === 'standard' ? 'Среден' : sizeMode === 'large' ? 'Голям' : sizeMode === 'custom' ? 'Custom' : 'Не знам'})`
-            : `${group.title}: ${option.label} (${appliance.unitSizeModes?.map(m => m === 'small' ? 'М' : m === 'standard' ? 'С' : m === 'large' ? 'Г' : m === 'custom' ? 'C' : '?').join(', ') || sizeMode === 'small' ? 'М' : sizeMode === 'standard' ? 'С' : sizeMode === 'large' ? 'Г' : sizeMode === 'custom' ? 'C' : '?'})`,
+        label: { bg: labelBg, en: labelEn },
         estimatedKwhPerDay: perUnitKwh,
         usageTime: option.usageTime,
         confidence: option.confidence,
-        explanation: `Количество: ${appliance.count}`
+        explanation: { bg: `Количество: ${appliance.count}`, en: `Quantity: ${appliance.count}` }
       } as ApplianceInput;
     });
   };
@@ -224,6 +256,8 @@ export const QuickAppliancePicker = forwardRef<
         const Icon = groupIcons[group.id];
         const isOpen = expandedGroups.has(group.id);
         const selectedCount = selectedCountForGroup(group.id);
+        const groupTitle = getLocalizedText(group.title, language);
+        const groupSubtitle = group.subtitle ? getLocalizedText(group.subtitle, language) : undefined;
 
         return (
           <div key={group.id} className={`rounded-2xl border transition-all ${selectedCount > 0 ? 'border-energy/30' : 'border-border'} bg-white`}>
@@ -238,15 +272,15 @@ export const QuickAppliancePicker = forwardRef<
               </span>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className={`text-sm font-bold ${selectedCount > 0 ? 'text-heading' : 'text-slate-700'}`}>{group.title}</span>
+                  <span className={`text-sm font-bold ${selectedCount > 0 ? 'text-heading' : 'text-slate-700'}`}>{groupTitle}</span>
                   {selectedCount > 0 && (
                     <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-energy px-1.5 text-[10px] font-black text-white">
                       {selectedCount}
                     </span>
                   )}
                 </div>
-                {group.subtitle && (
-                  <div className="text-[11px] text-muted truncate">{group.subtitle}</div>
+                {groupSubtitle && (
+                  <div className="text-[11px] text-muted truncate">{groupSubtitle}</div>
                 )}
               </div>
               <span className={`shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
@@ -260,6 +294,8 @@ export const QuickAppliancePicker = forwardRef<
                 <div className="flex flex-wrap gap-2">
                   {group.options.map((option) => {
                     const selected = isSelected(group.id, option.id);
+                    const optionLabel = getLocalizedText(option.label, language);
+                    const optionSubgroup = option.subgroup ? getLocalizedText(option.subgroup, language) : undefined;
                     return (
                       <button
                         key={option.id}
@@ -267,16 +303,16 @@ export const QuickAppliancePicker = forwardRef<
                         onClick={() => selected ? focusAppliance(group.id, option.id) : addAppliance(group.id, option.id)}
                         className={`rounded-xl border px-3 py-2.5 text-left text-sm font-semibold transition cursor-pointer ${selected ? chipActive : chipInactive}`}
                       >
-                        {option.subgroup && (
-                          <div className="mb-1 text-[9px] font-bold uppercase tracking-wide text-muted">{option.subgroup}</div>
+                        {optionSubgroup && (
+                          <div className="mb-1 text-[9px] font-bold uppercase tracking-wide text-muted">{optionSubgroup}</div>
                         )}
                         <div className="flex items-center gap-1.5">
                           {selected
                             ? <Check size={14} className="shrink-0 text-energy" />
                             : <Plus size={14} className="shrink-0 text-slate-400" />}
-                          <span>{option.label}</span>
+                          <span>{optionLabel}</span>
                         </div>
-                        <div className="mt-1 text-[11px] text-muted">≈ {option.kwhPerDay.toFixed(1)} kWh/ден</div>
+                        <div className="mt-1 text-[11px] text-muted">≈ {option.kwhPerDay.toFixed(1)} {t('QuickAppliancePicker', 'kWh/day')}</div>
                       </button>
                     );
                   })}
@@ -290,10 +326,11 @@ export const QuickAppliancePicker = forwardRef<
       {/* Custom saved appliances */}
       {customAppliances.length > 0 && (
         <div className="rounded-2xl border border-energy/30 bg-amber-50 p-4">
-          <div className="mb-3 text-xs font-black uppercase tracking-wide text-energy">Моите запазени уреди</div>
+          <div className="mb-3 text-xs font-black uppercase tracking-wide text-energy">{t('Appliance', 'My saved appliances')}</div>
           <div className="flex flex-wrap gap-2">
             {customAppliances.map((item) => {
               const selected = selectedCustom.includes(item.id);
+              const name = typeof item.name === 'string' ? item.name : item.name[language];
               return (
                 <button
                   key={item.id}
@@ -301,7 +338,7 @@ export const QuickAppliancePicker = forwardRef<
                   onClick={() => toggleCustom(item.id)}
                   className={`rounded-xl border px-3 py-2 text-xs font-bold transition cursor-pointer ${selected ? 'border-energy bg-energy text-white' : chipInactive}`}
                 >
-                  {item.name} · {item.wattage ?? 0} W
+                  {name} · {item.wattage ?? 0} W
                 </button>
               );
             })}
@@ -313,7 +350,7 @@ export const QuickAppliancePicker = forwardRef<
       {selectedAppliances.length > 0 && (
         <div>
           <div className="mb-2 text-xs font-black uppercase tracking-wide text-heading">
-            Избрани уреди ({selectedAppliances.length})
+            {t('QuickAppliancePicker', 'Selected appliances')} ({selectedAppliances.length})
           </div>
           <div className="space-y-2">
             {selectedAppliances.map((appliance, idx) => {
@@ -325,6 +362,13 @@ export const QuickAppliancePicker = forwardRef<
               const isCustomOption = appliance.groupId === 'boiler' && (appliance.boilerMode === 'custom' || appliance.unitBoilerModes?.some(m => m === 'custom'));
               const isFixedSizePreset = appliance.groupId !== 'boiler' && appliance.sizeMode !== 'custom' && !appliance.unitSizeModes?.some(m => m === 'custom');
               const isCustomSize = appliance.groupId !== 'boiler' && (appliance.sizeMode === 'custom' || appliance.unitSizeModes?.some(m => m === 'custom'));
+              const groupTitle = getLocalizedText(group.title, language);
+              const optionLabel = getLocalizedText(option.label, language);
+
+              const sizeLabel = (mode: string) => {
+                const found = sizeModes.find(s => s.id === mode);
+                return found?.label ?? mode;
+              };
 
               return (
                 <div key={`${appliance.groupId}-${appliance.optionId}-${idx}`} className={`rounded-2xl border transition-all ${isEditing ? 'border-energy/50 bg-amber-50' : 'card'}`}>
@@ -336,20 +380,20 @@ export const QuickAppliancePicker = forwardRef<
                     <div className="flex-1 min-w-0 cursor-pointer" onClick={() => setEditingIndex(isEditing ? null : idx)}>
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="text-sm font-bold text-heading truncate">
-                          {group.title}: {option.label}
+                          {groupTitle}: {optionLabel}
                         </span>
                         <span className="rounded-full border border-border bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-600">
-                          {appliance.count} бр.
+                          {appliance.count} {t('QuickAppliancePicker', 'pcs.')}
                         </span>
                       </div>
                       <div className="text-[11px] text-muted">
                         {appliance.groupId === 'boiler'
                           ? (appliance.count === 1
-                            ? (appliance.boilerMode === 'small' ? 'Малък' : appliance.boilerMode === 'standard' ? 'Среден' : appliance.boilerMode === 'large' ? 'Голям' : appliance.boilerMode === 'custom' ? 'Custom' : 'Не знам')
-                            : `Различни (${appliance.unitBoilerModes?.map(m => m === 'small' ? 'М' : m === 'standard' ? 'С' : m === 'large' ? 'Г' : m === 'custom' ? 'C' : '?').join(', ') || appliance.boilerMode === 'small' ? 'М' : appliance.boilerMode === 'standard' ? 'С' : appliance.boilerMode === 'large' ? 'Г' : appliance.boilerMode === 'custom' ? 'C' : '?'})`)
+                            ? sizeLabel(appliance.boilerMode ?? 'unknown')
+                            : `${t('QuickAppliancePicker', 'Various')} (${appliance.unitBoilerModes?.map(m => sizeAbbrev(m)).join(', ') ?? sizeAbbrev(appliance.boilerMode ?? 'unknown')})`)
                           : (appliance.count === 1
-                            ? (appliance.sizeMode === 'small' ? 'Малък' : appliance.sizeMode === 'standard' ? 'Среден' : appliance.sizeMode === 'large' ? 'Голям' : appliance.sizeMode === 'custom' ? 'Custom' : 'Не знам')
-                            : `Различни (${appliance.unitSizeModes?.map(m => m === 'small' ? 'М' : m === 'standard' ? 'С' : m === 'large' ? 'Г' : m === 'custom' ? 'C' : '?').join(', ') || appliance.sizeMode === 'small' ? 'М' : appliance.sizeMode === 'standard' ? 'С' : appliance.sizeMode === 'large' ? 'Г' : appliance.sizeMode === 'custom' ? 'C' : '?'})`)}
+                            ? sizeLabel(appliance.sizeMode ?? 'unknown')
+                            : `${t('QuickAppliancePicker', 'Various')} (${appliance.unitSizeModes?.map(m => sizeAbbrev(m)).join(', ') ?? sizeAbbrev(appliance.sizeMode ?? 'unknown')})`)}
                         {' · '}
                         {intensityOptions.find(i => i.id === appliance.intensity)?.label}
                         {' · '}
@@ -371,7 +415,7 @@ export const QuickAppliancePicker = forwardRef<
                     <div className="border-t border-border/60 px-3 pb-3 pt-3 space-y-4">
                       {/* Count */}
                       <div>
-                        <div className="mb-2 text-[11px] font-bold text-heading">Количество</div>
+                        <div className="mb-2 text-[11px] font-bold text-heading">{t('QuickAppliancePicker', 'Quantity')}</div>
                         <div className="flex items-center gap-2">
                           <button type="button" onClick={() => { const n = Math.max(1, appliance.count - 1); updateAppliance(idx, { count: n, unitKwValues: resizeArray(appliance.unitKwValues, n, '1'), unitPowerModes: resizeArray(appliance.unitPowerModes, n, 'unknown'), unitBoilerModes: appliance.unitBoilerModes ? resizeArray(appliance.unitBoilerModes, n, 'unknown') : undefined, unitSizeModes: appliance.unitSizeModes ? resizeArray(appliance.unitSizeModes, n, 'unknown') : undefined }); }} className="grid h-9 w-9 place-items-center rounded-xl border border-border bg-white text-sm font-bold text-heading hover:border-energy cursor-pointer transition">-</button>
                           <span className="min-w-[28px] text-center text-sm font-bold text-heading">{appliance.count}</span>
@@ -382,10 +426,10 @@ export const QuickAppliancePicker = forwardRef<
                       {/* Size / Boiler mode */}
                       {appliance.groupId === 'boiler' ? (
                         <div>
-                          <div className="mb-2 text-[11px] font-bold text-heading">Размер на бойлера</div>
+                          <div className="mb-2 text-[11px] font-bold text-heading">{t('QuickAppliancePicker', 'Boiler size')}</div>
                           {appliance.count === 1 ? (
                             <div className="flex flex-wrap gap-2">
-                              {[{ id: 'small', label: 'Малък', kwh: 2.2 }, { id: 'standard', label: 'Среден', kwh: 3.2 }, { id: 'large', label: 'Голям', kwh: 5.0 }, { id: 'unknown', label: 'Не знам', kwh: 3.2 }, { id: 'custom', label: 'Custom', kwh: null as null }].map((mode) => (
+                              {[{ id: 'small', kwh: 2.2 }, { id: 'standard', kwh: 3.2 }, { id: 'large', kwh: 5.0 }, { id: 'unknown', kwh: 3.2 }, { id: 'custom', kwh: null as null }].map((mode) => (
                                 <button key={mode.id} type="button" onClick={() => {
                                   const updates: Partial<SelectedAppliance> = { boilerMode: mode.id as SelectedAppliance['boilerMode'] };
                                   if (mode.id === 'custom') {
@@ -395,8 +439,8 @@ export const QuickAppliancePicker = forwardRef<
                                   }
                                   updateAppliance(idx, updates);
                                 }} className={`rounded-xl border px-3 py-2 text-xs font-semibold transition cursor-pointer ${appliance.boilerMode === mode.id ? smallBtnActive : smallBtnInactive}`}>
-                                  <div>{mode.label}</div>
-                                  <div className="text-[10px] text-muted">{mode.kwh == null ? 'по kW/L' : `≈ ${mode.kwh.toFixed(1)} kWh`}</div>
+                                  <div>{sizeLabel(mode.id)}</div>
+                                  <div className="text-[10px] text-muted">{mode.kwh == null ? t('QuickAppliancePicker', 'by kW/L') : `≈ ${mode.kwh.toFixed(1)} kWh`}</div>
                                 </button>
                               ))}
                             </div>
@@ -404,9 +448,9 @@ export const QuickAppliancePicker = forwardRef<
                             <div className="space-y-3">
                               {Array.from({ length: appliance.count }).map((_, unitIdx) => (
                                 <div key={unitIdx}>
-                                  <div className="mb-2 text-[11px] font-bold text-heading">Бойлер {unitIdx + 1}</div>
+                                  <div className="mb-2 text-[11px] font-bold text-heading">{t('QuickAppliancePicker', 'Boiler')} {unitIdx + 1}</div>
                                   <div className="flex flex-wrap gap-2">
-                                    {[{ id: 'small', label: 'Малък', kwh: 2.2 }, { id: 'standard', label: 'Среден', kwh: 3.2 }, { id: 'large', label: 'Голям', kwh: 5.0 }, { id: 'unknown', label: 'Не знам', kwh: 3.2 }, { id: 'custom', label: 'Custom', kwh: null as null }].map((mode) => (
+                                    {[{ id: 'small', kwh: 2.2 }, { id: 'standard', kwh: 3.2 }, { id: 'large', kwh: 5.0 }, { id: 'unknown', kwh: 3.2 }, { id: 'custom', kwh: null as null }].map((mode) => (
                                       <button key={mode.id} type="button" onClick={() => {
                                         const nextModes = [...(appliance.unitBoilerModes || [])];
                                         nextModes[unitIdx] = mode.id as 'small' | 'standard' | 'large' | 'custom' | 'unknown';
@@ -414,8 +458,8 @@ export const QuickAppliancePicker = forwardRef<
                                         if (nextKwValues[unitIdx] === undefined) nextKwValues[unitIdx] = '1';
                                         updateAppliance(idx, { unitBoilerModes: nextModes, unitKwValues: nextKwValues });
                                       }} className={`rounded-xl border px-3 py-2 text-xs font-semibold transition cursor-pointer ${(appliance.unitBoilerModes?.[unitIdx] || appliance.boilerMode) === mode.id ? smallBtnActive : smallBtnInactive}`}>
-                                        <div>{mode.label}</div>
-                                        <div className="text-[10px] text-muted">{mode.kwh == null ? 'по kW/L' : `≈ ${mode.kwh.toFixed(1)} kWh`}</div>
+                                        <div>{sizeLabel(mode.id)}</div>
+                                        <div className="text-[10px] text-muted">{mode.kwh == null ? t('QuickAppliancePicker', 'by kW/L') : `≈ ${mode.kwh.toFixed(1)} kWh`}</div>
                                       </button>
                                     ))}
                                   </div>
@@ -426,10 +470,10 @@ export const QuickAppliancePicker = forwardRef<
                         </div>
                       ) : (
                         <div>
-                          <div className="mb-2 text-[11px] font-bold text-heading">Размер</div>
+                          <div className="mb-2 text-[11px] font-bold text-heading">{t('QuickAppliancePicker', 'Size')}</div>
                           {appliance.count === 1 ? (
                             <div className="flex flex-wrap gap-2">
-                              {[{ id: 'small', label: 'Малък' }, { id: 'standard', label: 'Среден' }, { id: 'large', label: 'Голям' }, { id: 'unknown', label: 'Не знам' }, { id: 'custom', label: 'Custom' }].map((mode) => {
+                              {[{ id: 'small' }, { id: 'standard' }, { id: 'large' }, { id: 'unknown' }, { id: 'custom' }].map((mode) => {
                                 const kwh = mode.id === 'custom' ? null : (option.sizeKwhPerDay?.[mode.id as 'small' | 'standard' | 'large' | 'unknown'] ?? option.kwhPerDay);
                                 return (
                                   <button key={mode.id} type="button" onClick={() => {
@@ -441,8 +485,8 @@ export const QuickAppliancePicker = forwardRef<
                                     }
                                     updateAppliance(idx, updates);
                                   }} className={`rounded-xl border px-3 py-2 text-xs font-semibold transition cursor-pointer ${appliance.sizeMode === mode.id ? smallBtnActive : smallBtnInactive}`}>
-                                    <div>{mode.label}</div>
-                                    <div className="text-[10px] text-muted">{kwh == null ? 'по kW' : `≈ ${kwh.toFixed(1)} kWh`}</div>
+                                    <div>{sizeLabel(mode.id)}</div>
+                                    <div className="text-[10px] text-muted">{kwh == null ? t('QuickAppliancePicker', 'by kW') : `≈ ${kwh.toFixed(1)} kWh`}</div>
                                   </button>
                                 );
                               })}
@@ -451,9 +495,9 @@ export const QuickAppliancePicker = forwardRef<
                             <div className="space-y-3">
                               {Array.from({ length: appliance.count }).map((_, unitIdx) => (
                                 <div key={unitIdx}>
-                                  <div className="mb-2 text-[11px] font-bold text-heading">Уред {unitIdx + 1}</div>
+                                  <div className="mb-2 text-[11px] font-bold text-heading">{t('QuickAppliancePicker', 'Appliance')} {unitIdx + 1}</div>
                                   <div className="flex flex-wrap gap-2">
-                                    {[{ id: 'small', label: 'Малък' }, { id: 'standard', label: 'Среден' }, { id: 'large', label: 'Голям' }, { id: 'unknown', label: 'Не знам' }, { id: 'custom', label: 'Custom' }].map((mode) => {
+                                    {[{ id: 'small' }, { id: 'standard' }, { id: 'large' }, { id: 'unknown' }, { id: 'custom' }].map((mode) => {
                                       const kwh = mode.id === 'custom' ? null : (option.sizeKwhPerDay?.[mode.id as 'small' | 'standard' | 'large' | 'unknown'] ?? option.kwhPerDay);
                                       return (
                                         <button key={mode.id} type="button" onClick={() => {
@@ -463,8 +507,8 @@ export const QuickAppliancePicker = forwardRef<
                                           if (nextKwValues[unitIdx] === undefined) nextKwValues[unitIdx] = '1';
                                           updateAppliance(idx, { unitSizeModes: nextModes, unitKwValues: nextKwValues });
                                         }} className={`rounded-xl border px-3 py-2 text-xs font-semibold transition cursor-pointer ${(appliance.unitSizeModes?.[unitIdx] || appliance.sizeMode) === mode.id ? smallBtnActive : smallBtnInactive}`}>
-                                          <div>{mode.label}</div>
-                                          <div className="text-[10px] text-muted">{kwh == null ? 'по kW' : `≈ ${kwh.toFixed(1)} kWh`}</div>
+                                          <div>{sizeLabel(mode.id)}</div>
+                                          <div className="text-[10px] text-muted">{kwh == null ? t('QuickAppliancePicker', 'by kW') : `≈ ${kwh.toFixed(1)} kWh`}</div>
                                         </button>
                                       );
                                     })}
@@ -478,21 +522,19 @@ export const QuickAppliancePicker = forwardRef<
 
                       {/* Power info */}
                       {isFixedBoilerPreset || isFixedSizePreset ? (
-                        <div className="rounded-xl border border-energy/30 bg-amber-50 px-3 py-2 text-[11px] font-semibold text-energy">За този preset мощността е фиксирана.</div>
+                        <div className="rounded-xl border border-energy/30 bg-amber-50 px-3 py-2 text-[11px] font-semibold text-energy">{t('QuickAppliancePicker', 'For this preset the power is fixed.')}</div>
                       ) : (isCustomOption || isCustomSize) ? (
                         <div className="space-y-2">
-                          <div className="rounded-xl border border-sky/25 bg-sky-50 px-3 py-2 text-[11px] font-semibold text-sky">Custom: въведи kW за уредите с custom режим.</div>
+                          <div className="rounded-xl border border-sky/25 bg-sky-50 px-3 py-2 text-[11px] font-semibold text-sky">{t('QuickAppliancePicker', 'Custom: enter kW for appliances in custom mode.')}</div>
                           <div className="grid gap-2 sm:grid-cols-2">
                             {Array.from({ length: appliance.count }).map((_, unitIdx) => {
                               const unitBoilerMode = appliance.unitBoilerModes?.[unitIdx] || appliance.boilerMode;
                               const unitSizeMode = appliance.unitSizeModes?.[unitIdx] || appliance.sizeMode;
                               const isUnitCustom = (appliance.groupId === 'boiler' && unitBoilerMode === 'custom') || (appliance.groupId !== 'boiler' && unitSizeMode === 'custom');
-
                               if (!isUnitCustom) return null;
-
                               return (
                                 <label key={unitIdx}>
-                                  <div className="mb-1 text-[11px] font-semibold text-muted">Уред {unitIdx + 1} (kW)</div>
+                                  <div className="mb-1 text-[11px] font-semibold text-muted">{t('QuickAppliancePicker', 'Appliance')} {unitIdx + 1} (kW)</div>
                                   <input type="number" min={0.01} step={0.01} value={appliance.unitKwValues[unitIdx] ?? '1'} onChange={(e) => { const next = [...appliance.unitKwValues]; next[unitIdx] = e.target.value; updateAppliance(idx, { unitKwValues: next }); }} className="input-field h-9 px-3 text-sm" />
                                 </label>
                               );
@@ -504,14 +546,14 @@ export const QuickAppliancePicker = forwardRef<
                       {/* Detail field */}
                       {option.detailLabel && (
                         <label>
-                          <div className="mb-1 text-[11px] font-bold text-heading">{option.detailLabel}</div>
-                          <input type={option.detailType ?? 'text'} min={option.detailMin} max={option.detailMax} step={option.detailStep} value={appliance.detail ?? option.detailDefault ?? ''} onChange={(e) => updateAppliance(idx, { detail: e.target.value })} placeholder={`Пр. ${option.detailDefault ?? ''}${option.detailSuffix ?? ''}`} className="input-field h-9 px-3 text-sm" />
+                          <div className="mb-1 text-[11px] font-bold text-heading">{getLocalizedText(option.detailLabel, language)}</div>
+                          <input type={option.detailType ?? 'text'} min={option.detailMin} max={option.detailMax} step={option.detailStep} value={appliance.detail ?? option.detailDefault ?? ''} onChange={(e) => updateAppliance(idx, { detail: e.target.value })} placeholder={`${t('QuickAppliancePicker', 'Ex.')} ${option.detailDefault ?? ''}${option.detailSuffix ?? ''}`} className="input-field h-9 px-3 text-sm" />
                         </label>
                       )}
 
                       {/* Intensity */}
                       <div>
-                        <div className="mb-2 text-[11px] font-bold text-heading">Интензивност</div>
+                        <div className="mb-2 text-[11px] font-bold text-heading">{t('QuickAppliancePicker', 'Intensity')}</div>
                         <div className="flex flex-wrap gap-2">
                           {intensityOptions.map((item) => (
                             <button key={item.id} type="button" onClick={() => updateAppliance(idx, { intensity: item.id as SelectedAppliance['intensity'] })} className={`rounded-xl border px-3 py-2 text-xs font-semibold transition cursor-pointer ${appliance.intensity === item.id ? smallBtnActive : smallBtnInactive}`}>{item.label}</button>
@@ -521,7 +563,7 @@ export const QuickAppliancePicker = forwardRef<
 
                       {/* Duration */}
                       <div>
-                        <div className="mb-2 text-[11px] font-bold text-heading">Часове на ден</div>
+                        <div className="mb-2 text-[11px] font-bold text-heading">{t('QuickAppliancePicker', 'Hours per day')}</div>
                         <div className="flex flex-wrap gap-2">
                           {durationPerDayOptions.map((item) => (
                             <button key={item.id} type="button" onClick={() => updateAppliance(idx, { durationPerDay: item.id as SelectedAppliance['durationPerDay'] })} className={`rounded-xl border px-3 py-2 text-xs font-semibold transition cursor-pointer ${appliance.durationPerDay === item.id ? smallBtnActive : smallBtnInactive}`}>{item.label}</button>
@@ -539,7 +581,7 @@ export const QuickAppliancePicker = forwardRef<
 
       {/* Hint */}
       <p className="rounded-xl border border-sky-200 bg-sky-50 p-3 text-xs leading-5 text-slate-700">
-        Кликни категория → избери уред → настрой детайли. Можеш да избереш от множество категории.
+        {t('QuickAppliancePicker', 'Click category → select appliance → configure details. You can choose from multiple categories.')}
       </p>
     </div>
   );

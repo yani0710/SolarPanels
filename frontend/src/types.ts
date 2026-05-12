@@ -92,11 +92,11 @@ export interface RecommendationResult {
   monthlyConsumptionKwh: number;
   dayConsumptionKwh: number;
   eveningConsumptionKwh: number;
-  topConsumers: Array<{ name: string; monthlyKwh: number; percent: number; advice: string }>;
+  topConsumers: Array<{ name: string | { bg: string; en: string }; monthlyKwh: number; percent: number; advice: { bg: string; en: string } }>;
   criticalLoadKwh: number;
-  warnings: string[];
-  advice: string;
-  nextSteps: string[];
+  warnings: { bg: string; en: string }[];
+  advice: { bg: string; en: string };
+  nextSteps: { bg: string; en: string }[];
   chartData: Array<{ name: string; value: number }>;
 }
 

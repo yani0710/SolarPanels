@@ -3,12 +3,6 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
 import Logo from '../../assets/SolarPick.png';
 
-const columns = [
-  ['Platform', ['3D modeling', 'Solar calculator', 'Scenario planning', 'Savings dashboard']],
-  ['Planning', ['Quick estimate', 'Detailed design', 'Battery sizing', 'Grid resilience']],
-  ['Company', ['About', 'Partners', 'Support', 'Contact']]
-] as const;
-
 export function Footer() {
   const { t } = useLanguage();
 
@@ -43,21 +37,50 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="grid gap-8 sm:grid-cols-3">
-          {columns.map(([title, items]) => (
-            <div key={title}>
-              <h3 className="text-sm font-black uppercase tracking-[0.18em] text-[#F5F7FA]">{t('Footer', title)}</h3>
-              <ul className="mt-4 space-y-3">
-                {items.map((item) => (
-                  <li key={item}>
-                    <a href={item === 'Quick estimate' ? '/byrza-otsenka' : item === 'Detailed design' ? '/detaylna-otsenka' : '#top'} className="text-sm font-semibold text-[#AAB3C2] transition hover:text-[#FFD166]">
-                      {t('Footer', item)}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+        <div className="grid gap-8 sm:grid-cols-2">
+          {/* Real pages */}
+          <div>
+            <h3 className="text-sm font-black uppercase tracking-[0.18em] text-[#F5F7FA]">{t('Footer', 'Platform')}</h3>
+            <ul className="mt-4 space-y-3">
+              <li>
+                <Link to="/" className="text-sm font-semibold text-[#AAB3C2] transition hover:text-[#FFD166]">
+                  {t('Navbar', 'Home')}
+                </Link>
+              </li>
+              <li>
+                <Link to="/byrza-otsenka" className="text-sm font-semibold text-[#AAB3C2] transition hover:text-[#FFD166]">
+                  {t('HomePage', 'Quick estimate')}
+                </Link>
+              </li>
+              <li>
+                <Link to="/detaylna-otsenka" className="text-sm font-semibold text-[#AAB3C2] transition hover:text-[#FFD166]">
+                  {t('HomePage', 'Detailed design')}
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Home page anchors */}
+          <div>
+            <h3 className="text-sm font-black uppercase tracking-[0.18em] text-[#F5F7FA]">{t('Navbar', 'Energy intelligence')}</h3>
+            <ul className="mt-4 space-y-3">
+              <li>
+                <a href="/#features" className="text-sm font-semibold text-[#AAB3C2] transition hover:text-[#FFD166]">
+                  {t('Navbar', 'Features')}
+                </a>
+              </li>
+              <li>
+                <a href="/#calculator" className="text-sm font-semibold text-[#AAB3C2] transition hover:text-[#FFD166]">
+                  {t('Navbar', 'Calculator')}
+                </a>
+              </li>
+              <li>
+                <a href="/#faq" className="text-sm font-semibold text-[#AAB3C2] transition hover:text-[#FFD166]">
+                  {t('Navbar', 'FAQ')}
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
 
