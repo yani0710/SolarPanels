@@ -19,16 +19,16 @@ export type ApplianceCategory =
 
 export interface AppliancePreset {
   id: string;
-  name: string;
+  name: string | { bg: string; en: string };
   category: ApplianceCategory;
-  label: string;
+  label: string | { bg: string; en: string };
   estimatedKwhPerDay?: number;
   wattage?: number;
   hoursPerDay?: number;
   daysPerMonth?: number;
   usageTime: UsageTime;
   confidence: number;
-  explanation: string;
+  explanation: string | { bg: string; en: string };
   count?: number;
   seasonality?: ApplianceSeasonality;
   note?: string;

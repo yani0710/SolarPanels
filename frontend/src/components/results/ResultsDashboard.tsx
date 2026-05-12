@@ -22,7 +22,7 @@ export function ResultsDashboard({ result, onSave, title }: ResultsDashboardProp
         <p className="mt-3 text-sm leading-6 text-muted">Ориентировъчна препоръка — не окончателна оферта.</p>
       </div>
       <ResultCards result={result} onSave={onSave} />
-      <div className="grid min-w-0 gap-5 lg:grid-cols-2">
+      <div className="grid min-w-0 gap-5 grid-cols-1 lg:grid-cols-2">
         <ConsumptionChart result={result} />
         <DayNightChart result={result} />
       </div>

@@ -4,24 +4,25 @@ import { useMemo, useState } from 'react';
 import { APPLIANCE_PRESETS } from '../../data/appliancePresets';
 import type { ApplianceCategory, ApplianceInput } from '../../types';
 import { AppliancePresetCard } from './AppliancePresetCard';
+import { useLanguage } from '../../context/LanguageContext';
+import { getLocalizedText } from '../../utils/applianceTranslations';
 
-const categoryMeta: Record<ApplianceCategory | 'all', { label: string; icon: React.ReactNode }> = {
-  all: { label: 'Всички', icon: <Zap size={18} /> },
-  kitchen: { label: 'Кухня', icon: <Utensils size={18} /> },
-  hotWater: { label: 'Топла вода', icon: <Droplets size={18} /> },
-  heatingCooling: { label: 'Отопление и охлаждане', icon: <Snowflake size={18} /> },
-  laundry: { label: 'Пране', icon: <Shirt size={18} /> },
-  electronics: { label: 'Електроника', icon: <Laptop size={18} /> },
-  lighting: { label: 'Осветление', icon: <Lightbulb size={18} /> },
-  outdoor: { label: 'Двор и помпи', icon: <Home size={18} /> },
-  transport: { label: 'Транспорт', icon: <Car size={18} /> },
-  business: { label: 'Бизнес', icon: <BriefcaseBusiness size={18} /> },
-  custom: { label: 'Собствени', icon: <Flame size={18} /> }
+const categoryMeta: Record<ApplianceCategory | 'all', { label: { bg: string; en: string }; icon: React.ReactNode }> = {
+  all: { label: { bg: 'Всички', en: 'All' }, icon: <Zap size={18} /> },
+  kitchen: { label: { bg: 'Кухня', en: 'Kitchen' }, icon: <Utensils size={18} /> },
+  hotWater: { label: { bg: 'Топла вода', en: 'Hot Water' }, icon: <Droplets size={18} /> },
+  heatingCooling: { label: { bg: 'Отопление и охлаждане', en: 'Heating & Cooling' }, icon: <Snowflake size={18} /> },
+  laundry: { label: { bg: 'Пране', en: 'Laundry' }, icon: <Shirt size={18} /> },
+  electronics: { label: { bg: 'Електроника', en: 'Electronics' }, icon: <Laptop size={18} /> },
+  lighting: { label: { bg: 'Осветление', en: 'Lighting' }, icon: <Lightbulb size={18} /> },
+  outdoor: { label: { bg: 'Двор и помпи', en: 'Yard & Pumps' }, icon: <Home size={18} /> },
+  transport: { label: { bg: 'Транспорт', en: 'Transport' }, icon: <Car size={18} /> },
+  business: { label: { bg: 'Бизнес', en: 'Business' }, icon: <BriefcaseBusiness size={18} /> },
+  custom: { label: { bg: 'Собствени', en: 'Custom' }, icon: <Flame size={18} /> }
 };
 
-const quickChips = ['Бойлер', 'Климатик', 'Хладилник', 'Пералня', 'Компютър', 'Електромобил', 'Помпа'];
-
 export function ApplianceSelector({ selected, customAppliances, onChange, onCustom }: { selected: ApplianceInput[]; customAppliances: ApplianceInput[]; onChange: (items: ApplianceInput[]) => void; onCustom: () => void }) {
+  const { language, t } = useLanguage();
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<ApplianceCategory | 'all'>('all');
 
