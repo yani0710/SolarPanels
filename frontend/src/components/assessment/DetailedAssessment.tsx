@@ -3,12 +3,13 @@ import { ArrowLeft, ArrowRight, BatteryCharging, ChevronDown, ChevronUp, Gauge, 
 import type React from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { HOUSEHOLD_PROFILES } from '../../data/householdProfiles';
-import { REGION_SOLAR_DATA } from '../../data/regionSolarData';
+import { REGION_SOLAR_DATA, getRegionLabel } from '../../data/regionSolarData';
 import type { ApplianceInput, DetailedAssessmentInput, RecommendationResult } from '../../types';
 import { analyzeDetailed } from '../../logic/recommendationEngine';
 import { listCustomAppliances } from '../../api/appliances';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
+import { translateProfile } from '../../data/householdProfiles';
 import { QuickAppliancePicker } from './QuickAppliancePicker';
 import { CustomApplianceModal } from '../appliances/CustomApplianceModal';
 import { Stepper } from './Stepper';
@@ -18,7 +19,7 @@ const stepKeys = ['Basics', 'Profile', 'Appliances', 'Backup', 'Conditions'];
 
 export function DetailedAssessment({ onResult, onRequireRegister }: { onResult: (input: DetailedAssessmentInput, result: RecommendationResult) => void; onRequireRegister: () => void }) {
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const quickPickerRef = useRef<{ getAppliances: () => ApplianceInput[] }>(null);
   const [step, setStep] = useState(0);
   const [profileId, setProfileId] = useState('medium-home');
@@ -28,7 +29,8 @@ export function DetailedAssessment({ onResult, onRequireRegister }: { onResult: 
   const [selectedQuickCustom, setSelectedQuickCustom] = useState<string[]>([]);
   const [customOpen, setCustomOpen] = useState(false);
   const [summaryVisible, setSummaryVisible] = useState(true);
-  const profile = useMemo(() => HOUSEHOLD_PROFILES.find((p) => p.id === profileId)!, [profileId]);
+  const profileData = useMemo(() => HOUSEHOLD_PROFILES.find((p) => p.id === profileId)!, [profileId]);
+  const profile = useMemo(() => translateProfile(profileData.id, language), [profileData.id, language]);
   const steps = stepKeys.map((key) => t('DetailedAssessment', key));
 
   useEffect(() => {
@@ -80,7 +82,7 @@ export function DetailedAssessment({ onResult, onRequireRegister }: { onResult: 
               {step === 0 && (
                 <div className="grid gap-4 md:grid-cols-2">
                   <Input label={t('DetailedAssessment', 'Property type')} name="objectType" as="select" options={[['house', t('DetailedAssessment', 'House')], ['apartment', t('DetailedAssessment', 'Apartment')], ['villa', t('DetailedAssessment', 'Villa')], ['business', t('DetailedAssessment', 'Small business')], ['farm', t('DetailedAssessment', 'Farm')]]} />
-                  <Input label={t('DetailedAssessment', 'Region')} name="region" as="select" options={Object.entries(REGION_SOLAR_DATA).map(([id, r]) => [id, r.label])} />
+  <Input label={t('DetailedAssessment', 'Region')} name="region" as="select" options={Object.keys(REGION_SOLAR_DATA).map((id) => [id, getRegionLabel(id, language)])} />
                   <Input label={t('DetailedAssessment', 'City or area')} name="cityOrArea" placeholder={t('DetailedAssessment', 'Optional')} />
                   <Input label={t('DetailedAssessment', 'Monthly bill (€)')} name="monthlyBillEur" defaultValue="112" />
                   <Input label={t('DetailedAssessment', 'Monthly kWh if known')} name="monthlyKwh" placeholder={t('DetailedAssessment', 'Optional')} />
@@ -100,8 +102,8 @@ export function DetailedAssessment({ onResult, onRequireRegister }: { onResult: 
                       onClick={() => { setProfileId(p.id); setAppliances(p.appliances); }}
                       className={`min-h-32 rounded-2xl border p-4 text-left transition active:scale-[.99] cursor-pointer ${profileId === p.id ? 'border-energy bg-amber-50 shadow-green' : 'card hover:border-energy/50'}`}
                     >
-                      <div className="font-black text-heading">{p.label}</div>
-                      <p className="mt-2 text-sm leading-5 text-muted">{p.description}</p>
+                      <div className="font-black text-heading">{translateProfile(p.id, language).label}</div>
+                      <p className="mt-2 text-sm leading-5 text-muted">{translateProfile(p.id, language).description}</p>
                     </button>
                   ))}
                 </div>

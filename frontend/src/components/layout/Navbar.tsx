@@ -42,43 +42,31 @@ export function Navbar({ onAuth, onProfile }: { onAuth: (mode: 'login' | 'regist
 
   const linkClass = (active: boolean) =>
     `relative rounded-lg px-3.5 py-2 text-sm font-bold transition ` +
-    (theme === 'light'
-      ? active
-        ? 'bg-amber-50 text-energy shadow-[0_0_28px_rgba(255,159,67,0.12)] ring-1 ring-amber-200'
-        : 'text-slate-600 hover:bg-amber-50 hover:text-energy'
-      : active
-        ? 'bg-white/[0.08] text-[#F5F7FA] shadow-[0_0_28px_rgba(79,209,255,0.12)] ring-1 ring-white/10'
-        : 'text-[#AAB3C2] hover:bg-white/[0.06] hover:text-[#F5F7FA]');
+    (active
+      ? 'bg-white/[0.08] text-[#F5F7FA] shadow-[0_0_28px_rgba(79,209,255,0.12)] ring-1 ring-white/10'
+      : 'text-[#AAB3C2] hover:bg-white/[0.06] hover:text-[#F5F7FA]');
 
   const mobileLinkClass = (active = false) =>
     `block rounded-lg px-4 py-3 text-base font-bold transition ` +
-    (theme === 'light'
-      ? active
-        ? 'bg-amber-50 text-energy ring-1 ring-amber-200'
-        : 'text-slate-600 hover:bg-amber-50 hover:text-energy'
-      : active
-        ? 'bg-white/[0.08] text-[#F5F7FA] ring-1 ring-white/10'
-        : 'text-[#AAB3C2] hover:bg-white/[0.06] hover:text-[#F5F7FA]');
+    (active
+      ? 'bg-white/[0.08] text-[#F5F7FA] ring-1 ring-white/10'
+      : 'text-[#AAB3C2] hover:bg-white/[0.06] hover:text-[#F5F7FA]');
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3">
       <nav
         className={`mx-auto flex max-w-7xl items-center justify-between rounded-xl border px-3 py-2.5 transition-all duration-300 sm:px-4 ` +
-          (theme === 'light'
-            ? (scrolled
-                ? 'border-amber-200/70 bg-white/90 shadow-card backdrop-blur-xl'
-                : 'border-amber-200/40 bg-white/80 shadow-none backdrop-blur-xl')
-            : (scrolled
-                ? 'border-white/10 bg-[#111315]/78 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl'
-                : 'border-white/[0.07] bg-[#181B1F]/38 shadow-none backdrop-blur-xl'))}
+          (scrolled
+            ? 'border-white/10 bg-[#111315]/78 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl'
+            : 'border-white/[0.07] bg-[#181B1F]/38 shadow-none backdrop-blur-xl')}
       >
         <Link to="/" onClick={close} className="group flex min-w-0 items-center gap-3 font-black">
           <span className="relative grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-xl border border-white/10 bg-[linear-gradient(135deg,rgba(255,159,67,0.18),rgba(79,209,255,0.14))] shadow-[0_0_30px_rgba(255,159,67,0.16)]">
             <img src={Logo} alt="SolarPick Logo" className="h-9 w-9 rounded-lg object-cover transition-transform duration-200 group-hover:scale-105" />
           </span>
           <span className="min-w-0">
-            <span className={"block truncate text-sm uppercase tracking-[0.22em] sm:text-[15px] " + (theme === 'light' ? 'text-navy' : 'text-[#F5F7FA]')}>SolarPick</span>
-            <span className="hidden text-[11px] font-extrabold uppercase tracking-wide sm:block" style={{ color: theme === 'light' ? '#64748B' : '#AAB3C2' }}>{t('Navbar', 'Energy intelligence')}</span>
+            <span className="block truncate text-sm uppercase tracking-[0.22em] sm:text-[15px] text-[#F5F7FA]">SolarPick</span>
+            <span className="hidden text-[11px] font-extrabold uppercase tracking-wide sm:block text-[#AAB3C2]">{t('Navbar', 'Energy intelligence')}</span>
           </span>
         </Link>
 
@@ -103,7 +91,7 @@ export function Navbar({ onAuth, onProfile }: { onAuth: (mode: 'login' | 'regist
         <div className="hidden items-center gap-3 md:flex">
           <button
             onClick={toggleTheme}
-            className={"grid h-10 w-10 place-items-center rounded-lg border transition " + (theme === 'light' ? 'border-slate-200 bg-slate-100 text-slate-500 hover:border-amber-300 hover:bg-amber-50 hover:text-energy' : 'border border-white/10 bg-white/[0.05] text-[#AAB3C2] hover:border-[#FFD166]/30 hover:bg-[#FFD166]/10 hover:text-[#FFD166]')}
+            className="grid h-10 w-10 place-items-center rounded-lg border transition border-white/10 bg-white/[0.05] text-[#AAB3C2] hover:border-[#FFD166]/30 hover:bg-[#FFD166]/10 hover:text-[#FFD166]"
             title={theme === 'light' ? t('Navbar', 'Dark theme') : t('Navbar', 'Light theme')}
             aria-label={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}
           >
@@ -111,7 +99,7 @@ export function Navbar({ onAuth, onProfile }: { onAuth: (mode: 'login' | 'regist
           </button>
           <button
             onClick={toggleLanguage}
-            className={"flex h-10 items-center gap-1.5 rounded-lg border px-2.5 font-bold text-xs transition " + (theme === 'light' ? 'border-slate-200 bg-slate-100 text-slate-500 hover:border-amber-300 hover:bg-amber-50 hover:text-energy' : 'border border-white/10 bg-white/[0.05] text-[#AAB3C2] hover:border-[#FFD166]/30 hover:bg-[#FFD166]/10 hover:text-[#FFD166]')}
+            className="flex h-10 items-center gap-1.5 rounded-lg border px-2.5 font-bold text-xs transition border-white/10 bg-white/[0.05] text-[#AAB3C2] hover:border-[#FFD166]/30 hover:bg-[#FFD166]/10 hover:text-[#FFD166]"
             title={language === 'bg' ? 'English' : 'Български'}
             aria-label={language === 'bg' ? 'Switch to English' : 'Превключи на български'}
           >
@@ -122,7 +110,7 @@ export function Navbar({ onAuth, onProfile }: { onAuth: (mode: 'login' | 'regist
         </div>
 
         <button
-          className={"grid h-11 w-11 place-items-center rounded-xl border md:hidden " + (theme === 'light' ? 'border-slate-200 bg-slate-100 text-slate-500' : 'border border-white/10 bg-white/[0.06] text-[#F5F7FA]')}
+          className="grid h-11 w-11 place-items-center rounded-xl border md:hidden border-white/10 bg-white/[0.06] text-[#F5F7FA]"
           onClick={() => setOpen((value) => !value)}
           aria-label="Menu"
           aria-expanded={open}
