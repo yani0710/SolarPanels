@@ -65,11 +65,30 @@ export function Hero() {
           <h1 className={"max-w-[22rem] text-4xl font-black leading-[1.02] sm:max-w-4xl sm:text-6xl sm:leading-[0.96] lg:text-7xl " + (isLight ? "text-navy" : "text-[#F5F7FA]")}>
             {t('Hero', 'Design your solar future before it reaches your roof.')}
           </h1>
-          <p className={"mt-6 max-w-2xl text-lg leading-8 sm:text-xl " + (isLight ? "text-slate-600" : "text-[#AAB3C2]")}>
+          <p className={"hidden lg:block mt-6 max-w-2xl text-lg leading-8 sm:text-xl " + (isLight ? "text-slate-600" : "text-[#AAB3C2]")}>
             {t('Hero', 'SolarPick models panels, battery capacity, household demand, and grid behavior in one cinematic workspace so you can size a cleaner energy system with confidence.')}
           </p>
 
-          <div className="mt-8 grid gap-3 sm:flex sm:flex-row">
+          <div className="mt-8 lg:hidden">
+            <HeroVisual />
+          </div>
+
+          {/* mobile: buttons above paragraph */}
+          <div className="mt-8 grid gap-3 lg:hidden">
+            <Link to="/byrza-otsenka" className="btn-primary">
+              <Gauge size={18} /> {t('Hero', 'Start quick estimate')} <ArrowRight size={18} />
+            </Link>
+            <Link to="/detaylna-otsenka" className="btn-secondary">
+              <SlidersHorizontal size={18} /> {t('Hero', 'Build detailed plan')}
+            </Link>
+          </div>
+
+          <p className={"lg:hidden mt-6 max-w-2xl text-lg leading-8 sm:text-xl " + (isLight ? "text-slate-600" : "text-[#AAB3C2]")}>
+            {t('Hero', 'SolarPick models panels, battery capacity, household demand, and grid behavior in one cinematic workspace so you can size a cleaner energy system with confidence.')}
+          </p>
+
+          {/* desktop: buttons below paragraph */}
+          <div className="hidden lg:flex mt-8 gap-3">
             <Link to="/byrza-otsenka" className="btn-primary">
               <Gauge size={18} /> {t('Hero', 'Start quick estimate')} <ArrowRight size={18} />
             </Link>
@@ -142,7 +161,9 @@ export function Hero() {
           </motion.div>
         </motion.div>
 
-        <HeroVisual />
+        <div className="hidden lg:block">
+          <HeroVisual />
+        </div>
       </div>
     </section>
   );

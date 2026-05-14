@@ -40,6 +40,8 @@ export function Navbar({ onAuth, onProfile }: { onAuth: (mode: 'login' | 'regist
 
   const close = () => setOpen(false);
 
+  const isLight = theme === 'light';
+
   const linkClass = (active: boolean) =>
     `relative rounded-lg px-3.5 py-2 text-sm font-bold transition ` +
     (active
@@ -49,8 +51,12 @@ export function Navbar({ onAuth, onProfile }: { onAuth: (mode: 'login' | 'regist
   const mobileLinkClass = (active = false) =>
     `block rounded-lg px-4 py-3 text-base font-bold transition ` +
     (active
-      ? 'bg-white/[0.08] text-[#F5F7FA] ring-1 ring-white/10'
-      : 'text-[#AAB3C2] hover:bg-white/[0.06] hover:text-[#F5F7FA]');
+      ? isLight
+        ? 'bg-amber-50 text-amber-700 ring-1 ring-amber-200'
+        : 'bg-white/[0.08] text-[#F5F7FA] ring-1 ring-white/10'
+      : isLight
+        ? 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
+        : 'text-[#AAB3C2] hover:bg-white/[0.06] hover:text-[#F5F7FA]');
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3">
@@ -65,8 +71,8 @@ export function Navbar({ onAuth, onProfile }: { onAuth: (mode: 'login' | 'regist
             <img src={Logo} alt="SolarPick Logo" className="h-9 w-9 rounded-lg object-cover transition-transform duration-200 group-hover:scale-105" />
           </span>
           <span className="min-w-0">
-            <span className="block truncate text-sm uppercase tracking-[0.22em] sm:text-[15px] text-[#F5F7FA]">SolarPick</span>
-            <span className="hidden text-[11px] font-extrabold uppercase tracking-wide sm:block text-[#AAB3C2]">{t('Navbar', 'Energy intelligence')}</span>
+            <span className={`block truncate text-sm uppercase tracking-[0.22em] sm:text-[15px] ` + (isLight ? 'text-slate-800' : 'text-[#F5F7FA]')}>SolarPick</span>
+            <span className={`hidden text-[11px] font-extrabold uppercase tracking-wide sm:block ` + (isLight ? 'text-slate-500' : 'text-[#AAB3C2]')}>{t('Navbar', 'Energy intelligence')}</span>
           </span>
         </Link>
 
@@ -110,7 +116,8 @@ export function Navbar({ onAuth, onProfile }: { onAuth: (mode: 'login' | 'regist
         </div>
 
         <button
-          className="grid h-11 w-11 place-items-center rounded-xl border md:hidden border-white/10 bg-white/[0.06] text-[#F5F7FA]"
+          className={`grid h-11 w-11 place-items-center rounded-xl border md:hidden ` +
+            (isLight ? 'border-slate-300 bg-slate-100 text-slate-700' : 'border-white/10 bg-white/[0.06] text-[#F5F7FA]')}
           onClick={() => setOpen((value) => !value)}
           aria-label="Menu"
           aria-expanded={open}
@@ -126,7 +133,10 @@ export function Navbar({ onAuth, onProfile }: { onAuth: (mode: 'login' | 'regist
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.98 }}
             transition={{ duration: 0.18 }}
-            className="mx-auto mt-2 max-w-7xl rounded-xl border border-white/10 bg-[#111315]/92 p-3 shadow-[0_22px_70px_rgba(0,0,0,0.34)] backdrop-blur-2xl md:hidden"
+            className={`mx-auto mt-2 max-w-7xl rounded-xl border p-3 shadow-[0_22px_70px_rgba(0,0,0,0.34)] backdrop-blur-2xl md:hidden ` +
+              (isLight
+                ? 'border-slate-200 bg-white/95'
+                : 'border-white/10 bg-[#111315]/92')}
           >
             <div className="grid gap-1">
               {routeItems.map((item) => (
@@ -147,17 +157,19 @@ export function Navbar({ onAuth, onProfile }: { onAuth: (mode: 'login' | 'regist
               ))}
             </div>
 
-            <div className="mt-3 space-y-2 border-t border-white/10 pt-3">
+            <div className={`mt-3 space-y-2 border-t pt-3 ` + (isLight ? 'border-slate-200' : 'border-white/10')}>
               <button
                 onClick={() => { toggleTheme(); close(); }}
-                className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-base font-bold text-[#AAB3C2] transition hover:bg-white/[0.06] hover:text-[#F5F7FA]"
+                className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 text-base font-bold transition ` +
+                  (isLight ? 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' : 'text-[#AAB3C2] hover:bg-white/[0.06] hover:text-[#F5F7FA]')}
               >
                 {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
                 {theme === 'light' ? t('Navbar', 'Dark theme') : t('Navbar', 'Light theme')}
               </button>
               <button
                 onClick={() => { toggleLanguage(); close(); }}
-                className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-base font-bold text-[#AAB3C2] transition hover:bg-white/[0.06] hover:text-[#F5F7FA]"
+                className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 text-base font-bold transition ` +
+                  (isLight ? 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' : 'text-[#AAB3C2] hover:bg-white/[0.06] hover:text-[#F5F7FA]')}
               >
                 <Languages size={18} />
                 {t('Navbar', 'Български')}
