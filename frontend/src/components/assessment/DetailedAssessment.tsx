@@ -34,6 +34,11 @@ export function DetailedAssessment({ onResult, onRequireRegister }: { onResult: 
   const steps = stepKeys.map((key) => t('DetailedAssessment', key));
 
   useEffect(() => {
+    const id = setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 0);
+    return () => clearTimeout(id);
+  }, [step]);
+
+  useEffect(() => {
     if (!user) { setCustomAppliances([]); return; }
     listCustomAppliances().then((data) => setCustomAppliances(data.appliances)).catch(() => setCustomAppliances([]));
   }, [user]);
@@ -87,7 +92,7 @@ export function DetailedAssessment({ onResult, onRequireRegister }: { onResult: 
                   <Input label={t('DetailedAssessment', 'Monthly bill (€)')} name="monthlyBillEur" defaultValue="112" />
                   <Input label={t('DetailedAssessment', 'Monthly kWh if known')} name="monthlyKwh" placeholder={t('DetailedAssessment', 'Optional')} />
                   <Input label={t('DetailedAssessment', 'Price per kWh (€)')} name="pricePerKwh" defaultValue="0.153" />
-                  <Input label={t('DetailedAssessment', 'Day/night tariff')} name="dayNightTariff" as="select" options={[['unknown', t('QuickAssessment', 'I do not know')], ['yes', t('DetailedAssessment', 'Yes')], ['no', t('DetailedAssessment', 'Yes')]]} />
+                  <Input label={t('DetailedAssessment', 'Day/night tariff')} name="dayNightTariff" as="select" options={[['unknown', t('QuickAssessment', 'I do not know')], ['yes', t('DetailedAssessment', 'Yes')], ['no', t('DetailedAssessment', 'No')]]} />
                   <Input label={t('DetailedAssessment', 'Power supply')} name="gridPhase" as="select" options={[['unknown', t('QuickAssessment', 'I do not know')], ['single', t('DetailedAssessment', 'Single phase')], ['three', t('DetailedAssessment', 'Three phase')]]} />
                   <Input label={t('DetailedAssessment', 'Goal')} name="goal" as="select" options={[['save', t('QuickAssessment', 'Reduce my bill')], ['backup', t('QuickAssessment', 'Have backup power')], ['independence', t('QuickAssessment', 'More independence')], ['check', t('QuickAssessment', 'Check if it makes sense')], ['offgrid', t('QuickAssessment', 'Off-grid')]]} />
                 </div>

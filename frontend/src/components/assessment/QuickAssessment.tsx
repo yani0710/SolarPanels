@@ -59,6 +59,10 @@ export function QuickAssessment({ onResult }: { onResult: (input: QuickAssessmen
   }
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [step]);
+
+  useEffect(() => {
     if (!user) {
       setCustomAppliances([]);
       setSelectedCustom([]);

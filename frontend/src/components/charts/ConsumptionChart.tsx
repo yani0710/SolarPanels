@@ -15,9 +15,7 @@ export function ConsumptionChart({ result }: { result: RecommendationResult }) {
   }, []);
 
   const data = [
-    { name: t('Results', 'Day'), kWh: result.dayConsumptionKwh },
-    { name: t('Results', 'Evening'), kWh: result.eveningConsumptionKwh },
-    { name: t('Results', 'Monthly / 10'), kWh: Math.round(result.monthlyConsumptionKwh / 10) }
+    { name: t('Results', 'Monthly'), kWh: result.monthlyConsumptionKwh }
   ];
 
   return (

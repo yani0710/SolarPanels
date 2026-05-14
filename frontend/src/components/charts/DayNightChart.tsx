@@ -23,7 +23,7 @@ export function DayNightChart({ result }: { result: RecommendationResult }) {
     <div className="card min-w-0 p-3 sm:p-4">
       <div className="mb-3 flex items-center justify-between gap-3">
         <h3 className="font-black text-heading">{t('Dashboard', 'Day vs night')}</h3>
-        <span className="rounded-lg border border-amber-200 bg-amber-50 px-2 py-1 text-xs font-bold text-solar">split</span>
+        <span className="rounded-lg border border-amber-200 bg-amber-50 px-2 py-1 text-xs font-bold text-solar">kWh</span>
       </div>
       <div ref={containerRef} style={{ width: '100%', height: '300px' }}>
         {width > 0 && (

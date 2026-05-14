@@ -1,5 +1,4 @@
 import { ResultCards } from './ResultCards';
-import { HonestAdvice } from './HonestAdvice';
 import { WarningsList } from './WarningsList';
 import { TopConsumers } from './TopConsumers';
 import { ConsumptionChart } from '../charts/ConsumptionChart';
@@ -30,7 +29,6 @@ export function ResultsDashboard({ result, onSave, title }: ResultsDashboardProp
       </div>
       <ScenarioChart result={result} />
       <TopConsumers result={result} />
-      <HonestAdvice result={result} />
       <WarningsList warnings={result.warnings} />
     </div>
   );

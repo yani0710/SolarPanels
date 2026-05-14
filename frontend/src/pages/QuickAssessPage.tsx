@@ -15,6 +15,7 @@ export function QuickAssessPage() {
   const { user } = useAuth();
   const { setAuthMode, bumpRefreshKey, showToast } = useAppContext();
   const { t } = useLanguage();
+  const [assessKey, setAssessKey] = useState(0);
   const [pendingSave, setPendingSave] = useState(false);
   const [input, setInput] = useState<QuickAssessmentInput | null>(null);
   const [result, setResult] = useState<RecommendationResult | null>(() => {
@@ -68,7 +69,7 @@ export function QuickAssessPage() {
 
       {/* Assessment form */}
       <Section id="assessment" className="bg-slate-50/60">
-        <QuickAssessment onResult={onResult} />
+        <QuickAssessment key={assessKey} onResult={onResult} />
       </Section>
 
       {/* Results */}
@@ -76,7 +77,7 @@ export function QuickAssessPage() {
         <Section id="results">
           <ResultsDashboard result={result} onSave={onSave} />
           <button
-            onClick={() => { setResult(null); setInput(null); localStorage.removeItem('solarwise_quick_result'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+            onClick={() => { setResult(null); setInput(null); setAssessKey(k => k + 1); localStorage.removeItem('solarwise_quick_result'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
             className="btn-secondary mt-6 w-full sm:w-auto"
           >
             <RotateCcw size={16} /> {t('Pages', 'New assessment')}
